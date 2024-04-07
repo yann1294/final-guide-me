@@ -42,7 +42,7 @@ const AboutWrap: React.FC = () => {
                 Through our service, customers experience rich and long-lasting memories despite language and culture barriers.
               </p>
               <div className="about-wrapper-btn">
-                <a className="btn-common" onClick={() => router.push('/about_details')}>Read More</a>
+                <a className="btn-common" onClick={() => router.push('/aboutDetails')}>Read More</a>
               </div>
             </div>
           </div>

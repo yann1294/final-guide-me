@@ -9,7 +9,7 @@ const AboutUs: React.FC = () => {
   const [isOpen, setOpen] = useState<boolean>(false);
 
   return (
-    <div className="about-wrapper mt-120">
+    <div className="about-wrapper mt-120 bg-gray-300">
       <div className="container">
         <div className="row">
           <div className="col-lg-7 col-md-12">
