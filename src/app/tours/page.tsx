@@ -69,7 +69,7 @@ const Tours = () => {
   };
 
   return (
-    <>
+    <div className='bg-gray-200'>
       <Breadcrumb pageName="Tours" pageTitle="Tours" />
       <div className="package-area pt-120">
         <div className="container">
@@ -114,7 +114,7 @@ const Tours = () => {
         </div>
       </div>
       <GuideArea />
-    </>
+    </div>
   );
 };
 

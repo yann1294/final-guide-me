@@ -8,12 +8,12 @@ import React from 'react';
 
 const About: React.FC = () => {
   return (
-    <>
+    <div className='bg-gray-200'>
       <Breadcrumb pageName="About Us" pageTitle="About Us"/>
       <AboutWrap/>
       <GuideArea/>
       <Testimonials/>
-    </>
+    </div>
   );
 };
 

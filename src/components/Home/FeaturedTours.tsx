@@ -37,7 +37,7 @@ const FeaturedTours: React.FC = () => {
           {
             id: 1,
             attributes: {
-              image: { data: { attributes: { url: '/dummy/image1.jpg' } } },
+              image: { data: { attributes: { url: "/bassamBeach.jpg" } } },
               title: 'Tour 1',
               price: 100,
             },
@@ -45,7 +45,7 @@ const FeaturedTours: React.FC = () => {
           {
             id: 2,
             attributes: {
-              image: { data: { attributes: { url: '/dummy/image2.jpg' } } },
+              image: { data: { attributes: { url: "/bassamBeach.jpg" } } },
               title: 'Tour 2',
               price: 200,
             },

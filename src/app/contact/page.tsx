@@ -5,7 +5,7 @@ import React from 'react';
 
 const ContactPage: React.FC = () => {
   return (
-    <div>
+    <div className='bg-gray-200'>
       <Breadcrumb pageName="Contact Us" pageTitle="Contact Us"/>
       <ContactCards/>
       <FaqSection/>

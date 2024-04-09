@@ -8,9 +8,10 @@ import Logo from '../../../public/assets/images/logo2.png';
 interface State {
   activeMenu: string;
   props: string;
+  showUserDropdown: boolean; 
 }
 
-const initialState: State = { activeMenu: '', props: '' };
+const initialState: State = { activeMenu: '', props: '', showUserDropdown: false };
 
 function reducer(state: State, action: { type: string }): State {
   switch (action.type) {
@@ -24,6 +25,8 @@ function reducer(state: State, action: { type: string }): State {
       return { ...state, activeMenu: 'tours' };
     case 'contact':
       return { ...state, activeMenu: 'contact' };
+    case 'toggleUserDropdown': // New action type to toggle user dropdown
+      return { ...state, showUserDropdown: !state.showUserDropdown };
     default:
       return state;
   }
@@ -57,6 +60,10 @@ const Header: React.FC = () => {
 
   const handleSidebar = () => {
     setSidebar(prevSidebar => !prevSidebar);
+  };
+
+  const toggleUserDropdown = () => { // Function to toggle user dropdown
+    dispatch({ type: 'toggleUserDropdown' });
   };
 
   const currentRoute = usePathname(); // Using usePathname() method
@@ -124,6 +131,25 @@ const Header: React.FC = () => {
                     </Link>
                   </li>
                 </ul>
+                <div className="navbar-icons-2">
+                  <div className="user-dropdown-icon" onClick={toggleUserDropdown}>
+                    <i className="flaticon-user" />
+                    {state.showUserDropdown && ( // Show user dropdown only if showUserDropdown is true
+                    <div className="account-dropdown activeCard">
+                      <ul>
+                      <li className="account-el">
+                              <i className="bx bx-user-pin" />
+                              <Link href="/login">Sign in</Link>
+                            </li>
+                            <li className="account-el">
+                              <i className="bx bxs-user-account" />
+                              <Link href="/guideSignUp">Guide</Link>
+                            </li>
+                      </ul>
+                    </div>
+                    )}
+                    </div>
+                </div>
                 <div className="sidebar-contact">
                   <ul>
                     <li className="sidebar-single-contact">

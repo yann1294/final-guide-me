@@ -4,14 +4,15 @@ import { useRouter } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
+// Define types
 interface Tour {
-  id: string;
+  id: number;
   attributes: {
-    title: string;
     price: number;
-    image: {
-      data: {
-        attributes: {
+    title: string;
+    image?: {
+      data?: {
+        attributes?: {
           url: string;
         };
       };
@@ -24,66 +25,89 @@ const Tours = () => {
   const [data, setData] = useState<Tour[]>([]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // Dummy API call
-        const res = await axios.get('/api/tours');
-        setData(res.data.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchData();
+    // Dummy data for API call
+    const dummyData: Tour[] = [
+      {
+        id: 1,
+        attributes: {
+          price: 100,
+          title: "Tour 1",
+          image: {
+            data: {
+              attributes: {
+                url: "/bassamBeach.jpg"
+              }
+            }
+          }
+        }
+      },
+      {
+        id: 2,
+        attributes: {
+          price: 150,
+          title: "Tour 2",
+          image: {
+            data: {
+              attributes: {
+                url: "/bassamBeach.jpg"
+              }
+            }
+          }
+        }
+      },
+      // Add more dummy data as needed
+    ];
+
+    setData(dummyData);
   }, []);
 
-  const handleClick = (id: string) => {
+  const handleClick = (id: number) => {
     router.push(`/tours/${id}`);
   };
 
   return (
     <div className="package-area pt-120">
-      <div className="container">
-        <div className="row">
-          <div className="col-lg-12 col-md-12 col-sm-12">
-            <div className="section-head pb-45">
-              <h5>Choose Your Tour</h5>
-              <h2>Select The Place You Want To Visit During Your Travel</h2>
-            </div>
+    <div className="container">
+      <div className="row">
+        <div className="col-lg-12 col-md-12 col-sm-12">
+          <div className="section-head pb-45">
+            <h5>Choose Your Tour</h5>
+            <h2>Select The Place You Want To Visit During Your Travel</h2>
           </div>
         </div>
-        <div className="row g-4">
-          {data?.map((tour) => (
-            <div key={tour.id} className="col-lg-4 col-md-6 col-sm-6">
-              <div className="package-card" onClick={() => handleClick(tour.id)}>
-                <div className="package-thumb">
-                  {tour.attributes.image && tour.attributes.image.data && tour.attributes.image.data.attributes && tour.attributes.image.data.attributes.url && (
-                    <Image
-                      src={tour.attributes.image.data.attributes.url}
-                      alt={tour.attributes.title}
-                      className="img-fluid"
-                      width={200}
-                      height={200}
-                    />
-                  )}
+      </div>
+      <div className="row g-4">
+        {data.map((tour) => (
+          <div key={tour.id} className="col-lg-4 col-md-6 col-sm-6">
+            <div className="package-card" onClick={() => handleClick(tour.id)}>
+              <div className="package-thumb">
+                {tour.attributes.image && (
+                  <Image
+                    src={tour.attributes.image?.data?.attributes?.url || ""}
+                    alt={tour.attributes.title}
+                    className="img-fluid"
+                    width={200}
+                    height={200}
+                  />
+                )}
+              </div>
+              <div className="package-details">
+                <div className="package-info">
+                  <h5>
+                    <span>${tour.attributes.price}</span>/Per Person
+                  </h5>
                 </div>
-                <div className="package-details">
-                  <div className="package-info">
-                    <h5>
-                      <span>${tour.attributes.price}</span>
-                      {/* /Per Person */}
-                    </h5>
-                  </div>
-                  <h3>
-                    <i className="flaticon-arrival" />
-                    <Link href={`/tours/${tour.id}`}>{tour.attributes.title}</Link>
-                  </h3>
-                </div>
+                <h3>
+                  <i className="flaticon-arrival" />
+                  <Link href={`/tours/${tour.id}`}>{tour.attributes.title}</Link>
+                </h3>
               </div>
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
     </div>
+  </div>
   );
 };
 
