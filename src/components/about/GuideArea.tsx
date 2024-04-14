@@ -9,9 +9,9 @@ import { useRouter } from 'next/navigation';
 
 // Dummy data for guides
 const dummyGuides = [
-  { id: 1, attributes: { name: 'Guide 1', picture: { data: { attributes: { url: '/dummy-image-1.jpg' } } } } },
-  { id: 2, attributes: { name: 'Guide 2', picture: { data: { attributes: { url: '/dummy-image-2.jpg' } } } } },
-  { id: 3, attributes: { name: 'Guide 3', picture: { data: { attributes: { url: '/dummy-image-3.jpg' } } } } },
+  { id: 1, attributes: { name: 'Guide 1', picture: { data: { attributes: { url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' } } } } },
+  { id: 2, attributes: { name: 'Guide 2', picture: { data: { attributes: { url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' } } } } },
+  { id: 3, attributes: { name: 'Guide 3', picture: { data: { attributes: { url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' } } } } },
 ];
 
 SwiperCore.use([Navigation, Autoplay, EffectFade, Pagination]);
@@ -99,7 +99,7 @@ const GuideArea: React.FC = () => {
             <div className="swiper-wrapper">
               {guides.map((guide) => (
                 <SwiperSlide key={guide.id}>
-                  <div className="guide-card" onClick={() => router.push(`/tours/${guide.id}`)}>
+                  <div className="guide-card" onClick={() => router.push(`/guides/${guide.id}`)}>
                     <div className="guide-thumb">
                       <Image src={guide.attributes.picture.data.attributes.url} alt={guide.attributes.name} className="img-fluid" width={200} height={200} />
                       <div className="guide-info">

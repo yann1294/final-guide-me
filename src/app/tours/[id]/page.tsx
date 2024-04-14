@@ -13,7 +13,7 @@ interface TourData {
       desc: string;
       image?: {
         data?: {
-          attributes?: {
+          attributes?  : {
             url: string;
           };
         };

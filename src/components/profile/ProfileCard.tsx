@@ -36,7 +36,7 @@ const ProfileCard = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="bg-gray-200/70 rounded-xl px-8 py-8 w-full flex gap-y-4 flex-wrap">
+                    <div className="bg-[#F9F8F3]/70 rounded-xl px-8 py-8 w-full flex gap-y-4 flex-wrap">
                         <div className="relative w-full">
                             <p className="text-sm text-gray-700">Display Name</p>
                             <p className="font-semibold">{user.name}</p>
