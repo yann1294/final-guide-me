@@ -7,64 +7,73 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 // Define types
-interface Tour {
-    id: number;
-    attributes: {
-      price: number;
-      title: string;
-      image?: {
-        data?: {
-          attributes?: {
-            url: string;
-          };
-        };
-      };
-    };
-  }
+interface TourDTO {
+  id: string,
+  name: string,
+  location: object,
+  price: number,
+  durationDays: number,
+  discount: number,
+  numberOfSeats: number,
+  description: string,
+  isAvailable: boolean,
+  guide: object,
+  activities: Map<number, object>,
+}
 
 const Tours = () => {
   const router = useRouter();
 
-  const [data, setData] = useState<Tour[]>([]);
+  // const [data, setData] = useState<Tour[]>([]);
+  const [data, setData] = useState<TourDTO[]>([]);
 
   useEffect(() => {
-    // Dummy data for API call
-    const dummyData: Tour[] = [
-      {
-        id: 1,
-        attributes: {
-          price: 100,
-          title: "Tour 1",
-          image: {
-            data: {
-              attributes: {
-                url: "/bassamBeach.jpg"
-              }
-            }
-          }
-        }
-      },
-      {
-        id: 2,
-        attributes: {
-          price: 150,
-          title: "Tour 2",
-          image: {
-            data: {
-              attributes: {
-                url: "/bassamBeach.jpg"
-              }
-            }
-          }
-        }
-      },
-      // Add more dummy data as needed
-    ];
+    // // Dummy data for API call
+    // const dummyData: Tour[] = [
+    //   {
+    //     id: 1,
+    //     attributes: {
+    //       price: 100,
+    //       title: "Tour 1",
+    //       image: {
+    //         data: {
+    //           attributes: {
+    //             url: "/bassamBeach.jpg"
+    //           }
+    //         }
+    //       }
+    //     }
+    //   },
+    //   {
+    //     id: 2,
+    //     attributes: {
+    //       price: 150,
+    //       title: "Tour 2",
+    //       image: {
+    //         data: {
+    //           attributes: {
+    //             url: "/bassamBeach.jpg"
+    //           }
+    //         }
+    //       }
+    //     }
+    //   },
+    //   // Add more dummy data as needed
+    // ];
 
-    setData(dummyData);
+    (async () => {
+      await fetch('http://localhost:3000/tours')
+      .then(response => response.json())
+      .then(response => {
+        console.log(response);
+        setData(response.data);
+      }).catch(error => console.error(error.message));
+    })()
+
+    // setData(dummyData);
   }, []);
 
-  const handleClick = (id: number) => {
+  const handleClick = (id: string) => {
     router.push(`/tours/${id}`);
   };
 
@@ -86,7 +95,7 @@ const Tours = () => {
               <div key={tour.id} className="col-lg-4 col-md-6 col-sm-6">
                 <div className="package-card" onClick={() => handleClick(tour.id)}>
                   <div className="package-thumb">
-                    {tour.attributes.image && (
+                    {/*tour.attributes.image && (
                       <Image
                         src={tour.attributes.image?.data?.attributes?.url || ""}
                         alt={tour.attributes.title}
@@ -94,17 +103,24 @@ const Tours = () => {
                         width={200}
                         height={200}
                       />
-                    )}
+                    )*/}
+                    <Image
+                        src={"https://images.unsplash.com/photo-1495562569060-2eec283d3391?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&dl=johan-mouchet-Z95viY3WaZs-unsplash.jpg"}
+                        alt={tour.name}
+                        className="img-fluid"
+                        width={200}
+                        height={200}
+                      />
                   </div>
                   <div className="package-details">
                     <div className="package-info">
                       <h5>
-                        <span>${tour.attributes.price}</span>/Per Person
+                        <span>${tour.price}</span>/Per Person
                       </h5>
                     </div>
                     <h3>
                       <i className="flaticon-arrival" />
-                      <Link href={`/tours/${tour.id}`}>{tour.attributes.title}</Link>
+                      <Link href={`/tours/${tour.id}`}>{tour.name}</Link>
                     </h3>
                   </div>
                 </div>
