@@ -1,11 +1,13 @@
-"use client"
-import React, { useEffect, useState } from 'react';
-import Preloader from '@/components/common/Preloader';
-import Destinations from '@/components/Home/Destinations';
-import MainBanner from '@/components/Home/MainBanner';
-import Tours from '@/components/Home/Tours';
-import Testimonials from '@/components/Home/Testimonials';
-import FeaturedTours from '@/components/Home/FeaturedTours';
+"use client";
+import React, { useEffect, useState } from "react";
+import Preloader from "@/components/common/Preloader";
+import Destinations from "@/components/Home/Destinations";
+import MainBanner from "@/components/Home/MainBanner";
+import Tours from "@/components/Home/Tours";
+import Testimonials from "@/components/Home/Testimonials";
+import FeaturedTours from "@/components/Home/FeaturedTours";
+
+const ToursList = React.lazy(() => import("@/components/tours/TourList"));
 
 const Home: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -23,11 +25,11 @@ const Home: React.FC = () => {
         <Preloader />
       ) : (
         <>
-          <MainBanner/>
-          <Destinations/>
-          <Tours/>
-          <Testimonials/>
-          <FeaturedTours/>
+          <MainBanner />
+          <Destinations />
+          <Tours />
+          <Testimonials />
+          <FeaturedTours />
         </>
       )}
     </div>

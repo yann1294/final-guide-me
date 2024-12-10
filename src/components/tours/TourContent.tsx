@@ -1,32 +1,28 @@
-import React from 'react';
-import Image from 'next/image';
+import React from "react";
+import Image from "next/image";
 
-interface TourData {
-    id: number;
-    title: string;
-    attributes: {
-      desc: string;
-      image?: {
-        data?: {
-          attributes?: {
-            url: string;
-          };
-        };
-      };
-      duration: number;
-      type: string;
-      groupSize: number;
-      languages: string;
-      // Add other attributes as needed
-    };
-    reviews: number;
-    // Add other properties as needed
-  }
-  
-  
+interface TourDTO {
+  id: string;
+  name: string;
+  description?: string;
+  location: {
+    name: string;
+    city: string;
+    country: string;
+    address?: string;
+  };
+  price: number;
+  durationDays: number;
+  discount: number;
+  numberOfSeats?: number;
+  isAvailable: boolean;
+  guide: string | { name: string };
+  images?: string[];
+  activities?: Record<string, object>;
+}
 
 interface Props {
-  data: TourData | null;
+  data: TourDTO | null;
 }
 
 const TourContent: React.FC<Props> = ({ data }) => {
@@ -38,21 +34,21 @@ const TourContent: React.FC<Props> = ({ data }) => {
     <>
       <div className="package-thumb">
         <Image
-          src={data?.attributes?.image?.data?.attributes?.url || "/bassamBeach.jpg"}
-          alt={data.title}
+          src={data.images?.[0] || "/placeholder.jpg"}
+          alt={data.name}
           width={250}
           height={250}
         />
       </div>
       <div className="package-header">
         <div className="package-title">
-          <h3>{data.title}</h3>
+          <h3>{data.name}</h3>
         </div>
         <div className="pd-review">
           <p>Excellent</p>
           <ul>
             {[...Array(4)].map((_, index) => (
-              <li key={index}>
+              <li key={`star-${index}`}>
                 <i className="bx bxs-star" />
               </li>
             ))}
@@ -60,7 +56,10 @@ const TourContent: React.FC<Props> = ({ data }) => {
               <i className="bx bx-star" />
             </li>
           </ul>
-          <p>{data.reviews} Review</p>
+          <p>
+            {data.activities ? Object.keys(data.activities).length : 0}{" "}
+            Activities
+          </p>
         </div>
       </div>
       <div className="p-short-info">
@@ -68,28 +67,32 @@ const TourContent: React.FC<Props> = ({ data }) => {
           <i className="flaticon-clock" />
           <div className="info-texts">
             <strong>Duration</strong>
-            <p>{data.attributes.duration}hrs</p>
+            <p>{data.durationDays} Days</p>
           </div>
         </div>
         <div className="single-info">
           <i className="flaticon-footprints" />
           <div className="info-texts">
-            <strong>Tour Type</strong>
-            <p>{data.attributes.type}</p>
+            <strong>Location</strong>
+            <p>
+              {data.location.city}, {data.location.country}
+            </p>
           </div>
         </div>
         <div className="single-info">
           <i className="flaticon-traveller" />
           <div className="info-texts">
             <strong>Group Size</strong>
-            <p>{data.attributes.groupSize} People</p>
+            <p>{data.numberOfSeats || "N/A"} People</p>
           </div>
         </div>
         <div className="single-info">
           <i className="flaticon-translate" />
           <div className="info-texts">
-            <strong>Languages</strong>
-            <p>{data.attributes.languages}</p>
+            <strong>Guide</strong>
+            <p>
+              {typeof data.guide === "string" ? data.guide : data.guide.name}
+            </p>
           </div>
         </div>
       </div>

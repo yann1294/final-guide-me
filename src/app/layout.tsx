@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
@@ -16,7 +16,7 @@ import { useEffect } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
- const metadata: Metadata = {
+const metadata: Metadata = {
   title: "GuideMe - Say Yes to a new Adventure",
   description: "GuideMe web app",
 };
@@ -32,12 +32,14 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <Topbar/>
-        <Header/>
-        {children}
-        <Footer/>
-        </body>
+      <body className={`${inter.className} bg-gray-100`}>
+        <div className="min-h-screen flex flex-col">
+          <Topbar />
+          <Header />
+          <main className="flex-grow">{children}</main>
+          <Footer />
+        </div>
+      </body>
     </html>
   );
 }
