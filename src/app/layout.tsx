@@ -13,6 +13,7 @@ import "../../public/assets/css/boxicons.min.css";
 import "../../public/assets/css/style.css";
 import "../../public/assets/css/responsive.css";
 import { useEffect } from "react";
+import { useFetchPackages, useFetchTours } from "@/hooks/useFetchData";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -29,7 +30,8 @@ export default function RootLayout({
   useEffect(() => {
     import("../../public/assets/js/bootstrap.bundle.min");
   }, []);
-
+  useFetchTours(); // Prefetch tours globally
+  useFetchPackages();
   return (
     <html lang="en">
       <body className={`${inter.className} bg-gray-100`}>

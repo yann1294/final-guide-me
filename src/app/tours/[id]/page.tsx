@@ -10,10 +10,8 @@ const TourDetailsContent = React.lazy(
 
 export default function TourDetails() {
   return (
-    <div className="bg-white">
-      <Suspense fallback={<TourDetailsSkeleton />}>
-        <TourDetailsContent />
-      </Suspense>
-    </div>
+    <Suspense fallback={<TourDetailsSkeleton />}>
+      <TourDetailsContent />
+    </Suspense>
   );
 }

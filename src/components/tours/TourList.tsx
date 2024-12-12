@@ -1,58 +1,15 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
-import Breadcrumb from "../common/Breadcrumb";
+import React from "react";
 import { useRouter } from "next/navigation";
-
-// Define the updated TourDTO interface
-interface TourDTO {
-  id: string;
-  name: string;
-  location: {
-    name: string;
-    city: string;
-    country: string;
-    address?: string;
-    location?: {
-      latitude?: number;
-      longitude?: number;
-    };
-  };
-  price: number;
-  durationDays: number;
-  discount: number;
-  numberOfSeats?: number;
-  description?: string;
-  isAvailable: boolean;
-  guide: string | { name: string };
-  images?: string[];
-  activities?: Record<string, object>;
-}
+import useGlobalStore from "@/store/globalStore";
 
 const TourList = () => {
   const router = useRouter();
-  const [data, setData] = useState<TourDTO[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const { tours } = useGlobalStore();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const response = await fetch("http://localhost:3000/tours");
-        const result = await response.json();
-        setData(result.data || []); // Use `data` field from the API response
-      } catch (error) {
-        console.error("Error fetching tours:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  if (loading) return null; // Suspense handles the loading skeleton
+  if (!tours) return null; // Suspense handles the loading skeleton
 
   const handleClick = (id: string) => {
     router.push(`/tours/${id}`);
@@ -60,7 +17,7 @@ const TourList = () => {
 
   return (
     <div className="row g-4">
-      {data.map((tour, index) => (
+      {tours.map((tour, index) => (
         <div key={`${tour.id}-${index}`} className="col-lg-4 col-md-6 col-sm-6">
           <div
             className="package-card cursor-pointer"

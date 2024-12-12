@@ -1,194 +1,76 @@
-"ue client"
-import React, { useState, useEffect } from 'react';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-import 'swiper/css/autoplay';
-import createSlideOptions from '../utils/CreateSlideOptions';
-//@ts-ignore
-import SwiperCore, { Autoplay, EffectFade, Navigation } from 'swiper';
+"use client";
 
-SwiperCore.use([Navigation, Autoplay, EffectFade]);
+import React from "react";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/autoplay";
+import useGlobalStore from "@/store/globalStore";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 const Destinations: React.FC = () => {
+  const { packages } = useGlobalStore();
   const router = useRouter();
-  const [data, setData] = useState<any[]>([]);
-  const destinationSlide = createSlideOptions([
-    {
-      width: 280, slidesPerView: 1,
-      roundLengths: false,
-      pagination: {
-        el: '',
-        clickable: false
-      },
-      breakpoints: {}
-    },
-    {
-      width: 480, slidesPerView: 2, spaceBetween: 10,
-      roundLengths: false,
-      pagination: {
-        el: '',
-        clickable: false
-      },
-      breakpoints: {}
-    },
-    {
-      width: 500, slidesPerView: 2,
-      roundLengths: false,
-      pagination: {
-        el: '',
-        clickable: false
-      },
-      breakpoints: {}
-    },
-    {
-      width: 768, slidesPerView: 2,
-      roundLengths: false,
-      pagination: {
-        el: '',
-        clickable: false
-      },
-      breakpoints: {}
-    },
-    {
-      width: 992, slidesPerView: 2,
-      roundLengths: false,
-      pagination: {
-        el: '',
-        clickable: false
-      },
-      breakpoints: {}
-    },
-    {
-      width: 1200, slidesPerView: 3,
-      roundLengths: false,
-      pagination: {
-        el: '',
-        clickable: false
-      },
-      breakpoints: {}
-    },
-  ]);
 
-  const slider1 = {
-    navigation: {
-      nextEl: '.bannerPrev1',
-      prevEl: '.bannerNext1',
-    },
-    autoplay: true,
-    speed: 1500,
-  };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // Dummy data for API call
-        const dummyData = [
-          {
-            id: 1,
-            attributes: {
-              title: 'Destination 1',
-              image: {
-                data: { attributes: { url: '/bassamBeach.jpg' } },
-              },
-              tours: {
-                data: [
-                  {
-                    attributes: {
-                      title: 'Tour 1',
-                      image: { data: { attributes: { url: '/bassamBeach.jpg' } } },
-                    },
-                  },
-                  {
-                    attributes: {
-                      title: 'Tour 2',
-                      image: { data: { attributes: { url: '/bassamBeach.jpg' } } },
-                    },
-                  },
-                ],
-              },
-            },
-          },
-          // Add more dummy destinations as needed
-        ];
-        setData(dummyData);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchData();
-  }, []);
+  if (!packages || packages.length === 0) {
+    return (
+      <div className="text-center py-16">
+        <h2 className="text-2xl font-bold">No Popular Destinations Found</h2>
+        <p className="text-gray-600">Check back later for updated packages.</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="destinations-area pt-120">
-      <div className="container">
-        <div className="row">
-          <div className="col-lg-12 col-md-12 col-sm-12">
-            <div className="section-head pb-40">
-              <h5>Popular Destinations</h5>
-              <h2>Select Our Best Popular Destinations Packages</h2>
-            </div>
-          </div>
+    <div className="destinations-area py-16 bg-gray-50">
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-10">
+          <h5 className="text-lg font-bold text-[#FF7F47]">
+            Popular Destinations
+          </h5>
+          <h2 className="text-3xl font-bold text-gray-800">
+            Discover Our Best Destinations
+          </h2>
         </div>
-        {data.map((packages) => (
-          <div key={packages.id} className="row">
-            <div className="col-lg-3 col-md-3">
-              <div className="package-slider-wrap">
-                {packages.attributes.image && (
-                  <Image
-                    src={packages.attributes.image.data.attributes.url}
-                    alt={packages.attributes.title}
-                    className="img-fluid"
-                    width={250}
-                    height={250}
-                  />
-                )}
-                <div className="pakage-overlay">
-                  <strong>{packages.attributes.title}</strong>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {packages.map((pkg) => (
+            <Card
+              key={pkg.id}
+              className="hover:shadow-lg transition-shadow duration-300 cursor-pointer"
+              onClick={() => router.push(`/destinations/${pkg.id}`)}
+            >
+              <Image
+                //src={pkg.images?.[0] || "/placeholder.jpg"}
+                src="https://images.unsplash.com/photo-1495562569060-2eec283d3391?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&dl=johan-mouchet-Z95viY3WaZs-unsplash.jpg"
+                alt={pkg.name}
+                width={400}
+                height={250}
+                className="rounded-t-lg object-cover w-full h-48"
+              />
+              <CardHeader>
+                <CardTitle className="text-lg font-semibold text-[#FF7F47]">
+                  {pkg.name}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-sm text-gray-600 mb-4">
+                  {pkg.description.length > 80
+                    ? `${pkg.description.substring(0, 80)}...`
+                    : pkg.description}
                 </div>
-                <div className="slider-arrows text-center d-xl-flex d-none justify-content-between">
-                  <div className="bannerNext1 swiper-btn">
-                    <i className="bx bx-chevron-left"></i>
-                  </div>
-                  <div className="bannerPrev1 swiper-btn">
-                    <i className="bx bx-chevron-right"></i>
-                  </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-[#FF7F47] font-bold">${pkg.price}</span>
+                  <Button size="sm" className="bg-[#6BC8B4]">
+                    Explore
+                  </Button>
                 </div>
-              </div>
-            </div>
-            <div className="col-lg-9 col-md-9">
-              <div className="row destinations-1">
-                <Swiper {...destinationSlide} {...slider1} className="swipper">
-                  <div className="swipper-wrapper">
-                    {packages.attributes.tours.data.map((tour: any, index: number) => (
-                      <SwiperSlide key={index}>
-                        <div className="package-card">
-                          <div className="package-thumb">
-                            {tour.attributes.image && (
-                              <Image
-                                src={tour.attributes.image.data.attributes.url}
-                                alt=""
-                                className="img-fluid"
-                                width={90}
-                                height={90}
-                              />
-                            )}
-                          </div>
-                          <div className="package-details">
-                            <h3 onClick={() => router.push(`/destinations/${packages.id}`)}>
-                              <i className="flaticon-arrival" />
-                              {tour.attributes.title}
-                            </h3>
-                          </div>
-                        </div>
-                      </SwiperSlide>
-                    ))}
-                  </div>
-                </Swiper>
-              </div>
-            </div>
-          </div>
-        ))}
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </div>
     </div>
   );

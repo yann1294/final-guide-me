@@ -1,82 +1,38 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-
-// Define Activity Interface
-interface Activity {
-  id: number;
-  name: string;
-  durationHours: number;
-  location: {
-    name: string;
-    city: string;
-    country: string;
-    address: string;
-    location: {
-      latitude: number;
-      longitude: number;
-    };
-  };
-  accommodation: {
-    type: string;
-    name: string;
-  };
-  transportation: {
-    type: string;
-    arrivalTime: string;
-    departureTime: string;
-  };
-}
-
-// Update the TourDTO Interface
-interface TourDTO {
-  id: string;
-  name: string;
-  location: {
-    name: string;
-    city: string;
-    country: string;
-    address: string;
-    location: {
-      latitude: number;
-      longitude: number;
-    };
-  };
-  price: number;
-  durationDays: number;
-  discount: number;
-  numberOfSeats: number;
-  description: string;
-  isAvailable: boolean;
-  guide: string;
-  activities: Record<string, Activity>; // Update to Record<string, Activity>
-}
+import React from "react";
+import useGlobalStore from "@/store/globalStore";
+import { useFetchTours } from "@/hooks/useFetchData";
 
 const Tours = () => {
   const router = useRouter();
-  const [data, setData] = useState<TourDTO[]>([]);
+  const { tours } = useGlobalStore();
+  const { isLoading, isError } = useFetchTours(); // Fetch tours and populate the global store
   const MAX_TOURS = 6; // Limit the number of tours displayed
-
-  useEffect(() => {
-    const fetchTours = async () => {
-      try {
-        const response = await axios.get("http://localhost:3000/tours");
-        const tours = response.data?.data;
-        if (Array.isArray(tours)) {
-          setData(tours.slice(0, MAX_TOURS)); // Display only the first MAX_TOURS tours
-        }
-      } catch (error) {
-        console.error("Error fetching tours:", error);
-      }
-    };
-
-    fetchTours();
-  }, []);
 
   const handleClick = (id: string) => {
     router.push(`/tours/${id}`);
   };
+
+  if (isLoading) {
+    return (
+      <div className="package-area pt-12">
+        <div className="container">
+          <p className="text-center text-gray-500">Loading tours...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="package-area pt-12">
+        <div className="container">
+          <p className="text-center text-red-500">Failed to load tours.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="package-area pt-12">
@@ -93,7 +49,7 @@ const Tours = () => {
 
         {/* Tours Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {data.map((tour) => (
+          {tours?.slice(0, MAX_TOURS).map((tour) => (
             <div
               key={tour.id}
               className="package-card bg-white shadow-lg rounded-lg overflow-hidden cursor-pointer hover:shadow-xl transition-shadow"
@@ -103,8 +59,7 @@ const Tours = () => {
               <div className="package-thumb">
                 <Image
                   src={
-                    // (tour.activities &&
-                    //   Object.values(tour.activities)[0]?.location?.name) ||
+                    tour.images?.[0] ||
                     "https://images.unsplash.com/photo-1495562569060-2eec283d3391?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&dl=johan-mouchet-Z95viY3WaZs-unsplash.jpg"
                   }
                   alt={tour.name}
@@ -120,9 +75,12 @@ const Tours = () => {
                   <strong>{tour.name}</strong>
                 </h3>
                 <p className="text-gray-600 text-sm mb-4">
-                  {tour.description.length > 80
-                    ? `${tour.description.substring(0, 80)}...`
-                    : tour.description}
+                  {/* Handle undefined description */}
+                  {tour.description
+                    ? tour.description.length > 80
+                      ? `${tour.description.substring(0, 80)}...`
+                      : tour.description
+                    : "No description available."}
                 </p>
                 <div className="flex justify-between items-center">
                   <span className="text-lg font-bold text-orange-500">
