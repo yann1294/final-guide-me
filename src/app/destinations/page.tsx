@@ -9,6 +9,7 @@ import FeaturedTours from "@/components/Home/FeaturedTours";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import DestinationHeader from "@/components/packages/DestinationHeader";
 import DestinationPackage from "@/components/packages/DestinationPackage";
+import Breadcrumb from "@/components/common/Breadcrumb";
 
 const PACKAGES_PER_PAGE = 3;
 
@@ -38,6 +39,7 @@ const Destinations: React.FC = () => {
 
   return (
     <div className="destinations-area py-16 bg-white">
+      <Breadcrumb pageName="Packages" pageTitle="Packages" />
       <div className="container mx-auto px-4">
         <DestinationHeader />
         <div className="space-y-16">

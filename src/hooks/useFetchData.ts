@@ -7,7 +7,7 @@ const fetcher = (url: string) => axios.get(url).then((res) => res.data.data);
 
 export const useFetchTours = () => {
   const setTours = useGlobalStore((state) => state.setTours);
-  const { data, error } = useSWR("http://localhost:3000/tours", fetcher, {
+  const { data, error } = useSWR(process.env.TOUR_URL, fetcher, {
     onSuccess: setTours,
   });
 
@@ -20,7 +20,7 @@ export const useFetchTours = () => {
 
 export const useFetchPackages = () => {
   const setPackages = useGlobalStore((state) => state.setPackages);
-  const { data, error } = useSWR("http://localhost:3000/packages", fetcher, {
+  const { data, error } = useSWR(process.env.PACKAGE_URL, fetcher, {
     onSuccess: setPackages,
   });
 
