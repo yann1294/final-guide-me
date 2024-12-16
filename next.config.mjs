@@ -1,4 +1,8 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+    images: {
+        domains: ['via.placeholder.com','demos.creative-tim.com','images.unsplash.com',"letsenhance.io","example.com"], // Add 'via.placeholder.com' to the list of allowed domains
+      },
+};
 
 export default nextConfig;
