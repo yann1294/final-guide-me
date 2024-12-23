@@ -1,6 +1,15 @@
 // store/globalStore.ts
 import { create } from "zustand";
 
+export interface BookingDTO {
+  id?: string;
+  status: string;
+  bookedOn: Date;
+  tourist: string[];
+  tour?: string;
+  tourPackage?: string;
+}
+
 interface PackageDTO {
   id: string;
   name: string;
@@ -55,15 +64,24 @@ interface TourDTO {
 interface GlobalStore {
   tours: TourDTO[] | null;
   packages: PackageDTO[] | null;
+  bookings: BookingDTO[] | null;
   setTours: (tours: TourDTO[]) => void;
   setPackages: (packages: PackageDTO[]) => void;
+  setBookings: (bookings: BookingDTO[]) => void;
+  addBooking: (booking: BookingDTO) => void;
 }
 
 const useGlobalStore = create<GlobalStore>((set) => ({
   tours: null,
   packages: null,
+  bookings: null,
   setTours: (tours) => set({ tours }),
   setPackages: (packages) => set({ packages }),
+  setBookings: (bookings) => set({ bookings }),
+  addBooking: (booking) =>
+    set((state) => ({
+      bookings: [...(state.bookings || []), booking],
+    })),
 }));
 
 export default useGlobalStore;

@@ -8,12 +8,15 @@ import TourContent from "@/components/tours/TourContent";
 import TourTab from "@/components/tours/TourTab";
 
 import useGlobalStore from "@/store/globalStore";
+import { useRouter } from "next/navigation";
 
 export default function TourDetailsContent() {
   const { id } = useParams(); // Get the tour ID from the URL query parameter
   const { tours } = useGlobalStore();
   // console.log("ID from params:", id);
   const tour = tours?.find((tour) => tour.id === id);
+
+  const router = useRouter();
 
   if (!tour) return null; // Suspense handles the loading skeleton
 
@@ -51,7 +54,10 @@ export default function TourDetailsContent() {
                       <span className="badge bg-danger">Sold Out</span>
                     )}
                   </div>
-                  <div className="col-lg-12">
+                  <div
+                    className="col-lg-12"
+                    onClick={() => router.push(`/booking/${tour.id}`)}
+                  >
                     <input
                       type="submit"
                       value="Book Now"
