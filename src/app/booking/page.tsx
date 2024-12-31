@@ -13,7 +13,7 @@ import { Input } from "reactstrap";
 export default function BookTourPage() {
   const { id } = useParams();
   const { tours } = useFetchTours();
-  const tour = tours?.find((t) => t.id === id);
+  const tour = tours?.find((t: any) => t.id === id);
 
   const [tourists, setTourists] = useState([""]);
   const [isSubmitting, setIsSubmitting] = useState(false);
