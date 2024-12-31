@@ -54,7 +54,7 @@ const GuideProfilePage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-200">
-      <Breadcrumb pageName="Guide Profile" pageTitle={dummyGuideData.name} />
+      {/* <Breadcrumb pageName="Guide Profile" pageTitle={dummyGuideData.name} /> */}
       <main className="container mx-auto px-4 py-8">
         <Card className="w-full overflow-hidden">
           <div className="relative h-64 sm:h-80 lg:h-96">

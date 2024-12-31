@@ -28,6 +28,7 @@
     "axios": "^1.4.0",
     "canvas-confetti": "^1.6.0",
     "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "dayjs": "^1.11.7",
     "font-awesome": "^4.7.0",
     "jquery": "^3.6.3",
@@ -50,7 +51,7 @@
     "styled-components": "^5.2.0",
     "swiper": "^8.4.5",
     "swr": "^2.2.5",
-    "tailwind-merge": "^2.5.5",
+    "tailwind-merge": "^2.6.0",
     "yet-another-react-lightbox": "^2.2.5",
     "zustand": "^5.0.2"
   },
