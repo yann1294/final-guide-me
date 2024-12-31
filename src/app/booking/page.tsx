@@ -3,12 +3,12 @@
 import { useState } from "react";
 import { useParams } from "next/navigation";
 import useGlobalStore from "@/store/globalStore";
-import { useFetchTours } from "@/hooks/useFetchData";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 import { Label } from "reactstrap";
 import { Input } from "reactstrap";
+import { useFetchTours } from "@/hooks/useFetchTours";
 
 export default function BookTourPage() {
   const { id } = useParams();

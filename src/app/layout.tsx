@@ -13,7 +13,8 @@ import "../../public/assets/css/boxicons.min.css";
 import "../../public/assets/css/style.css";
 import "../../public/assets/css/responsive.css";
 import { useEffect } from "react";
-import { useFetchPackages, useFetchTours } from "@/hooks/useFetchData";
+import { useFetchTours } from "@/hooks/useFetchTours";
+import { useFetchPackages } from "@/hooks/useFetchPackages";
 
 const inter = Inter({ subsets: ["latin"] });
 

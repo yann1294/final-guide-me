@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import useGlobalStore from "@/store/globalStore";
-import { useFetchPackages } from "@/hooks/useFetchData";
 import Pagination from "@/components/ui/Pagination";
 import GuideArea from "@/components/about/GuideArea";
 import FeaturedTours from "@/components/Home/FeaturedTours";
@@ -10,6 +9,7 @@ import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import DestinationHeader from "@/components/packages/DestinationHeader";
 import DestinationPackage from "@/components/packages/DestinationPackage";
 import Breadcrumb from "@/components/common/Breadcrumb";
+import { useFetchPackages } from "@/hooks/useFetchPackages";
 
 const PACKAGES_PER_PAGE = 3;
 

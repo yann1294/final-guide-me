@@ -2,12 +2,12 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";
 import useGlobalStore from "@/store/globalStore";
-import { useFetchTours } from "@/hooks/useFetchData";
+import { useFetchTours } from "@/hooks/useFetchTours";
 
 const Tours = () => {
   const router = useRouter();
   const { tours } = useGlobalStore();
-  const { isLoading, isError } = useFetchTours(); // Fetch tours and populate the global store
+  const { isLoading, error: isError } = useFetchTours(); // Fetch tours and populate the global store
   const MAX_TOURS = 6; // Limit the number of tours displayed
 
   const handleClick = (id: string) => {

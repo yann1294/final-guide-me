@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
-import useGlobalStore, { BookingDTO } from "@/store/globalStore";
+import useGlobalStore from "@/store/globalStore";
+import { BookingDTO, TouristBooking } from "@/dto/booking.dto";
 
 interface BookingFormData {
   name: string;
@@ -18,22 +19,35 @@ export const useSubmitBooking = () => {
   const addBooking = useGlobalStore((state) => state.addBooking);
 
   const submitBooking = async (formData: BookingFormData) => {
+    console.log("submitBooking", formData);
     setIsLoading(true);
     setError(null);
     try {
+      // create tourist object
+      let tourist = new Map<string, TouristBooking>();
+      tourist.set("testUser", {
+        bookedOn: new Date().toISOString(),
+        bookingStatus: "completed",
+        paymentStatus: "pending",
+      } as TouristBooking);
+
+      // create booking object
       const bookingDTO: BookingDTO = {
         status: "pending",
-        bookedOn: new Date(),
-        tourist: [formData.name], // Assuming we're booking for a single tourist
+        bookedOn: new Date().toISOString(),
+        tourist: tourist, // Assuming we're booking for a single tourist
         tour: formData.tourId,
         // We're not handling tourPackage in this form, so it's omitted
       };
       const response = await axios.post<{
-        success: boolean;
-        booking: BookingDTO;
-      }>("http://localhost:3000/bookings", bookingDTO);
-      addBooking(response.data.booking);
+        status: string;
+        code: string | number;
+        message: string;
+        data: string[] | object[] | string | object | null;
+      }>("http://localhost:3000/bookings/create", bookingDTO);
+      // addBooking(response.data);
       setIsLoading(false);
+      console.log("response", response);
       return response.data;
     } catch (err) {
       setError(

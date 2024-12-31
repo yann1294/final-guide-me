@@ -95,7 +95,7 @@ export default function BookingPage() {
         title: "Booking Successful",
         description: "Your tour has been booked successfully!",
       });
-      router.push("/bookings"); // Assuming you have a bookings page to redirect to
+      // router.push("/bookings"); // Assuming you have a bookings page to redirect to
     } catch (err) {
       toast({
         title: "Booking Failed",
