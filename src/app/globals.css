@@ -39,7 +39,7 @@ body {
   background-color: rgba(0, 0, 0, 0.2);
 }
 
-input[type="password"] {
+.login-password {
   padding-top: 25px !important;
   padding-bottom: 25px !important;
 }

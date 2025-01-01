@@ -5,11 +5,12 @@ import appwriteService from "@/appwrite/config"
 import useAuth from "@/context/useAuth"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import React, { useState, FormEvent } from "react"
+import React, { useState, FormEvent, FC } from "react"
 import Image from "next/image"
 import Logo from '../../../../public/assets/images/logo2.png';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGoogle, faFacebook } from "@fortawesome/free-brands-svg-icons"
+import { Role } from "@/dto/helper.dto"
 
 // Hardcoded list of countries
 const countries = [
@@ -21,7 +22,7 @@ const countries = [
 ];
 
 
-const SignUp = () => {
+const SignUp: FC<Role> = () => {
     const [formData, setFormData] = useState({
         email: "",
         password: "",

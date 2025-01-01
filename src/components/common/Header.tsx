@@ -23,8 +23,8 @@ function reducer(state: State, action: { type: string }): State {
       return { ...state, activeMenu: 'home' };
     case 'about':
       return { ...state, activeMenu: 'about' };
-    case 'destinations':
-      return { ...state, activeMenu: 'destinations' };
+    case 'packages':
+      return { ...state, activeMenu: 'packages' };
     case 'tours':
       return { ...state, activeMenu: 'tours' };
     case 'contact':
@@ -136,11 +136,11 @@ const Header: React.FC = () => {
                   <li>
                     <Link
                       className={
-                        currentRoute === '/destinations' ? 'active' : ''
+                        currentRoute === '/packages' ? 'active' : ''
                       }
-                      href="/destinations"
+                      href="/packages"
                     >
-                      Destinations
+                      packages
                     </Link>
                   </li>
                   <li>

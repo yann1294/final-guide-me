@@ -3,14 +3,15 @@
 import useAuth from "@/context/useAuth"
 import { useRouter } from "next/navigation"
 import React from "react"
-import Login from "@/components/auth/login/Login"
+import SignUp from "@/components/auth/signup/SignUp"
 
-const TouristLogin = () => {
+const SignupPage: React.FC = () => {
 
     return(
         <section className="px-4 py-10 sm:px-6 sm:py-16 lg:px-8 lg:py-24">
-            <Login userRole={ { name: 'tourist' } } />
+            <SignUp />
         </section>
     )
 }
-export default TouristLogin;
+
+export default SignupPage

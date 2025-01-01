@@ -40,7 +40,7 @@ const Destinations: React.FC = () => {
             <Card
               key={pkg.id}
               className="hover:shadow-lg transition-shadow duration-300 cursor-pointer"
-              onClick={() => router.push(`/destinations/${pkg.id}`)}
+              onClick={() => router.push(`/packages/${pkg.id}`)}
             >
               <Image
                 //src={pkg.images?.[0] || "/placeholder.jpg"}

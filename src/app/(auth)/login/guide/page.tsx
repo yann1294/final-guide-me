@@ -3,7 +3,7 @@
 import useAuth from "@/context/useAuth"
 import { useRouter } from "next/navigation"
 import React from "react"
-import Login from "@/components/auth/Login/Login"
+import Login from "@/components/auth/login/Login"
 
 const TouristLogin = () => {
 
