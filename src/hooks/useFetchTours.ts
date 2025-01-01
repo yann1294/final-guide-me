@@ -1,6 +1,6 @@
 import useSWR from "swr";
 import axios from "axios";
-import useGlobalStore from "@/store/globalStore";
+import useGlobalStore from "@/stores/globalStore";
 import { ResponseDTO } from "@/dto/helper.dto";
 import { TourDTO } from "@/dto/tour.dto";
 

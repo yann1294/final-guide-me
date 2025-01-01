@@ -3,7 +3,6 @@ import { BookingDTO } from "@/dto/booking.dto";
 import { PackageDTO } from "@/dto/package.dto";
 import { TourDTO } from "@/dto/tour.dto";
 import { create } from "zustand";
-import {GuideDTO} from "@/dto/guide.dto"
 
 interface GlobalStore {
   tours: TourDTO[] | null;

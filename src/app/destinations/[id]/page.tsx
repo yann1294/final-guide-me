@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useParams, useRouter } from "next/navigation";
-import useGlobalStore from "@/store/globalStore";
+import useGlobalStore from "@/stores/globalStore";
 import { Button } from "@/components/ui/button";
 
 import RelatedPackages from "@/components/packages/RelatedPackages";

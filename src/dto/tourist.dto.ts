@@ -1,4 +1,4 @@
-import { FileDTO, Role } from "./helper.dto";
+import { FileDTO, Identification, Role } from "./helper.dto";
 
 export type TouristDTO = {
     uid: string;
@@ -11,9 +11,7 @@ export type TouristDTO = {
     accountStatus: string;
     createdAt: string;
     updatedAt: string;
+    identification: Identification;
+    spokenLanguages: string[];
+    availability: boolean;
 }
-
-
-
-
-

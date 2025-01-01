@@ -7,7 +7,7 @@ import Breadcrumb from "@/components/common/Breadcrumb";
 import TourContent from "@/components/tours/TourContent";
 import TourTab from "@/components/tours/TourTab";
 
-import useGlobalStore from "@/store/globalStore";
+import useGlobalStore from "@/stores/globalStore";
 import { useRouter } from "next/navigation";
 
 export default function TourDetailsContent() {

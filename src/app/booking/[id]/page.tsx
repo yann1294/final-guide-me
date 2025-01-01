@@ -2,7 +2,7 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
-import useGlobalStore from "@/store/globalStore";
+import useGlobalStore from "@/stores/globalStore";
 import Breadcrumb from "@/components/common/Breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Input } from "reactstrap";

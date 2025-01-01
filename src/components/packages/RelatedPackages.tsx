@@ -1,7 +1,7 @@
 import { FC } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import useGlobalStore from "@/store/globalStore";
+import useGlobalStore from "@/stores/globalStore";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface RelatedPackagesProps {

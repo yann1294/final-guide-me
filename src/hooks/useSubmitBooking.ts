@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-import useGlobalStore from "@/store/globalStore";
+import useGlobalStore from "@/stores/globalStore";
 import { BookingDTO, TouristBooking } from "@/dto/booking.dto";
 
 interface BookingFormData {

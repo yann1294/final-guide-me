@@ -14,7 +14,7 @@ import "../../public/assets/css/style.css";
 import "../../public/assets/css/responsive.css";
 import { useEffect } from "react";
 import { useFetchTours } from "@/hooks/useFetchTours";
-import { useFetchPackages } from "@/hooks/useFetchPackages";
+import { useFetchPackages } from "@/hooks/usePackages";
 
 const inter = Inter({ subsets: ["latin"] });
 
