@@ -1,31 +1,38 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import useGlobalStore from "@/stores/globalStore";
 import Pagination from "@/components/ui/Pagination";
 import GuideArea from "@/components/about/GuideArea";
 import FeaturedTours from "@/components/Home/FeaturedTours";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
-import DestinationHeader from "@/components/packages/DestinationHeader";
-import DestinationPackage from "@/components/packages/DestinationPackage";
+import PackageHeader from "@/components/packages/PackageHeader";
 import Breadcrumb from "@/components/common/Breadcrumb";
+import DestinationPackage from "@/components/packages/DestinationPackage";
+import usePackageStore from "@/stores/packageStore";
 import { useFetchPackages } from "@/hooks/usePackages";
 
 const PACKAGES_PER_PAGE = 3;
 
-const Destinations: React.FC = () => {
-  const { packages } = useGlobalStore();
-  const { isLoading } = useFetchPackages();
+const Packages: React.FC = () => {
+  const { packages } = usePackageStore();
   const [currentPage, setCurrentPage] = useState(1);
+  const { fetchPackages, loading, error } = useFetchPackages();
 
-  if (isLoading) {
-    return <LoadingSpinner message="Loading Popular Destinations..." />;
+  useEffect(() => {
+    if (packages.length === 0) {
+      fetchPackages();
+    }
+  }, []);
+
+  if (loading) {
+    return <LoadingSpinner message="Loading Popular Packages..." />;
   }
 
   if (!packages || packages.length === 0) {
     return (
       <div className="text-center py-20 text-gray-600 text-xl">
-        No Destinations Available
+        No Packages Available
       </div>
     );
   }
@@ -38,13 +45,13 @@ const Destinations: React.FC = () => {
   );
 
   return (
-    <div className="destinations-area py-16 bg-white">
+    <div className="packages-area py-16 bg-white">
       <Breadcrumb pageName="Packages" pageTitle="Packages" />
       <div className="container mx-auto px-4">
-        <DestinationHeader />
+        <PackageHeader />
         <div className="space-y-16">
           {currentPackages.map((pkg) => (
-            <DestinationPackage key={pkg.id} package={pkg} />
+            <DestinationPackage key={pkg.id as string} pkg={pkg} />
           ))}
         </div>
         <div className="mt-12">
@@ -55,10 +62,10 @@ const Destinations: React.FC = () => {
           />
         </div>
       </div>
-      <GuideArea />
+      {/* <GuideArea /> */}
       <FeaturedTours />
     </div>
   );
 };
 
-export default Destinations;
+export default Packages;

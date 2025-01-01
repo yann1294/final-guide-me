@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 export async function GET(req: Request) {
   try {
     // Send a GET request to the backend API to get all packages
-    const response = await fetch(`${process.env.BACKEND_URL}/packages`);
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/packages`);
 
     // If the response from the backend is not OK, throw an error
     if (!response.ok) {

@@ -4,27 +4,21 @@ import { useRouter } from "next/navigation";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
+import { PackageDTO } from "@/dto/package.dto";
 
 interface DestinationPackageProps {
-  package: {
-    id: string;
-    name: string;
-    description: string;
-    price: number;
-    durationDays: number;
-    tours: string[];
-  };
+  pkg: PackageDTO;
 }
 
 const DestinationPackage: React.FC<DestinationPackageProps> = ({
-  package: pkg,
+  pkg
 }) => {
   const router = useRouter();
 
   return (
     <div>
       <div className="mb-8">
-        <Link href={`/destinations/${pkg.id}`} className="inline-block">
+        <Link href={`/packages/${pkg.id}`} className="inline-block">
           <h3 className="text-2xl font-bold text-[#FF7F47] mb-2 cursor-pointer">
             {pkg.name}
           </h3>

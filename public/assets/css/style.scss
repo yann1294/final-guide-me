@@ -16,7 +16,7 @@ Last update :
 4. Banner area
 5. Find Form Area
 6. Package area
-7. Destinations area
+7. Packages area
 8. Achievement area
 9. Review area
 10. Feature area
@@ -752,7 +752,7 @@ a{
     background: $primary-color;
   }
 }
-.owl-carousel.owl-loaded.owl-drag.destinations-1, .owl-carousel.owl-loaded.owl-drag.destinations-2 {
+.owl-carousel.owl-loaded.owl-drag.packages-1, .owl-carousel.owl-loaded.owl-drag.packages-2 {
   margin-left: 0;
   .owl-stage-outer{
     padding: 0;
@@ -2144,10 +2144,10 @@ input[type="date"] {
 ==============================*/
 
 /* =============================
-    7. Destinations area start
+    7. Packages area start
 ==============================*/
-.destinations-area{
-  .row.owl-carousel.destinations-2.owl-loaded.owl-drag {
+.packages-area{
+  .row.owl-carousel.packages-2.owl-loaded.owl-drag {
     .owl-nav{
       button{
         position: absolute;
@@ -2177,8 +2177,8 @@ input[type="date"] {
     }
   }
 }
-.destinations-area{
-  .row.owl-carousel.destinations-1.owl-loaded.owl-drag {
+.packages-area{
+  .row.owl-carousel.packages-1.owl-loaded.owl-drag {
     .owl-nav{
       button{
         position: absolute;
@@ -2240,7 +2240,7 @@ input[type="date"] {
   }
 }
 /* =============================
-    Destinations area start
+    Packages area start
 ==============================*/
 
 /* =============================

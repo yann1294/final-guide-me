@@ -9,7 +9,7 @@ import RelatedPackages from "@/components/packages/RelatedPackages";
 import PackageDetails from "@/components/packages/PackageDetails";
 import TourList from "@/components/packages/TourList";
 
-const DestinationDetailsPage: React.FC = () => {
+const PackageDetailsPage: React.FC = () => {
   const { id } = useParams();
   const router = useRouter();
   const { packages, tours } = useGlobalStore();
@@ -20,9 +20,9 @@ const DestinationDetailsPage: React.FC = () => {
     return (
       <div className="text-center py-10">
         <h2 className="text-2xl font-semibold">Package Not Found</h2>
-        <p className="text-gray-500">Please return to the destinations page.</p>
-        <Button onClick={() => router.push("/destinations")} className="mt-4">
-          Back to Destinations
+        <p className="text-gray-500">Please return to the packages page.</p>
+        <Button onClick={() => router.push("/packages")} className="mt-4">
+          Back to Packages
         </Button>
       </div>
     );
@@ -57,4 +57,4 @@ const DestinationDetailsPage: React.FC = () => {
   );
 };
 
-export default DestinationDetailsPage;
+export default PackageDetailsPage;

@@ -49,7 +49,7 @@ const TourTab: React.FC<Props> = ({ tour }) => {
                   <table className="table caption-top">
                     <tbody>
                       <tr>
-                        <td>Destination</td>
+                        <td>Package</td>
                         <td>{tour.name}</td>
                       </tr>
                       <tr>

@@ -11,28 +11,28 @@ import useGlobalStore from "@/stores/globalStore";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
-const Destinations: React.FC = () => {
+const Packages: React.FC = () => {
   const { packages } = useGlobalStore();
   const router = useRouter();
 
   if (!packages || packages.length === 0) {
     return (
       <div className="text-center py-16">
-        <h2 className="text-2xl font-bold">No Popular Destinations Found</h2>
+        <h2 className="text-2xl font-bold">No Popular Packages Found</h2>
         <p className="text-gray-600">Check back later for updated packages.</p>
       </div>
     );
   }
 
   return (
-    <div className="destinations-area py-16 bg-gray-50">
+    <div className="packages-area py-16 bg-gray-50">
       <div className="container mx-auto px-4">
         <div className="text-center mb-10">
           <h5 className="text-lg font-bold text-[#FF7F47]">
-            Popular Destinations
+            Popular Packages
           </h5>
           <h2 className="text-3xl font-bold text-gray-800">
-            Discover Our Best Destinations
+            Discover Our Best Packages
           </h2>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -76,4 +76,4 @@ const Destinations: React.FC = () => {
   );
 };
 
-export default Destinations;
+export default Packages;

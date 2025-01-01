@@ -21,7 +21,7 @@ const RelatedPackages: FC<RelatedPackagesProps> = ({ currentPackageId }) => {
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {relatedPackages.map((pkg) => (
-          <Link href={`/destinations/${pkg.id}`} key={pkg.id}>
+          <Link href={`/packages/${pkg.id}`} key={pkg.id}>
             <Card className="h-full hover:shadow-lg transition-shadow duration-300">
               <Image
                 //src={pkg.images?.[0] || "/placeholder.jpg"}

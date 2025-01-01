@@ -1,11 +1,11 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Preloader from "@/components/common/Preloader";
-import Destinations from "@/components/Home/Destinations";
 import MainBanner from "@/components/Home/MainBanner";
 import Tours from "@/components/Home/Tours";
 import Testimonials from "@/components/Home/Testimonials";
 import FeaturedTours from "@/components/Home/FeaturedTours";
+import Packages from "@/components/Home/Packages";
 
 const ToursList = React.lazy(() => import("@/components/tours/TourList"));
 
@@ -26,7 +26,7 @@ const Home: React.FC = () => {
       ) : (
         <>
           <MainBanner />
-          <Destinations />
+          <Packages />
           <Tours />
           <Testimonials />
           <FeaturedTours />

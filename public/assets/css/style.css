@@ -14,7 +14,7 @@ Last update :
 4. Banner area
 5. Find Form Area
 6. Package area
-7. Destinations area
+7. Packages area
 8. Achievement area
 9. Review area
 10. Feature area
@@ -686,13 +686,13 @@ a {
   background: #FF7F47;
 }
 
-.owl-carousel.owl-loaded.owl-drag.destinations-1, .owl-carousel.owl-loaded.owl-drag.destinations-2 {
+.owl-carousel.owl-loaded.owl-drag.packages-1, .owl-carousel.owl-loaded.owl-drag.packages-2 {
   margin-left: 0;
 }
-.owl-carousel.owl-loaded.owl-drag.destinations-1 .owl-stage-outer, .owl-carousel.owl-loaded.owl-drag.destinations-2 .owl-stage-outer {
+.owl-carousel.owl-loaded.owl-drag.packages-1 .owl-stage-outer, .owl-carousel.owl-loaded.owl-drag.packages-2 .owl-stage-outer {
   padding: 0;
 }
-.owl-carousel.owl-loaded.owl-drag.destinations-1 .package-card, .owl-carousel.owl-loaded.owl-drag.destinations-2 .package-card {
+.owl-carousel.owl-loaded.owl-drag.packages-1 .package-card, .owl-carousel.owl-loaded.owl-drag.packages-2 .package-card {
   margin: 20px 0 0 0;
   box-shadow: none;
   border: 1px solid #eee;
@@ -1999,12 +1999,12 @@ header > .header-area .nav-right {
       Package area end
 ==============================*/
 /* =============================
-    7. Destinations area start
+    7. Packages area start
 ==============================*/
-.destinations-area .row.owl-carousel.destinations-2.owl-loaded.owl-drag .owl-nav button {
+.packages-area .row.owl-carousel.packages-2.owl-loaded.owl-drag .owl-nav button {
   position: absolute;
 }
-.destinations-area .row.owl-carousel.destinations-2.owl-loaded.owl-drag .owl-nav button i {
+.packages-area .row.owl-carousel.packages-2.owl-loaded.owl-drag .owl-nav button i {
   text-align: center;
   color: #fff;
   height: 33px;
@@ -2015,19 +2015,19 @@ header > .header-area .nav-right {
   font-size: 28px;
   margin: 0;
 }
-.destinations-area .row.owl-carousel.destinations-2.owl-loaded.owl-drag .owl-nav button.owl-prev {
+.packages-area .row.owl-carousel.packages-2.owl-loaded.owl-drag .owl-nav button.owl-prev {
   top: 18%;
   right: -15.9%;
 }
-.destinations-area .row.owl-carousel.destinations-2.owl-loaded.owl-drag .owl-nav button.owl-next {
+.packages-area .row.owl-carousel.packages-2.owl-loaded.owl-drag .owl-nav button.owl-next {
   top: 18%;
   right: -25%;
 }
 
-.destinations-area .row.owl-carousel.destinations-1.owl-loaded.owl-drag .owl-nav button {
+.packages-area .row.owl-carousel.packages-1.owl-loaded.owl-drag .owl-nav button {
   position: absolute;
 }
-.destinations-area .row.owl-carousel.destinations-1.owl-loaded.owl-drag .owl-nav button i {
+.packages-area .row.owl-carousel.packages-1.owl-loaded.owl-drag .owl-nav button i {
   font-size: 28px;
   line-height: 33px;
   text-align: center;
@@ -2038,11 +2038,11 @@ header > .header-area .nav-right {
   color: #fff;
   margin: 0;
 }
-.destinations-area .row.owl-carousel.destinations-1.owl-loaded.owl-drag .owl-nav button.owl-prev {
+.packages-area .row.owl-carousel.packages-1.owl-loaded.owl-drag .owl-nav button.owl-prev {
   top: 18%;
   left: -25%;
 }
-.destinations-area .row.owl-carousel.destinations-1.owl-loaded.owl-drag .owl-nav button.owl-next {
+.packages-area .row.owl-carousel.packages-1.owl-loaded.owl-drag .owl-nav button.owl-next {
   top: 18%;
   left: -15.9%;
 }
@@ -2078,7 +2078,7 @@ header > .header-area .nav-right {
 }
 
 /* =============================
-    Destinations area start
+    Packages area start
 ==============================*/
 /* =============================
     8. Achievement area start

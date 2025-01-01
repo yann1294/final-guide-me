@@ -10,6 +10,7 @@ export type PackageDTO = {
   isAvailable: boolean;
   guide: string;
   location: PackageLocationDTO;
+  tours: string[];
 }
 
 type PackageLocationDTO = {

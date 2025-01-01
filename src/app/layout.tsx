@@ -15,6 +15,7 @@ import "../../public/assets/css/responsive.css";
 import { useEffect } from "react";
 import { useFetchTours } from "@/hooks/useFetchTours";
 import { useFetchPackages } from "@/hooks/usePackages";
+require("dotenv").config();
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -31,8 +32,8 @@ export default function RootLayout({
   useEffect(() => {
     import("../../public/assets/js/bootstrap.bundle.min");
   }, []);
+  useFetchPackages(); // Prefetch packages globally
   useFetchTours(); // Prefetch tours globally
-  useFetchPackages();
   return (
     <html lang="en">
       <body className={`${inter.className} bg-gray-100`}>
