@@ -1,15 +1,8 @@
+import { TourDTO } from "@/dto/tour.dto";
 import React from "react";
 
-interface Props {
-  tour: {
-    id: string;
-    name: string;
-    description?: string;
-    activities?: Record<string, object>;
-  };
-}
 
-const TourTab: React.FC<Props> = ({ tour }) => {
+const TourTab: React.FC<{tour: TourDTO}> = ({tour}) => {
   return (
     <div className="package-tab">
       <ul className="nav nav-pills" id="pills-tab" role="tablist">

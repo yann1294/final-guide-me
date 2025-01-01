@@ -3,12 +3,12 @@ import { NextResponse } from "next/server";
 
 export async function GET({ params }: { params: { id: string } }) {
   try {
-    // Send a GET request to the backend API to get all packages
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/packages/${ params.id }`);
+    // Send a GET request to the backend API to get all tours
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/tours/${ params.id }`);
 
     // If the response from the backend is not OK, throw an error
     if (!response.ok) {
-      throw new Error("Failed to fetch packages");
+      throw new Error("Failed to fetch tours");
     }
 
     // Parse the response data from the backend

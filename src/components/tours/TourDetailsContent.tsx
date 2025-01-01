@@ -9,10 +9,12 @@ import TourTab from "@/components/tours/TourTab";
 
 import useGlobalStore from "@/stores/globalStore";
 import { useRouter } from "next/navigation";
+import useTourStore from "@/stores/tourStore";
 
 export default function TourDetailsContent() {
   const { id } = useParams(); // Get the tour ID from the URL query parameter
-  const { tours } = useGlobalStore();
+  const { tours } = useTourStore();
+  
   // console.log("ID from params:", id);
   const tour = tours?.find((tour) => tour.id === id);
 

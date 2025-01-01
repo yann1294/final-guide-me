@@ -1,13 +1,22 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import useGlobalStore from "@/stores/globalStore";
+import useTourStore from "@/stores/tourStore";
+import { useFetchTours } from "@/hooks/useTours";
 
 const TourList = () => {
   const router = useRouter();
-  const { tours } = useGlobalStore();
+  const { tours } = useTourStore();
+  const { fetchTours } = useFetchTours();
+
+  useEffect(() => {
+    if (tours.length === 0) {
+      fetchTours();
+    }
+  }, []);
 
   if (!tours) return null; // Suspense handles the loading skeleton
 
@@ -21,7 +30,7 @@ const TourList = () => {
         <div key={`${tour.id}-${index}`} className="col-lg-4 col-md-6 col-sm-6">
           <div
             className="package-card cursor-pointer"
-            onClick={() => handleClick(tour.id)}
+            onClick={() => handleClick(tour.id as string)}
           >
             {/* Thumbnail */}
             <div className="package-thumb">

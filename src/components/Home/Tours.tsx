@@ -1,20 +1,25 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { use, useEffect } from "react";
 import useGlobalStore from "@/stores/globalStore";
-import { useFetchTours } from "@/hooks/useFetchTours";
+import { useFetchTours } from "@/hooks/useTours";
+import useTourStore from "@/stores/tourStore";
 
 const Tours = () => {
   const router = useRouter();
-  const { tours } = useGlobalStore();
-  const { isLoading, error: isError } = useFetchTours(); // Fetch tours and populate the global store
+  const { tours } = useTourStore();
+  const { error, loading, fetchTours } = useFetchTours(); // Fetch tours and populate the global store
   const MAX_TOURS = 6; // Limit the number of tours displayed
+
+  useEffect(() => {
+    if(!tours) fetchTours();
+  }, []);
 
   const handleClick = (id: string) => {
     router.push(`/tours/${id}`);
   };
 
-  if (isLoading) {
+  if (loading) {
     return (
       <div className="package-area pt-12">
         <div className="container">
@@ -24,7 +29,7 @@ const Tours = () => {
     );
   }
 
-  if (isError) {
+  if (error) {
     return (
       <div className="package-area pt-12">
         <div className="container">

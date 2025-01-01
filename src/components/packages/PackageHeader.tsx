@@ -2,7 +2,7 @@ import React from "react";
 
 const PackageHeader: React.FC = () => {
   return (
-    <div className="text-center mb-12 pt-10">
+    <div className="text-center mb-12 pt-80">
       <h5 className="text-lg font-semibold text-[#FF7F47] mb-2">
         Popular Packages
       </h5>

@@ -10,11 +10,12 @@ import { Label } from "reactstrap";
 import { useSubmitBooking } from "@/hooks/useSubmitBooking";
 import { useToast } from "@/components/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
+import useTourStore from "@/stores/tourStore";
 
 export default function BookingPage() {
   const { id } = useParams();
   const router = useRouter();
-  const { tours } = useGlobalStore();
+  const { tours } = useTourStore();
   const tour = tours?.find((tour) => tour.id === id);
   const { submitBooking, isLoading, error } = useSubmitBooking();
   const { toast } = useToast();
@@ -127,7 +128,7 @@ export default function BookingPage() {
             </p>
             <p className="mb-4">
               <strong>Guide:</strong>{" "}
-              {typeof tour.guide === "string" ? tour.guide : tour.guide.name}
+              {typeof tour.guide === "string" ? tour.guide : "tour.guide.name"}
             </p>
             <p className="mb-4">{tour.description}</p>
           </div>

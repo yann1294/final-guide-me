@@ -1,48 +1,54 @@
+type TourLocationDTO = {
+    name: string;
+    city: string;
+    country: string;
+}
+
+type GMGeoPoint = {
+    latitude: number;
+    longitude: number;
+}
+
+type TransportationDTO = {
+    arrivalTime: Date;
+    departureTime: Date;
+    type: string;
+}
+
+type AccommodationDTO = {
+    type: string;
+    name: string;
+}
+
+type ActivityLocationDTO = {
+    name: string;
+    city: string;
+    country: string;
+    address: string;
+    location: GMGeoPoint;
+}
+
 type ActivityDTO = {
     id: number;
     name: string;
     durationHours: number;
-    location: {
-        name: string;
-        city: string;
-        country: string;
-        address: string;
-        location: {
-            latitude: number;
-            longitude: number;
-        };
-    };
-    transportation: {
-        arrivalTime: Date;
-        departureTime: Date;
-        type: string;
-    };
-    accommodation: {
-        type: string;
-        name: string;
-    };
+    location: ActivityLocationDTO;
+    transportation: TransportationDTO;
+    accommodation: AccommodationDTO;
 }
 
-export interface TourDTO {
-    id: string;
+export type TourDTO = {
+    id?: string;
     name: string;
-    location: {
-        name: string;
-        city: string;
-        country: string;
-        address: string;
-        location: {
-            latitude: number;
-            longitude: number;
-        };
-    };
     price: number;
+    date: { _seconds: number; _nanoseconds: number };
+    images?: string[];
     durationDays: number;
     discount: number;
     numberOfSeats: number;
     description: string;
     isAvailable: boolean;
     guide: string;
-    images?: string[];
+    location: TourLocationDTO;
     activities: Map<number, ActivityDTO>;
 }

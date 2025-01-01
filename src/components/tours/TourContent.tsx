@@ -1,35 +1,14 @@
-import React from "react";
-import Image from "next/image";
+import React from 'react';
+import Image from 'next/image';
+import { TourDTO } from '@/dto/tour.dto';
 
-interface Props {
-  tour: {
-    id: string;
-    name: string;
-    description?: string;
-    location: {
-      name: string;
-      city: string;
-      country: string;
-      address?: string;
-    };
-    price: number;
-    durationDays: number;
-    discount: number;
-    numberOfSeats?: number;
-    isAvailable: boolean;
-    guide: string | { name: string };
-    images?: string[];
-    activities?: Record<string, object>;
-  };
-}
-
-const TourContent: React.FC<Props> = ({ tour }) => {
+const TourContent: React.FC<{ tour: TourDTO }> = ({ tour }) => {
   return (
     <div>
       {/* Image Section */}
       <div className="package-thumb mb-4">
         <Image
-          src={tour.images?.[0] || "/placeholder.jpg"}
+          src={tour.images?.[0] || '/placeholder.jpg'}
           alt={tour.name}
           width={400}
           height={300}
@@ -55,7 +34,7 @@ const TourContent: React.FC<Props> = ({ tour }) => {
             </li>
           </ul>
           <p>
-            {tour.activities ? Object.keys(tour.activities).length : 0}{" "}
+            {tour.activities ? Object.keys(tour.activities).length : 0}{' '}
             Activities
           </p>
         </div>
@@ -83,7 +62,7 @@ const TourContent: React.FC<Props> = ({ tour }) => {
           <i className="flaticon-traveller" />
           <div className="info-texts">
             <strong>Group Size</strong>
-            <p>{tour.numberOfSeats || "N/A"} People</p>
+            <p>{tour.numberOfSeats || 'N/A'} People</p>
           </div>
         </div>
         <div className="single-info">
@@ -91,7 +70,7 @@ const TourContent: React.FC<Props> = ({ tour }) => {
           <div className="info-texts">
             <strong>Guide</strong>
             <p>
-              {typeof tour.guide === "string" ? tour.guide : tour.guide.name}
+              {typeof tour.guide === 'string' ? tour.guide : "tour.guide.name"}
             </p>
           </div>
         </div>

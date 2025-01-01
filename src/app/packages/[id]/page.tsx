@@ -8,13 +8,15 @@ import { Button } from "@/components/ui/button";
 import RelatedPackages from "@/components/packages/RelatedPackages";
 import PackageDetails from "@/components/packages/PackageDetails";
 import TourList from "@/components/packages/TourList";
+import usePackageStore from "@/stores/packageStore";
 
 const PackageDetailsPage: React.FC = () => {
   const { id } = useParams();
   const router = useRouter();
-  const { packages, tours } = useGlobalStore();
+  const { packages } = usePackageStore();
+  const { tours } = useGlobalStore();
 
-  const selectedPackage = packages?.find((pkg) => pkg.id === id);
+  const selectedPackage = packages.find((pkg) => pkg.id === id);
 
   if (!selectedPackage) {
     return (
@@ -51,7 +53,7 @@ const PackageDetailsPage: React.FC = () => {
         <TourList tours={relatedTours} />
 
         {/* Related Packages Section */}
-        <RelatedPackages currentPackageId={selectedPackage.id} />
+        <RelatedPackages currentPackageId={selectedPackage.id as string} />
       </div>
     </div>
   );

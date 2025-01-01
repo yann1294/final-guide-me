@@ -10,9 +10,10 @@ import "swiper/css/autoplay";
 import useGlobalStore from "@/stores/globalStore";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import usePackageStore from "@/stores/packageStore";
 
 const Packages: React.FC = () => {
-  const { packages } = useGlobalStore();
+  const { packages } = usePackageStore();
   const router = useRouter();
 
   if (!packages || packages.length === 0) {
@@ -28,7 +29,7 @@ const Packages: React.FC = () => {
     <div className="packages-area py-16 bg-gray-50">
       <div className="container mx-auto px-4">
         <div className="text-center mb-10">
-          <h5 className="text-lg font-bold text-[#FF7F47]">
+          <h5 className="text-lg font-bold text-[#FF7F47] pt-80">
             Popular Packages
           </h5>
           <h2 className="text-3xl font-bold text-gray-800">

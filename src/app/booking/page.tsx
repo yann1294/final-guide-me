@@ -8,11 +8,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 import { Label } from "reactstrap";
 import { Input } from "reactstrap";
-import { useFetchTours } from "@/hooks/useFetchTours";
+import { useFetchTours } from "@/hooks/useTours";
+import useTourStore from "@/stores/tourStore";
 
 export default function BookTourPage() {
   const { id } = useParams();
-  const { tours } = useFetchTours();
+  const { tours } = useTourStore();
   const tour = tours?.find((t: any) => t.id === id);
 
   const [tourists, setTourists] = useState([""]);
