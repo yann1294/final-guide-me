@@ -5,21 +5,12 @@ import { useRouter } from "next/navigation"
 import React from "react"
 import Login from "@/components/auth/Login/Login"
 
-const LoginPage = () => {
-    const router = useRouter();
-    // const { authStatus } = useAuth();
-
-    // if (authStatus) {
-    //     router.replace("/profile");
-    //     return <></>;
-    // }
+const TouristLogin = () => {
 
     return(
         <section className="px-4 py-10 sm:px-6 sm:py-16 lg:px-8 lg:py-24">
-            <Login />
+            <Login userRole={ { name: 'tourist' } } />
         </section>
     )
 }
-
-
-export default LoginPage;
+export default TouristLogin;

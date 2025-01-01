@@ -13,7 +13,7 @@ export async function POST(req: Request) {
       emailAddress: 'johndoe@example.com',
       profilePhoto: 'https://firebasestorage.googleapis.com/v0/b/gmback-206ae.appspot.com/o/profile_photos%2FQCqiRmZZrncdQaav5dHU?alt=media&token=f83fef0d-893f-40c9-8978-fcb962898601',
       role: { name: 'guide' },
-      accountStatus: 'Active',
+      accountStatus: 'active',
       createdAt: '2024-01-01T00:00:00Z',
       updatedAt: '2024-01-01T00:00:00Z',
       identification: {

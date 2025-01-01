@@ -1,7 +1,9 @@
 // hooks/useAuth.ts
 import { useState } from 'react';
 import useAuthStore from '@/stores/authStore';
+import axios from 'axios';
 import { TouristDTO } from '@/dto/tourist.dto';
+import { ResponseDTO, Role } from '@/dto/helper.dto';
 
 export const useAuth = () => {
   const { user, token, isAuthenticated, login, logout, setUser, setToken } = useAuthStore();
@@ -9,30 +11,28 @@ export const useAuth = () => {
   const [error, setError] = useState<string | null>(null);
 
   // Login function
-  const authenticate = async (email: string, password: string) => {
+  const authenticate = async (email: string, password: string, role: Role) => {
     setLoading(true);
     setError(null);
 
     try {
-      // Make API call for login (You can use axios or fetch here)
-      const response = await fetch(`${process.env.BACKEND_URL}/auth/login-dummy`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
+      // Make API call for login
+      const response = await axios.post<ResponseDTO>(
+        `/api/auth/login/${role.name}`,
+        { email, password }
+      );
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Failed to authenticate');
+      // check if the response.data.status is 'success'
+      if (response.data.status !== 'success') {
+        throw new Error(response.data.message);
       }
 
-      // Assuming the response has `user` and `token` properties
-      const loggedInUser: TouristDTO = data.user; // The user response should match the TouristDTO structure
-      const authToken: string = data.token; // Authentication token (JWT)
+      // Parse the response data from the backend
+      const loggedInUser: TouristDTO = response.data.data as TouristDTO;
+      const authToken: string = loggedInUser.uid;
 
+      console.log('User logged in:', loggedInUser);
+      
       // Store user data and token in Zustand store
       login(loggedInUser, authToken);
     } catch (err) {
