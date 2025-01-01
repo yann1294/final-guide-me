@@ -4,6 +4,8 @@ import useAuthStore from '@/stores/authStore';
 import axios from 'axios';
 import { TouristDTO } from '@/dto/tourist.dto';
 import { ResponseDTO, Role } from '@/dto/helper.dto';
+import { GuideDTO } from '@/dto/guide.dto';
+import { AdminDTO } from '@/dto/admin.dto';
 
 export const useAuth = () => {
   const { user, token, isAuthenticated, login, logout, setUser, setToken } = useAuthStore();
@@ -27,12 +29,25 @@ export const useAuth = () => {
         throw new Error(response.data.message);
       }
 
-      // Parse the response data from the backend
-      const loggedInUser: TouristDTO = response.data.data as TouristDTO;
-      const authToken: string = loggedInUser.uid;
+      // Get the user data based on the role
+      let loggedInUser: TouristDTO | AdminDTO | GuideDTO;
+
+      if (role.name === 'tourist') {
+        loggedInUser = response.data.data as TouristDTO;
+      } else if (role.name === 'admin') {
+        loggedInUser = response.data.data as AdminDTO;
+      } else if (role.name === 'guide') {
+        loggedInUser = response.data.data as GuideDTO;
+      } else {
+        // Handle other roles if necessary
+        throw new Error('Unsupported role');
+      }
+
+      // Get the token from the user data
+      const authToken: string = loggedInUser.uid as string;
 
       console.log('User logged in:', loggedInUser);
-      
+
       // Store user data and token in Zustand store
       login(loggedInUser, authToken);
     } catch (err) {

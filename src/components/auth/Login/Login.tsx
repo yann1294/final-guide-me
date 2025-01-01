@@ -17,7 +17,11 @@ const Login: FC<{ userRole: Role }> = ({ userRole }) => {
   return (
     <div className="flex-col items-center justify-center w-full">
       {/* loading spinner when login is in progress */}
-      {loading && <div className="loader-container"><LoadingSpinner message='logging in...' /></div>}
+      {loading && (
+        <div className="loader-container">
+          <LoadingSpinner message="logging in..." />
+        </div>
+      )}
       <div className="error-container flex items-center justify-center w-full">
         {/* Display login error */}
         {(formError || error) && (
@@ -129,22 +133,24 @@ const Login: FC<{ userRole: Role }> = ({ userRole }) => {
                 Sign in
               </button>
             </div>
-            <div className="flex items-center justify-center text-gray-500">
-              <span className="mr-4">Or sign in with</span>
-              <button className="mr-2 bg-white p-2 rounded-full hover:bg-gray-100">
-                <FontAwesomeIcon
-                  icon={faGoogle}
-                  className="text-[#ed9734] hover:text-[#69c4b2]/80"
-                  size="2x"
-                />
-              </button>
-              <button className="p-2 bg-white rounded-full hover:bg-gray-100">
-                <FontAwesomeIcon
-                  icon={faFacebook}
-                  className="text-[#ed9734] hover:text-[#69c4b2]/80"
-                  size="2x"
-                />
-              </button>
+            <div className="flex flex-col items-center justify-center text-gray-500 space-y-4">
+              <div>Or sign in with</div>
+              <div className="flex space-x-2">
+                <button className="bg-white w-12 h-12 rounded-full flex items-center justify-center hover:bg-gray-100">
+                  <FontAwesomeIcon
+                    icon={faGoogle}
+                    className="text-[#ed9734] hover:text-[#69c4b2]/80"
+                    size="2x"
+                  />
+                </button>
+                <button className="bg-white w-12 h-12 rounded-full flex items-center justify-center hover:bg-gray-100">
+                  <FontAwesomeIcon
+                    icon={faFacebook}
+                    className="text-[#ed9734] hover:text-[#69c4b2]/80"
+                    size="2x"
+                  />
+                </button>
+              </div>
             </div>
           </div>
         </form>

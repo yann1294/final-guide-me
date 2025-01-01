@@ -1,15 +1,17 @@
 // stores/authStore.ts
+import { AdminDTO } from '@/dto/admin.dto';
+import { GuideDTO } from '@/dto/guide.dto';
 import { TouristDTO } from '@/dto/tourist.dto';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
 interface AuthStore {
-    user: TouristDTO | null; // Current authenticated user (TouristDTO)
+    user: TouristDTO | GuideDTO | AdminDTO | null; // Current authenticated user (TouristDTO)
     token: string | null; // Authentication token (JWT)
     method: "google" | "email" | null; // Authentication method
     isAuthenticated: boolean; // Whether the user is authenticated
 
-    login: (user: TouristDTO, token: string) => void; // Log the user in
+    login: (user: TouristDTO | GuideDTO | AdminDTO, token: string) => void; // Log the user in
     logout: () => void; // Log the user out
     setUser: (user: TouristDTO) => void; // Set the user data
     setMethod: (method: "google" | "email") => void; // Set the authentication method
@@ -26,7 +28,7 @@ const useAuthStore = create<AuthStore>()(
             isAuthenticated: false,
 
             // Login action to set user and token
-            login: (user: TouristDTO, token: string) =>
+            login: (user: TouristDTO | GuideDTO | AdminDTO, token: string) =>
                 set({
                     user,
                     token,
@@ -44,7 +46,7 @@ const useAuthStore = create<AuthStore>()(
                 }),
 
             // Set user data
-            setUser: (user: TouristDTO) => set({ user }),
+            setUser: (user: TouristDTO | GuideDTO | AdminDTO) => set({ user }),
 
             // Set authentication method
             setMethod: (method: "google" | "email") => set({ method }),

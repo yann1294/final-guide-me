@@ -13,5 +13,4 @@ export type TouristDTO = {
     updatedAt: string;
     identification: Identification;
     spokenLanguages: string[];
-    availability: boolean;
 }
