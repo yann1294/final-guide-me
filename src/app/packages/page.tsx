@@ -12,9 +12,15 @@ import Breadcumb from "@/components/common/Breadcrumb";
 import PackageHeader from "@/components/packages/PackageHeader";
 import Featured from "@/components/Home/FeaturedTours";
 import { SwiperOptions } from "swiper/types";
+import usePackageStore from "@/stores/packageStore";
+import { useRouter } from "next/router";
+import { useFetchPackages } from "@/hooks/usePackages";
 
 
 const Packages: React.FC = () => {
+  const router = useRouter()
+  const {packages} = usePackageStore()
+  const {fetchPackages, loading, error} = useFetchPackages()
   const destinationSlide = {
     slidesPerView: "auto",
     spaceBetween: 20,

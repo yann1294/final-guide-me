@@ -31,6 +31,7 @@ Last update :
 21. Contact Page
 
 */
+
 .filter-container {
   padding: 10px;
   background-color: #304F47;
@@ -161,6 +162,10 @@ hr {
 .error-container {
   position: absolute;
   top: 0;
+}
+
+.crossed-line {
+  text-decoration: line-through;
 }
 
 .signin-image {

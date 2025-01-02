@@ -7,10 +7,12 @@ import ToursSkeleton from "@/components/tours/TourSkeleton";
 import Breadcrumb from "@/components/common/Breadcrumb";
 import useTourStore from "@/stores/tourStore";
 import Filter from "@/components/common/Filter"
+import { useFetchTours } from "@/hooks/useTours";
 
 const ToursList = React.lazy(() => import("../../components/tours/TourList"));
 
 const Tours = () => {
+
   return (
     <div className="bg-white">
       <Breadcrumb pageName="Tours" pageTitle="Tours" />
