@@ -16,7 +16,7 @@ export default function TourPackageContent({ tour }: { tour: TourDTO }) {
   return (
     <>
       <div className="package-thumb">
-        <img src="/assets/images/package/pd-thumb.png" alt="" />
+        <img src={tour.images ? tour.images[0] : ""} alt="" />
       </div>
       <div className="package-header">
         <div className="package-title">

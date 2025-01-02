@@ -10,6 +10,7 @@ import useTourStore from '@/stores/tourStore';
 import { parse } from 'path';
 import { usePathname } from 'next/navigation';
 import { useFetchOneTour } from '@/hooks/useTours';
+import Breadcumb from '@/components/common/Breadcrumb';
 
 const TourDetailsContent = React.lazy(
   () => import('../../../components/tours/TourDetailsContent'),
@@ -43,6 +44,7 @@ export default function TourDetails() {
 
   return (
     <Suspense fallback={<TourDetailsSkeleton />}>
+      <Breadcumb pageName="Tour Details" pageTitle={ tour?.name } />
       {tour ? (
         <>
           <div className="package-details-wrapper pt-120">

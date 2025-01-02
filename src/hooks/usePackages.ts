@@ -3,6 +3,7 @@ import { ResponseDTO } from "@/dto/helper.dto";
 import { PackageDTO } from "@/dto/package.dto";
 import { useState } from "react";
 import usePackageStore from "@/stores/packageStore";
+import { TourDTO } from "@/dto/tour.dto";
 
 export const useCreatePackages = () => {
   const addPackage = usePackageStore((state) => state.addPackage);
@@ -65,5 +66,37 @@ export const useFetchPackages = () => {
   };
 
   return { fetchPackages, loading, error };
+};
+
+export const useFetchPackageTours = () => {
+  const setPackageTours = usePackageStore((state) => state.setPackageTours);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchPackageTours = async (packageId: string) => {
+    setLoading(true);
+    setError(null);
+    try {
+      // Replace with the actual endpoint for fetching packages
+      const response = await axios.get<ResponseDTO>(`/api/packages/${packageId}/tours`);
+      
+      // Check if the response status is 'success'
+      if (response.data.status !== 'success') {
+        console.error(response.data);
+        throw new Error(response.data.message);
+      }
+
+      console.log('Package tour: ', response.data.data);
+      // Persist the fetched packages in Zustand store
+      setPackageTours(packageId, response.data.data as TourDTO[]);
+    } catch (err) {
+      console.error(err);
+      setError(err instanceof Error ? err.message : 'Failed to fetch packages');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { fetchPackageTours, loading, error };
 };
 
