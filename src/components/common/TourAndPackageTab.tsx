@@ -1,5 +1,4 @@
 import React from 'react';
-import destinationCardData from '../../data/destination_card.json';
 import Link from 'next/link';
 import { PackageDTO } from '@/dto/package.dto';
 import { TourDTO } from '@/dto/tour.dto';
@@ -16,6 +15,7 @@ export default function TourPackageTab({
 }) {
   const { tours } = usePackageStore();
   const { setCurrentTour } = useTourStore();
+
   return (
     <>
       <div className="package-tab">
@@ -35,6 +35,7 @@ export default function TourPackageTab({
               Information
             </button>
           </li>
+
           {context === 'tours' && (
             <li className="nav-item" role="presentation">
               <button
@@ -44,7 +45,7 @@ export default function TourPackageTab({
                 data-bs-target="#pills-activities"
                 type="button"
                 role="tab"
-                aria-controls="pills-profile"
+                aria-controls="pills-activities"
                 aria-selected="false"
               >
                 <i className="flaticon-clipboard" />
@@ -52,6 +53,7 @@ export default function TourPackageTab({
               </button>
             </li>
           )}
+
           {context === 'packages' && (
             <li className="nav-item" role="presentation">
               <button
@@ -61,16 +63,16 @@ export default function TourPackageTab({
                 data-bs-target="#pills-tours"
                 type="button"
                 role="tab"
-                aria-controls="pills-contact"
+                aria-controls="pills-tours"
                 aria-selected="false"
               >
-                {' '}
                 <i className="flaticon-gallery" />
                 Tours
               </button>
             </li>
           )}
         </ul>
+
         <div className="tab-content p-tab-content" id="pills-tabContent">
           <div
             className="tab-pane fade show active"
@@ -92,6 +94,7 @@ export default function TourPackageTab({
               </div>
             </div>
           </div>
+
           <div
             className="tab-pane fade"
             id="pills-activities"
@@ -104,65 +107,64 @@ export default function TourPackageTab({
                   <ul className="p-timeline">
                     {context !== 'packages' &&
                       Object.entries((tour as TourDTO).activities).map(
-                        ([activityId, activity], index) => {
-                          return (
-                            <li>
-                              <div className="timeline-index">
-                                <div className="index-circle">
-                                  <h5>
-                                    {(index + 1).toString().padStart(2, '0')}
-                                  </h5>
-                                </div>
-                              </div>
-                              <div className="timeline-content">
+                        ([activityId, activity], index) => (
+                          <li key={activityId}>
+                            <div className="timeline-index">
+                              <div className="index-circle">
                                 <h5>
-                                  Activity {index + 1}: {activity.name}
+                                  {(index + 1).toString().padStart(2, '0')}
                                 </h5>
-                                <strong>
-                                  Duration: {activity.durationHours}{' '}
-                                  {activity.durationHours === 1
-                                    ? 'hour'
-                                    : 'hours'}
-                                </strong>
-                                <ul>
-                                  <li />
-                                  <li>
-                                    <i className="flaticon-arrival" />{' '}
-                                    {activity.location.name},{' '}
-                                    {activity.location.city},{' '}
-                                    {activity.location.country}
-                                  </li>
-                                  <li />
-                                  <li>
-                                    <i className="bx bx-check" />
-                                    Specilaized Bilingual Guide
-                                  </li>
-                                  <li />
-                                  <li>
-                                    <i className="bx bx-check" />
-                                    Private Transport
-                                  </li>
-                                  <li />
-                                  <li>
-                                    <i className="bx bx-check" />
-                                    Entrance Fees
-                                  </li>
-                                  <li />
-                                  <li>
-                                    <i className="bx bx-check" />
-                                    Box Lunch,Water,Dinner and Snacks
-                                  </li>
-                                </ul>
                               </div>
-                            </li>
-                          );
-                        },
+                            </div>
+                            <div className="timeline-content">
+                              <h5>
+                                Activity {index + 1}: {activity.name}
+                              </h5>
+                              <strong>
+                                Duration: {activity.durationHours}{' '}
+                                {activity.durationHours === 1
+                                  ? 'hour'
+                                  : 'hours'}
+                              </strong>
+                              <ul>
+                                <li />
+                                <li>
+                                  <i className="flaticon-arrival" />
+                                  {activity.location.name},{' '}
+                                  {activity.location.city},{' '}
+                                  {activity.location.country}
+                                </li>
+                                <li />
+                                <li>
+                                  <i className="bx bx-check" />
+                                  Specialized Bilingual Guide
+                                </li>
+                                <li />
+                                <li>
+                                  <i className="bx bx-check" />
+                                  Private Transport
+                                </li>
+                                <li />
+                                <li>
+                                  <i className="bx bx-check" />
+                                  Entrance Fees
+                                </li>
+                                <li />
+                                <li>
+                                  <i className="bx bx-check" />
+                                  Box Lunch, Water, Dinner, and Snacks
+                                </li>
+                              </ul>
+                            </div>
+                          </li>
+                        ),
                       )}
                   </ul>
                 </div>
               </div>
             </div>
           </div>
+
           <div
             className="tab-pane fade"
             id="pills-tours"
@@ -171,62 +173,58 @@ export default function TourPackageTab({
           >
             <div className="tab-content-2">
               <div className="row">
-                {tours.get(tour.id as string)?.map((tour) => {
-                  return (
-                    <div key={tour.id} className="col-lg-4 col-md-6 col-sm-6">
-                      <Link
-                        onClick={() => setCurrentTour(tour)}
-                        href={`/tours/${tour.id}`}
-                      >
-                        <div className="package-card">
-                          <div className="package-thumb">
-                            <img
-                              src={tour.images ? tour.images[0] : ''}
-                              alt=""
-                              className="img-fluid"
-                            />
+                {tours.get(tour.id as string)?.map((tour) => (
+                  <div key={tour.id} className="col-lg-4 col-md-6 col-sm-6">
+                    <Link
+                      onClick={() => setCurrentTour(tour)}
+                      href={`/tours/${tour.id}`}
+                    >
+                      <div className="package-card">
+                        <div className="package-thumb">
+                          <img
+                            src={tour.images ? tour.images[0] : ''}
+                            alt=""
+                            className="img-fluid"
+                          />
+                        </div>
+                        <div className="package-details">
+                          <div className="resource-name text-black">
+                            {tour.name}
                           </div>
-                          <div className="package-details">
-                            <div className="resource-name text-black">
-                              {tour.name}
-                            </div>
-                            <div className="resource-location">
-                              <i className="flaticon-arrival" />
-                              <Link
-                                style={{ fontSize: 'small' }}
-                                href={`/tours/${tour.id}`}
-                              >
-                                &nbsp;{tour.location.name}, {tour.location.city}
-                                , {tour.location.country}
-                              </Link>
-                            </div>
-                            <div className="card-foot d-flex justify-content-between">
-                              {/* tour availability */}
-                              {tour.isAvailable && (
-                                <div className="card-chip package-availability">
-                                  Available
-                                </div>
-                              )}
-
-                              {!tour.isAvailable && (
-                                <div className="card-chip package-availability card-chip-not-available">
-                                  Available
-                                </div>
-                              )}
-                              <div className="card-chip number-of-seats">
-                                {tour.numberOfSeats}{' '}
-                                {tour.numberOfSeats === 1 ? 'seat' : 'seats'}
+                          <div className="resource-location">
+                            <i className="flaticon-arrival" />
+                            <Link
+                              style={{ fontSize: 'small' }}
+                              href={`/tours/${tour.id}`}
+                            >
+                              &nbsp;{tour.location.name}, {tour.location.city},{' '}
+                              {tour.location.country}
+                            </Link>
+                          </div>
+                          <div className="card-foot d-flex justify-content-between">
+                            {/* Tour availability */}
+                            {tour.isAvailable ? (
+                              <div className="card-chip package-availability">
+                                Available
                               </div>
-                              <div className="card-chip date">
-                                {convertSecondsToDate(tour.date._seconds)}
+                            ) : (
+                              <div className="card-chip package-availability card-chip-not-available">
+                                Not Available
                               </div>
+                            )}
+                            <div className="card-chip number-of-seats">
+                              {tour.numberOfSeats}{' '}
+                              {tour.numberOfSeats === 1 ? 'seat' : 'seats'}
+                            </div>
+                            <div className="card-chip date">
+                              {convertSecondsToDate(tour.date._seconds)}
                             </div>
                           </div>
                         </div>
-                      </Link>
-                    </div>
-                  );
-                })}
+                      </div>
+                    </Link>
+                  </div>
+                ))}
               </div>
             </div>
           </div>

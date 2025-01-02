@@ -11,6 +11,9 @@ import { parse } from 'path';
 import { usePathname } from 'next/navigation';
 import { useFetchOneTour } from '@/hooks/useTours';
 import Breadcumb from '@/components/common/Breadcrumb';
+import { useCreateStripeOrder } from '@/hooks/useBookings';
+import { PaymentDTO } from '@/dto/payment.dto';
+import useAuthStore from '@/stores/authStore';
 
 const TourDetailsContent = React.lazy(
   () => import('../../../components/tours/TourDetailsContent'),
@@ -22,6 +25,12 @@ export default function TourDetails() {
   const [tax, setTax] = useState<number>(23);
   const pathName = usePathname();
   const { fetchOneTour, loading, error } = useFetchOneTour();
+  const { user } = useAuthStore();
+  const {
+    createStripeOrder,
+    loading: isCreatingOrder,
+    error: createOrderError,
+  } = useCreateStripeOrder();
 
   useEffect(() => {
     const fetchCurrentTour = async () => {
@@ -44,7 +53,7 @@ export default function TourDetails() {
 
   return (
     <Suspense fallback={<TourDetailsSkeleton />}>
-      <Breadcumb pageName="Tour Details" pageTitle={ tour?.name } />
+      <Breadcumb pageName="Tour Details" pageTitle={tour?.name} />
       {tour ? (
         <>
           <div className="package-details-wrapper pt-120">
@@ -52,7 +61,7 @@ export default function TourDetails() {
               <div className="row">
                 <div className="col-lg-8">
                   <div className="package-details">
-                    <TourPackageContent context={"tours"} tour={tour} />
+                    <TourPackageContent context={'tours'} tour={tour} />
                     <TourPackageTab tour={tour} context={'tours'} />
                   </div>
                 </div>
@@ -61,7 +70,6 @@ export default function TourDetails() {
                     <div className="row">
                       <div className="col-lg-12 col-md-6">
                         <div className="p-sidebar-form">
-                          <form>
                             <h5 className="package-d-head">Book This Tour</h5>
                             <hr />
                             <div className="row">
@@ -126,13 +134,29 @@ export default function TourDetails() {
                               </div>
                               <hr />
                               <div className="col-lg-12">
-                                <input type="submit" value="Pay with stripe" />
+                                <input
+                                  onClick={async () => {
+                                    await createStripeOrder({
+                                      gateway: 'stripe',
+                                      amount:
+                                        numberOfPeople *
+                                        (tour.price +
+                                          tax -
+                                          tour.price * (tour.discount / 100)),
+                                      currency: 'USD',
+                                      userId: user?.uid,
+                                      createdAt: new Date().toISOString(),
+                                      updatedAt: new Date().toISOString(),
+                                    } as PaymentDTO);
+                                  }}
+                                  type="submit"
+                                  value="Pay with stripe"
+                                />
                               </div>
                               <div className="col-lg-12">
                                 <input type="submit" value="Pay with Paypal" />
                               </div>
                             </div>
-                          </form>
                         </div>
                       </div>
                       <div className="col-lg-12 col-md-6">
