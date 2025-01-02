@@ -28,7 +28,7 @@ type ActivityLocationDTO = {
     location: GMGeoPoint;
 }
 
-type ActivityDTO = {
+export type ActivityDTO = {
     id: number;
     name: string;
     durationHours: number;

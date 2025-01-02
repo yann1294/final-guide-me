@@ -140,7 +140,7 @@ export default function TourDetails() {
         </div>
       </div>
       <div className="related-section">
-        <Tour context={"package-details"} />
+        <Tour context={"tour-details"} />
       </div>
     </Suspense>
   );

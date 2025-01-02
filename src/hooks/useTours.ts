@@ -43,7 +43,7 @@ export const useFetchTours = () => {
       // Persist the fetched tours in Zustand store
       setTours(response.data.data as TourDTO[]);
     } catch (err) {
-      console.error(err);
+      console.error("Error: ", err);
       setError(err instanceof Error ? err.message : 'Failed to fetch tours');
     } finally {
       setLoading(false);
@@ -52,3 +52,36 @@ export const useFetchTours = () => {
 
   return { fetchTours, loading, error };
 };
+
+export const useFetchOneTour = () => {
+  const setCurrentTour = useTourStore((state) => state.setCurrentTour);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchOneTour = async (tourId: string) => {
+    setLoading(true);
+    setError(null);
+    console.log("Fetching one tour ", tourId);
+    try {
+      // Replace with the actual endpoint for fetching tours
+      const response = await axios.get<ResponseDTO>(`/api/tours/${tourId}`);
+      
+      // Check if the response status is 'success'
+      if (response.data.status !== 'success') {
+        console.error(response.data);
+        throw new Error(response.data.message);
+      }
+
+      // Persist the fetched tours in Zustand store
+      setCurrentTour(response.data.data as TourDTO);
+    } catch (err) {
+      console.error("Error: ", err);
+      setError(err instanceof Error ? err.message : 'Failed to fetch tours');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { fetchOneTour, loading, error };
+};
+

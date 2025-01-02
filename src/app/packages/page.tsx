@@ -138,9 +138,7 @@ const Packages: React.FC = () => {
               <div className="row destinations-1">
                 <Swiper {...destinationSlide}modules={[Navigation, Autoplay, EffectFade]} className="swipper">
                   <div className="swipper-wrapper">
-                    {destinationCardData.slice(0, 4).map((data) => {
-                      const { id, image, title, price } = data;
-                      return (
+                    
                         <SwiperSlide key={id}>
                           <div className="package-card">
                             <div className="package-thumb">

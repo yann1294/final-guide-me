@@ -3,16 +3,19 @@ import { create } from "zustand";
 
 interface TourStore {
   tours: TourDTO[];  // Array to store all the tours
+  currentTour: TourDTO | null;  // Store the current tour being viewed
 
   setTours: (tours: TourDTO[]) => void;   // Set all tours from an external source (e.g., API)
   addTour: (tour: TourDTO) => void;            // Add a new tour
   updateTour: (updatedTour: TourDTO) => void;  // Update an existing tour
   cancelTour: (id: string) => void;              // Cancel a tour by its ID
+  setCurrentTour: (tour: TourDTO) => void;       // Set the current tour being viewed
 }
 
 // Define the Zustand store
 const useTourStore = create<TourStore>((set) => ({
   tours: [], // Initialize with an empty array
+currentTour: null, // Initialize with null
 
   // Set all tours
   setTours: (tours: TourDTO[]) => set({ tours }),
@@ -34,6 +37,7 @@ const useTourStore = create<TourStore>((set) => ({
     set((state) => ({
       tours: state.tours.filter((tour) => tour.id !== id),
     })),
+    setCurrentTour: (tour: TourDTO) => set({ currentTour: tour }),
 }));
 
 export default useTourStore;

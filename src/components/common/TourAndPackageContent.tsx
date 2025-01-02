@@ -1,58 +1,103 @@
-import Link from 'next/link'
-import React from 'react'
+import { TourDTO } from '@/dto/tour.dto';
+import useTourStore from '@/stores/tourStore';
+import { ImagesIcon } from 'lucide-react';
+import Link from 'next/link';
+import React, { useState } from 'react';
+import Lightbox, { SlideImage } from 'yet-another-react-lightbox';
+import 'yet-another-react-lightbox/styles.css';
+import Fullscreen from 'yet-another-react-lightbox/plugins/fullscreen';
 
-export default function TourPackageContent() {
+export default function TourPackageContent({ tour }: { tour: TourDTO }) {
+  const [isOpening, setOpening] = useState({
+    openingState: false,
+    openingIndex: 0,
+  });
+
   return (
     <>
-    <div className="package-thumb">
-            <img src="/assets/images/package/pd-thumb.png" alt="" />
+      <div className="package-thumb">
+        <img src="/assets/images/package/pd-thumb.png" alt="" />
+      </div>
+      <div className="package-header">
+        <div className="package-title">
+          <h3>{tour.name}</h3>
+          <strong>
+            <i className="flaticon-arrival" />
+            &nbsp;
+            {tour.location.name}, {tour.location.city}, {tour.location.country}
+          </strong>
+        </div>
+        <div
+          title="Click to view tour photos"
+          onClick={() => setOpening({ openingState: true, openingIndex: 0 })}
+          className="pd-review flex justify-between flex-col"
+          style={{ alignItems: 'end' }}
+        >
+          <div>
+            <p>Click to view tour photos</p>
           </div>
-          <div className="package-header">
-            <div className="package-title">
-              <h3>Western Express Northbound</h3>
-              <strong><i className="flaticon-arrival" />&nbsp;
-                Mount Dtna, Spain
-              </strong>
-            </div>
-            <div className="pd-review">
-              <p>Price</p>
-              <ul>
-                <li><i className="bx bxs-accounts" /></li>
-              </ul>
-              <p>John Doe</p>
-              <Link href="/package-details">View Profile</Link>
-            </div>
+          <div>
+            <ImagesIcon color="#ED9734" size={40} />
           </div>
-          <div className="p-short-info">
-            <div className="single-info">
-              <i className="flaticon-clock" />
-              <div className="info-texts">
-                <strong>Duration</strong>
-                <p>Daily Tour</p>
-              </div>
-            </div>
-            <div className="single-info">
-              <i className="flaticon-footprints" />
-              <div className="info-texts">
-                <strong>Tour Type</strong>
-                <p>4 Days</p>
-              </div>
-            </div>
-            <div className="single-info">
-              <i className="flaticon-traveller" />
-              <div className="info-texts">
-                <strong>Seats</strong>
-                <p>30 People</p>
-              </div>
-            </div>
-            <div className="single-info">
-              <i className="flaticon-translate" />
-              <div className="info-texts">
-                <strong>Languages</strong>
-                <p>Any Language</p>
-              </div>
-            </div>
-          </div>   
+        </div>
+      </div>
+      <div className="p-short-info">
+        <div className="single-info">
+          <i className="flaticon-clock" />
+          <div className="info-texts">
+            <strong>Duration</strong>
+            <p>
+              {tour.durationDays} {tour.durationDays === 1 ? 'day' : 'days'}
+            </p>
+          </div>
+        </div>
+        <div className="single-info">
+          <i className="flaticon-footprints" />
+          <div className="info-texts">
+            <strong>Type</strong>
+            <p>Tour</p>
+          </div>
+        </div>
+        <div className="single-info">
+          <i className="flaticon-traveller" />
+          <div className="info-texts">
+            <strong>Seats</strong>
+            <p>
+              {tour.numberOfSeats} {tour.numberOfSeats === 1 ? 'seat' : 'seats'}
+            </p>
+          </div>
+        </div>
+        <div className="single-info">
+          <i className="flaticon-translate" />
+          <div className="info-texts">
+            <strong>Languages</strong>
+            <p>Any Language</p>
+          </div>
+        </div>
+      </div>
+      <Lightbox
+        className="img-fluid"
+        open={isOpening.openingState}
+        plugins={[Fullscreen]}
+        index={isOpening.openingIndex}
+        close={() => setOpening({ openingState: false, openingIndex: 0 })}
+        styles={{
+          container: {
+            backgroundColor: 'rgba(0, 0, 0, .9)',
+            cursor: 'pointer',
+          },
+        }}
+        slides={
+          tour.images
+            ? tour.images.map(
+                (image) =>
+                  ({
+                    src: image,
+                  } as SlideImage),
+              )
+            : undefined
+        }
+      />
     </>
-  )
+  );
 }

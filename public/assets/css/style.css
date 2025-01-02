@@ -32,6 +32,14 @@ Last update :
 
 */
 
+.header-area {
+  border-bottom: 1px solid rgba(213, 213, 213, 0.3) !important;
+}
+
+.pd-review:hover {
+  cursor: pointer;
+}
+
 .filter-container {
   padding: 10px;
   background-color: #304F47;

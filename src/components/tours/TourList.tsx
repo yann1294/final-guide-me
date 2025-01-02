@@ -10,8 +10,7 @@ import packageCardData from '../../data/package_grid.json';
 import { convertSecondsToDate } from '@/lib/utils/utils';
 
 const TourList = () => {
-  const router = useRouter();
-  const { tours } = useTourStore();
+  const { tours, setCurrentTour } = useTourStore();
   const { fetchTours, loading, error } = useFetchTours();
 
   useEffect(() => {
@@ -23,17 +22,13 @@ const TourList = () => {
 
   if (!tours) return null; // Suspense handles the loading skeleton
 
-  const handleClick = (id: string) => {
-    router.push(`/tours/${id}`);
-  };
-
   return (
     <div className="container">
       <div className="row g-4">
         {tours.map((tour) => {
           return (
             <div key={tour.id} className="col-lg-4 col-md-6 col-sm-6">
-              <Link href={`/tours/${tour.id}`}>
+              <Link onClick={() => setCurrentTour(tour)} href={`/tours/${tour.id}`}>
               <div className="package-card">
                 <div className="package-thumb">
                   <img
@@ -51,7 +46,7 @@ const TourList = () => {
                           <span className="text-danger crossed-line">${tour.price}</span>
                           &nbsp;&nbsp;
                           <span>
-                            ${tour.price - tour.price * tour.discount}
+                            ${tour.price - (tour.price * (tour.discount / 100))}
                           </span>
                           /Per Person
                         </>
@@ -64,7 +59,7 @@ const TourList = () => {
                         </>
                       )}
                     </h5>
-                    <div className="duration">{tour.durationDays} {tour.durationDays === 1 ? "day" : "days"}</div>
+                    <div className="duration text-black">{tour.durationDays} {tour.durationDays === 1 ? "day" : "days"}</div>
                   </div>
                   <div className="resource-name text-black">{tour.name}</div>
                   <div className="resource-location">
