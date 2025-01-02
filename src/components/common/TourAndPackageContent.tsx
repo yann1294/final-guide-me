@@ -6,8 +6,9 @@ import React, { useState } from 'react';
 import Lightbox, { SlideImage } from 'yet-another-react-lightbox';
 import 'yet-another-react-lightbox/styles.css';
 import Fullscreen from 'yet-another-react-lightbox/plugins/fullscreen';
+import { PackageDTO } from '@/dto/package.dto';
 
-export default function TourPackageContent({ tour }: { tour: TourDTO }) {
+export default function TourPackageContent({ tour, context }: { tour?: TourDTO | PackageDTO, context: "packages" | "tours" }) {
   const [isOpening, setOpening] = useState({
     openingState: false,
     openingIndex: 0,
@@ -16,15 +17,15 @@ export default function TourPackageContent({ tour }: { tour: TourDTO }) {
   return (
     <>
       <div className="package-thumb">
-        <img src={tour.images ? tour.images[0] : ""} alt="" />
+        <img src={tour?.images ? tour?.images[0] : ""} alt="" />
       </div>
       <div className="package-header">
         <div className="package-title">
-          <h3>{tour.name}</h3>
+          <h3>{tour?.name}</h3>
           <strong>
             <i className="flaticon-arrival" />
             &nbsp;
-            {tour.location.name}, {tour.location.city}, {tour.location.country}
+            {tour?.location.name}, {tour?.location.city}, {tour?.location.country}
           </strong>
         </div>
         <div
@@ -47,7 +48,7 @@ export default function TourPackageContent({ tour }: { tour: TourDTO }) {
           <div className="info-texts">
             <strong>Duration</strong>
             <p>
-              {tour.durationDays} {tour.durationDays === 1 ? 'day' : 'days'}
+              {tour?.durationDays} {tour?.durationDays === 1 ? 'day' : 'days'}
             </p>
           </div>
         </div>
@@ -55,7 +56,7 @@ export default function TourPackageContent({ tour }: { tour: TourDTO }) {
           <i className="flaticon-footprints" />
           <div className="info-texts">
             <strong>Type</strong>
-            <p>Tour</p>
+            <p>{context === "tours" ? "Tour" : "Package"}</p>
           </div>
         </div>
         <div className="single-info">
@@ -63,7 +64,7 @@ export default function TourPackageContent({ tour }: { tour: TourDTO }) {
           <div className="info-texts">
             <strong>Seats</strong>
             <p>
-              {tour.numberOfSeats} {tour.numberOfSeats === 1 ? 'seat' : 'seats'}
+              {tour?.numberOfSeats} {tour?.numberOfSeats === 1 ? 'seat' : 'seats'}
             </p>
           </div>
         </div>
@@ -88,8 +89,8 @@ export default function TourPackageContent({ tour }: { tour: TourDTO }) {
           },
         }}
         slides={
-          tour.images
-            ? tour.images.map(
+          tour?.images
+            ? tour?.images.map(
                 (image) =>
                   ({
                     src: image,

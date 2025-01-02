@@ -52,7 +52,7 @@ export default function TourDetails() {
               <div className="row">
                 <div className="col-lg-8">
                   <div className="package-details">
-                    <TourPackageContent tour={tour} />
+                    <TourPackageContent context={"tours"} tour={tour} />
                     <TourPackageTab tour={tour} context={'tours'} />
                   </div>
                 </div>

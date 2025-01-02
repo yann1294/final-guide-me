@@ -100,3 +100,35 @@ export const useFetchPackageTours = () => {
   return { fetchPackageTours, loading, error };
 };
 
+
+export const useFetchOnePackage = () => {
+  const setCurrentPackage = usePackageStore((state) => state.setCurrentPackage);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchOnePackage = async (packageId: string) => {
+    setLoading(true);
+    setError(null);
+    console.log("Fetching one package ", packageId);
+    try {
+      // Replace with the actual endpoint for fetching packages
+      const response = await axios.get<ResponseDTO>(`/api/packages/${packageId}`);
+      
+      // Check if the response status is 'success'
+      if (response.data.status !== 'success') {
+        console.error(response.data);
+        throw new Error(response.data.message);
+      }
+
+      // Persist the fetched tours in Zustand store
+      setCurrentPackage(response.data.data as PackageDTO);
+    } catch (err) {
+      console.error("Error: ", err);
+      setError(err instanceof Error ? err.message : 'Failed to fetch tours');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { fetchOnePackage, loading, error };
+};

@@ -76,14 +76,10 @@ const Packages: React.FC = () => {
         {/* packages */}
         {packages.map((packageObj, index) => {
           return (
-            <a
-              key={index}
-              href={`/packages/${packageObj.id}`}
-              className="row wow fadeInUp animated"
-            >
+            <div className="row wow fadeInUp animated">
               <div className="col-lg-3 col-md-3">
-                <div
-                  // style={{ height: '372px' }}
+                <a
+                href={`/packages/${packageObj.id}`}
                   className="package-slider-wrap"
                 >
                   <img
@@ -164,7 +160,7 @@ const Packages: React.FC = () => {
                       {convertSecondsToDate(30001897)}
                     </div>
                   </div>
-                </div>
+                </a>
               </div>
               <div className="col-lg-9 col-md-9">
                 <div className="row destinations-1">
@@ -184,13 +180,15 @@ const Packages: React.FC = () => {
                         return (
                           <SwiperSlide key={tour.id}>
                             <div className="package-card">
-                              <div className="package-thumb">
+                              <a 
+                              href={`/tours/${tour.id}`}
+                              className="package-thumb">
                                 <img
                                   src={tour.images ? tour.images[0] : ''}
                                   alt=""
                                   className="img-fluid"
                                 />
-                              </div>
+                              </a>
                               <div className="package-details">
                                 <div className="package-info">
                                   <h5>
@@ -269,7 +267,7 @@ const Packages: React.FC = () => {
                   </Swiper>
                 </div>
               </div>
-            </a>
+            </div>
           );
         })}
       </div>
