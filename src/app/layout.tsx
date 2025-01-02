@@ -45,8 +45,11 @@ export default function RootLayout({
           <Topbar />
           <Header />
           <main className="flex-grow">{children}</main>
+          <div className="spacer" style={{height: "50px"}}></div>
           <Footer />
         </div>
+        <script src="/js/wow.min.js"></script>
+        <script>new WOW().init();</script>
       </body>
     </html>
   );

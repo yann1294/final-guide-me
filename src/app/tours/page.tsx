@@ -6,6 +6,7 @@ import React, { Suspense, useEffect } from "react";
 import ToursSkeleton from "@/components/tours/TourSkeleton";
 import Breadcrumb from "@/components/common/Breadcrumb";
 import useTourStore from "@/stores/tourStore";
+import Filter from "@/components/common/Filter"
 
 const ToursList = React.lazy(() => import("../../components/tours/TourList"));
 
@@ -13,6 +14,9 @@ const Tours = () => {
   return (
     <div className="bg-white">
       <Breadcrumb pageName="Tours" pageTitle="Tours" />
+      <div className="container">
+        <Filter />
+      </div>
       <div className="package-area pt-80">
         <div className="container pb-8">
           <div className="row">
@@ -26,7 +30,6 @@ const Tours = () => {
           <Suspense fallback={<ToursSkeleton />}>
             <ToursList />
           </Suspense>
-          {/* <GuideArea /> */}
         </div>
       </div>
     </div>

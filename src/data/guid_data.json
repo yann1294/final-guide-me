@@ -1,0 +1,57 @@
+[
+    {
+        "id":1,
+        "image":"/assets/images/guide/guide-1.png",
+        "name":"Sakura Chen"
+    }
+    ,
+    {
+        "id":1,
+        "image":"/assets/images/guide/guide-2.png",
+        "name":"Amrita Pritam."
+    }
+    ,
+    {
+        "id":3,
+        "image":"/assets/images/guide/guide-3.png",
+        "name":"Chetan Bhagat"
+    }
+    ,
+    {
+        "id":4,
+        "image":"/assets/images/guide/guide-4.png",
+        "name":"Kurt Vonnegut"
+    }
+    ,
+    {
+        "id":5,
+        "image":"/assets/images/guide/guide-5.png",
+        "name":"Kurt Vonnegut"
+    }
+    ,
+    {
+        "id":6,
+        "image":"/assets/images/guide/guide-6.png",
+        "name":"Kurt Vonnegut"
+    }
+    ,
+    {
+        "id":7,
+        "image":"/assets/images/guide/guide-7.png",
+        "name":"Kurt Vonnegut"
+    }
+    ,
+    {
+        "id":8,
+        "image":"/assets/images/guide/guide-8.png",
+        "name":"Kurt Vonnegut"
+    }
+    ,
+    {
+        "id":9,
+        "image":"/assets/images/guide/guide-9.png",
+        "name":"Kurt Vonnegut"
+    }
+   
+    
+]

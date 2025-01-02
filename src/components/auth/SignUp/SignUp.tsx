@@ -79,7 +79,7 @@ const SignUp: FC<Role> = () => {
 
     return (
         <div className="flex items-center justify-center">
-            <div className={`mx-auto w-full max-w-lg bg-gray-200/50 rounded-xl p-10`}>
+            <div className={`mx-auto w-full max-w-lg /50 rounded-xl p-10`}>
                 <div className="mb-2 flex justify-center">
                     <span className="inline-block w-full max-w-[60px]">
                         <Image src={Logo} alt="logo" width={800} height={800} />
@@ -165,6 +165,7 @@ const SignUp: FC<Role> = () => {
                             </label>
                             <div className="mt-2">
                                 <select
+                                defaultValue={formData.country}
                                     className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1"
                                     value={formData.country}
                                     onChange={handleCountryChange}

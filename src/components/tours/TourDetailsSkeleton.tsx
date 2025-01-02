@@ -4,7 +4,7 @@ const TourDetailsSkeleton = () => {
   return (
     <div className="bg-white animate-pulse">
       {/* Breadcrumb Skeleton */}
-      <div className="h-8 bg-gray-200 rounded-md w-1/3 mb-6"></div>
+      <div className="h-8  rounded-md w-1/3 mb-6"></div>
 
       {/* Main Container */}
       <div className="package-details-wrapper pt-120">
@@ -14,7 +14,7 @@ const TourDetailsSkeleton = () => {
             <div className="col-lg-8">
               <div className="package-details">
                 {/* Image Placeholder */}
-                <div className="h-64 bg-gray-200 rounded-md mb-4"></div>
+                <div className="h-64  rounded-md mb-4"></div>
 
                 {/* Title Placeholder */}
                 <div className="h-6 bg-gray-300 rounded-md w-1/2 mb-4"></div>

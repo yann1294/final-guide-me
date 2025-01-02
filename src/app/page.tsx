@@ -1,16 +1,18 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import Preloader from "@/components/common/Preloader";
+import Head from "next/head";
+import { use, useEffect, useState } from "react";
+import Footer from "../components/common/Footer";
+import Header from "../components/common/Header";
+import Preloader from "../components/common/Preloader";
+import Topbar from "@/components/common/TopBar";
 import MainBanner from "@/components/Home/MainBanner";
-import Tours from "@/components/Home/Tours";
-import Testimonials from "@/components/Home/Testimonials";
-import FeaturedTours from "@/components/Home/FeaturedTours";
-import Packages from "@/components/Home/Packages";
+import Tour from "@/components/Home/Tours";
+import Package from "@/components/Home/Packages";
+import Achievement from "@/components/Home/Achievement";
+import Featured from "@/components/Home/FeaturedTours";
 
-const ToursList = React.lazy(() => import("@/components/tours/TourList"));
-
-const Home: React.FC = () => {
-  const [loading, setLoading] = useState<boolean>(false);
+export default function Home() {
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setLoading(false);
@@ -18,22 +20,24 @@ const Home: React.FC = () => {
       setLoading(true);
     }, 3000);
   }, []);
-
   return (
-    <div className="bg-white">
+    <>
       {!loading ? (
         <Preloader />
       ) : (
         <>
+          <Head>
+            <title>TourX - Tours and Travel TextJs Template </title>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,user-scalable=0" />
+            <link rel="icon" href="assets/images/favicon.png" />
+          </Head>
           <MainBanner />
-          <Packages />
-          <Tours />
-          <Testimonials />
-          <FeaturedTours />
+          <Tour />
+          <Package />
+          <Achievement />
+          <Featured />
         </>
       )}
-    </div>
+    </>
   );
-};
-
-export default Home;
+}

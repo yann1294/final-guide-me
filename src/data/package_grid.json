@@ -1,0 +1,83 @@
+[
+  {
+    "id": 1,
+    "image": "/assets/images/package/p-1.png",
+    "standard_image":"/assets/images/package/pv-1.png",
+    "price": "180",
+    "time": "5 Days/6 night",
+    "rating": "12k",
+    "title": "Paris Hill Tour"
+  },
+  {
+    "id": 2,
+    "image": "/assets/images/package/p-2.png",
+    "standard_image":"/assets/images/package/pv-2.png",
+    "price": "180",
+    "time": "5 Days/6 night",
+    "rating": "33",
+    "title": "Lake Garda, Italy"
+  },
+  {
+    "id": 3,
+    "image": "/assets/images/package/p-3.png",
+    "standard_image":"/assets/images/package/pv-3.png",
+    "price": "180",
+    "time": "5 Days/6 night",
+    "rating": "222",
+    "title": "Mount Dtna, Italyr"
+},
+{
+    "id": 4,
+    "image": "/assets/images/package/p-4.5a3083bb.png",
+    "standard_image":"/assets/images/package/pv-4.png",
+    "price": "120",
+    "time": "4 Days/5 night",
+    "rating": "1.5k",
+    "title": "Amalfi Costa, Italy"
+},
+{
+    "id": 5,
+    "image": "/assets/images/package/p-5.png",
+    "standard_image":"/assets/images/package/pv-5.png",
+    "price": "245",
+    "time": "2 Days/3 night",
+    "rating": "158",
+    "title": "French Rivira, France"
+},
+{
+    "id": 6,
+    "image": "/assets/images/package/p-6.png",
+    "standard_image":"/assets/images/package/pv-6.png",
+    "price": "895",
+    "time": "5 Days/6 night",
+    "rating": "120",
+    "title": "Paris Hill Tour"
+},
+{
+    "id": 7,
+    "image": "/assets/images/package/p-1.png",
+    "standard_image":"/assets/images/package/pv-1.png",
+    "price": "610",
+    "time": "7 Days/8 night",
+    "rating": "222",
+    "title": " Mount Dtna, Italyr"
+},
+{
+    "id": 8,
+    "image": "/assets/images/package/p-2.png",
+    "standard_image":"/assets/images/package/pv-2.png",
+    "price": "100",
+    "time": "3 Days/4 night",
+    "rating": "",
+    "title": " Amalfi Costa, Italyr"
+},
+{
+    "id": 9,
+    "image": "/assets/images/package/p-3.png",
+    "standard_image":"/assets/images/package/pv-3.png",
+    "price": "160",
+    "time": "5 Days/6 night",
+    "rating": "10",
+    "title": "Lake Geneva, France"
+  }
+]

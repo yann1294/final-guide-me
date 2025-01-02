@@ -31,6 +31,277 @@ Last update :
 21. Contact Page
 
 */
+.filter-container {
+  padding: 10px;
+  background-color: #304F47;
+  margin: 0 !important;
+  color: white;
+  border-bottom-right-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+
+.filter-container .input-group-prepend {
+  background-color: transparent !important;
+}
+
+.filter-container label {
+  font-weight: bold;
+}
+
+.filter-container i {
+  color: white !important;
+}
+
+.filter-container .input-group-text {
+  background-color: #ED9734 !important;
+  color: white !important;
+  border: 1px solid #ED9734 !important;
+}
+
+.card-chip {
+  background-color: rgba(213, 213, 213, 0.2);
+  color: #304F47;
+  font-size: small;
+  padding-left: 10px;
+  padding-right: 10px;
+  border-radius: 20px;
+  font-weight: bold;
+}
+
+.card-chip-not-available {
+  background-color: rgba(213, 213, 213, 0.2);
+  color: #ff4747;
+  font-size: small;
+  border-radius: 20px;
+  font-weight: bold;
+}
+
+.resource-name {
+  font-size: 24px;
+  font-weight: bold;
+  padding-top: 10px;
+}
+
+.resource-location {
+  padding-top: 5px;
+  padding-bottom: 20px;
+  font-weight: bold;
+}
+
+.resource-location a {
+  color: #ED9734 !important;
+  font-size: 20px;
+}
+
+.package-card-details{
+  position: absolute;
+  top: 0;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.package-card-details div {
+  color: #304F47 !important;
+  background-color: white !important;
+}
+
+.package-price-details {
+  position: absolute;
+  bottom: 0;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  gap: 10px;
+  flex-wrap: wrap;
+  background-color: #ED9734;
+  color: white;
+  font-size: large;
+}
+
+.package-discounted-price {
+  font-weight: bolder;
+}
+
+.order-summary {
+  display: flex;
+  justify-content: space-between;
+  font-size: 18px; 
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(213, 213, 213, 0.2);
+
+}
+
+.order-summary .field {
+  font-weight: bold;
+
+}
+
+hr {
+  border-top: 2px solid #d5d5d5;
+}
+
+.select-participants {
+  margin-top: 10px;
+}
+
+/* sign in style */
+.signin-container {
+  padding-top: 100px;
+  padding-bottom: 100px;
+  border-top: 1px solid rgba(213, 213, 213, 0.3);
+}
+
+.signin-image {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+.signin-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.signin-form {
+  background-color: white;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  justify-content: center;
+  align-items: center;
+  width: 400px;
+}
+
+.signin-title {
+  font-size: 24px;
+  font-weight: bold;
+  padding-top: 10px;
+  text-align: center;
+}
+
+.signin-form .form-group {
+  width: 100%;
+}
+
+.signin-form .form-control, .signin-button {
+  height: 50px;
+  width: 100%;
+}
+
+.signin-button {
+  background-color: #ED9734;
+  color: white;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  user-select: none;
+}
+
+.signin-button:hover {
+  background-color: #304F47;
+  cursor: pointer;
+}
+
+.signin-button:active {
+  background-color: #ED9734;
+}
+
+.signin-social {
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
+  align-items: center;
+}
+
+.social-media-icons {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.social-icon {
+  font-size: 24px;
+  color: white;
+  background-color: #ED9734;
+  height: 50px;
+  width: 50px;
+  border-radius: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.social-icon:hover {
+  background-color: #304F47;
+  cursor: pointer;
+}
+
+.social-icon:active {
+  background-color: #ED9734;
+}
+
+@media (max-width: 992px) {
+  .signin-form {
+    width: 100%;
+    border: 1px solid rgba(213, 213, 213, 0.3);
+  }
+
+  .signin-form .form-group {
+    width: 400px;
+  }
+}
+
+@media (max-width: 576px) {
+  .signin-form .form-group {
+    width: 100%;
+  }
+}
+
+
+.booking-success-container {
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 20px;
+}
+.booking-success-container .success-icon {
+  height: 200px;
+  margin-bottom: 50px;
+  margin-top: 50px;
+}
+.booking-success-container h1 {
+  color: #333;
+}
+.booking-success-container p {
+  color: #555;
+  font-size: 18px;
+}
+.booking-success-container .btn {
+  display: inline-block;
+  margin: 20px 10px;
+  padding: 10px 20px;
+  background-color: #ED9734;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  font-size: 16px;
+}
+.booking-success-container .btn:hover {
+  background-color: #304F47;
+}
+
 @import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&family=Work+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 /*====================
     1. Global CSS
@@ -1565,12 +1836,12 @@ header > .header-area .nav-right {
   margin: 30px 0 50px 0;
 }
 .main-banner .slider-item-1 {
-  background: linear-gradient(rgba(48, 79, 71, 0.65) 100%, rgba(48, 79, 71, 0.65) 100%), url(../images/banners/banner-1.jpg);
+  background: linear-gradient(rgba(48, 79, 71, 0.65) 100%, rgba(48, 79, 71, 0.65) 100%), url(../images/banners/banner-1.png);
   background-size: cover;
   background-position: center;
 }
 .main-banner .slider-item-2 {
-  background: linear-gradient(rgba(48, 79, 71, 0.65) 100%, rgba(48, 79, 71, 0.65) 100%), url(../images/banners/banner-3.jpg);
+  background: linear-gradient(rgba(48, 79, 71, 0.65) 100%, rgba(48, 79, 71, 0.65) 100%), url(../images/banners/banner-3.png);
   background-size: cover;
   background-position: center;
 }

@@ -6,75 +6,81 @@ import { useRouter } from "next/navigation";
 import useGlobalStore from "@/stores/globalStore";
 import useTourStore from "@/stores/tourStore";
 import { useFetchTours } from "@/hooks/useTours";
+import packageCardData from "../../data/package_grid.json";
 
 const TourList = () => {
-  const router = useRouter();
-  const { tours } = useTourStore();
-  const { fetchTours } = useFetchTours();
+  // const router = useRouter();
+  // const { tours } = useTourStore();
+  // const { fetchTours } = useFetchTours();
 
-  useEffect(() => {
-    if (tours.length === 0) {
-      fetchTours();
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (tours.length === 0) {
+  //     fetchTours();
+  //   }
+  // }, []);
 
-  if (!tours) return null; // Suspense handles the loading skeleton
+  // if (!tours) return null; // Suspense handles the loading skeleton
 
-  const handleClick = (id: string) => {
-    router.push(`/tours/${id}`);
-  };
+  // const handleClick = (id: string) => {
+  //   router.push(`/tours/${id}`);
+  // };
 
   return (
-    <div className="row g-4">
-      {tours.map((tour, index) => (
-        <div key={`${tour.id}-${index}`} className="col-lg-4 col-md-6 col-sm-6">
-          <div
-            className="package-card cursor-pointer"
-            onClick={() => handleClick(tour.id as string)}
-          >
-            {/* Thumbnail */}
-            <div className="package-thumb">
-              <Image
-                src={
-                  tour.images?.[0] ||
-                  "https://images.unsplash.com/photo-1495562569060-2eec283d3391?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&dl=johan-mouchet-Z95viY3WaZs-unsplash.jpg"
-                }
-                alt={tour.name}
-                className="img-fluid rounded"
-                width={300}
-                height={200}
-              />
-            </div>
-
-            {/* Details */}
-            <div className="package-details">
-              <div className="package-info d-flex justify-content-between">
-                <h5>
-                  <span>${tour.price}</span> / Per Person
-                </h5>
-                <span>{tour.durationDays} Days</span>
-              </div>
-              <h3 className="mt-2">
-                <Link href={`/tours/${tour.id}`}>{tour.name}</Link>
-              </h3>
-              <p className="text-muted">
-                {tour.description?.substring(0, 100) ||
-                  "No description available."}
-              </p>
-            </div>
-
-            {/* Availability */}
-            <div className="package-status mt-3">
-              {tour.isAvailable ? (
-                <span className="badge bg-success">Available</span>
-              ) : (
-                <span className="badge bg-danger">Sold Out</span>
-              )}
+    <div className="container">
+    <div className="row g-4" >
+            {packageCardData.map((data) => {
+              const { id, image, rating, price, title, time }:any = data;
+              return (
+                <div key={id} className="col-lg-4 col-md-6 col-sm-6">
+                  <div className="package-card">
+                    <div className="package-thumb">
+                      <img src={image} alt="" className="img-fluid" />
+                    </div>
+                    <div className="package-details">
+                      <div className="package-info">
+                        <h5>
+                          <span className="text-danger">${price}</span>&nbsp;&nbsp;
+                          <span>${price - 56}</span>/Per Person
+                        </h5>
+                        <div className="duration">3 days</div>
+                      </div>
+                      <div className="resource-name">
+                        Name of the tour
+                      </div>
+                      <div className="resource-location">
+                        <i className="flaticon-arrival" />
+                        <Link href="/package-details">&nbsp;{title}</Link>
+                      </div>
+                      <div className="card-foot d-flex justify-content-between">
+                        <div className="card-chip package-availability">Available</div>
+                        <div className="card-chip number-of-seats">4 seats</div>
+                        <div className="card-chip date">29/09/29</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          <div className="row">
+          <div className="col-lg-12">
+            <div className="pagination mt-30">
+              <a href="#">
+                <i className="bx bx-chevron-left" />
+              </a>
+              <a href="#" className="active">
+                1
+              </a>
+              <a href="#">2</a>
+              <a href="#">3</a>
+              <a href="#">4</a>
+              <a href="#">
+                <i className="bx bx-chevron-right" />
+              </a>
             </div>
           </div>
         </div>
-      ))}
-    </div>
+        </div>
   );
 };
 
