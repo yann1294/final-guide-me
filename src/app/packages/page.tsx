@@ -8,6 +8,7 @@ import usePackageStore from '@/stores/packageStore';
 import { useFetchPackages, useFetchPackageTours } from '@/hooks/usePackages';
 import PackageCard from '@/components/packages/PackageCard';
 import SectionHeader from '@/components/common/SectionHeader';
+import Pagination from '@/components/common/Pagination';
 
 const Packages: React.FC = () => {
   // Accessing packages and tours data from the store
@@ -24,7 +25,7 @@ const Packages: React.FC = () => {
   // useEffect to fetch packages and their corresponding tours
   useEffect(() => {
     console.log(tours);
-    
+
     const fetchToursForPackages = async () => {
       console.log('Outside: Fetching tours for each package');
 
@@ -48,16 +49,6 @@ const Packages: React.FC = () => {
     fetchToursForPackages();
   }, [packages]); // Re-run the effect whenever packages change
 
-  // Display loading state while packages are being fetched
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  // Display error message if fetching packages fails
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
-
   return (
     <div className="packages-area py-16 bg-white">
       {/* Breadcrumb section for navigation */}
@@ -70,14 +61,24 @@ const Packages: React.FC = () => {
 
       {/* Section header for the packages list */}
       <div className="container mx-auto px-4 pt-20">
-        <SectionHeader 
-          topText={"Choose Your Package"} 
-          mainText={"Select Your Best Package For Your Travel"} 
+        <SectionHeader
+          topText={'Choose Your Package'}
+          mainText={'Select Your Best Package For Your Travel'}
         />
 
         {/* Mapping over the packages and rendering each one with PackageCard */}
-        {packages.map((pkg) => <PackageCard key={pkg.id} pkg={pkg} />)}
+        {packages.map((pkg) => (
+          <PackageCard key={pkg.id} pkg={pkg} />
+        ))}
       </div>
+      {/* // Display loading state while packages are being fetched */}
+      {loading && <div className="circular-loader-container"><div className="circular-loader"></div></div>}
+      
+
+      {/* // Display error message if fetching packages fails */}
+      {error && <div className='circular-loader-container'>Error: {error}</div>}
+
+      <Pagination />
     </div>
   );
 };

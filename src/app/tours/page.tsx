@@ -48,6 +48,12 @@ const Tours = () => {
           </div>
         </div>
       </div>
+      {/* // Display loading state while packages are being fetched */}
+      {loading && <div className="circular-loader-container"><div className="circular-loader"></div></div>}
+      
+
+      {/* // Display error message if fetching packages fails */}
+      {error && <div className='circular-loader-container'>Error: {error}</div>}
 
       {/* Pagination component to navigate through multiple pages of tours */}
       <Pagination />

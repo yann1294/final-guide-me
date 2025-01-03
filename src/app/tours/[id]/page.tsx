@@ -19,7 +19,7 @@ const TourDetails = () => {
   const [numberOfPeople, setNumberOfPeople] = useState<number>(1);
   const [tax, setTax] = useState<number>(23);
   const pathName = usePathname();
-  const { fetchOneTour } = useFetchOneTour();
+  const { fetchOneTour, loading, error } = useFetchOneTour();
   const { user } = useAuthStore();
   const { createStripeOrder, loading: isCreatingOrder } =
     useCreateStripeOrder();
@@ -52,8 +52,14 @@ const TourDetails = () => {
               <div className="row">
                 <div className="col-lg-8">
                   <div className="package-details">
-                    <TourPackageContent context={ContextType.tour} resource={tour} />
-                    <TourPackageTab resource={tour} context={ContextType.tour} />
+                    <TourPackageContent
+                      context={ContextType.tour}
+                      resource={tour}
+                    />
+                    <TourPackageTab
+                      resource={tour}
+                      context={ContextType.tour}
+                    />
                   </div>
                 </div>
                 <div className="col-lg-4">
@@ -75,9 +81,24 @@ const TourDetails = () => {
               </div>
             </div>
           </div>
-          <RelatedSection context={ ContextType.package } />
+          <RelatedSection context={ContextType.package} />
         </>
-      ) : null}
+      ) : (
+        <></>
+      )}
+      <>
+        {/* // Display loading state while packages are being fetched */}
+        {loading && (
+          <div className="circular-loader-container">
+            <div className="circular-loader"></div>
+          </div>
+        )}
+
+        {/* // Display error message if fetching packages fails */}
+        {error && (
+          <div className="circular-loader-container">Error: {error}</div>
+        )}
+      </>
     </>
   );
 };

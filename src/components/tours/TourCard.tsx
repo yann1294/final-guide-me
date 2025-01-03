@@ -26,6 +26,7 @@ export default function TourCard({ tour, origin = ContextType.tour }: { tour: To
                         <>
                           <span className="text-danger crossed-line">${tour.price}</span>
                           &nbsp;&nbsp;
+                          { origin === ContextType.package && <br />}
                           <span>
                             ${tour.price - (tour.price * (tour.discount / 100))}
                           </span>
