@@ -13,6 +13,9 @@ import TourPackageTab from '@/components/common/TourAndPackageTab';
 import RelatedSection from '@/components/common/RelatedSection';
 import BookingSummary from '@/components/common/BookingSummary';
 import { ContextType } from '@/lib/utils/context.utils';
+import useGuideStore from '@/stores/guidesStore';
+import { useFetchOneGuide } from '@/hooks/useUsers';
+import { TourDTO } from '@/dto/tour.dto';
 
 const TourDetails = () => {
   const { currentTour: tour, tours, setCurrentTour } = useTourStore();
@@ -21,6 +24,8 @@ const TourDetails = () => {
   const pathName = usePathname();
   const { fetchOneTour, loading, error } = useFetchOneTour();
   const { user } = useAuthStore();
+  const { guides } = useGuideStore();
+  const { fetchOneGuide } = useFetchOneGuide();
   const { createStripeOrder, loading: isCreatingOrder } =
     useCreateStripeOrder();
 
@@ -33,6 +38,11 @@ const TourDetails = () => {
 
         if (result) {
           setCurrentTour(result);
+          
+          // fetch tour guide if guide does not exist
+          if (tour && !guides.get((tour as TourDTO).guide)) {
+            await fetchOneGuide((tour as TourDTO).guide);
+          }
         } else {
           await fetchOneTour(currentTourId);
         }
@@ -74,7 +84,7 @@ const TourDetails = () => {
                         createStripeOrder={createStripeOrder}
                         user={user}
                       />
-                      <TourGuide />
+                      <TourGuide guide={guides.get(tour.guide)} />
                     </div>
                   </div>
                 </div>

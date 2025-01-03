@@ -1,34 +1,42 @@
-"use client";
+'use client';
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 
-import TourPackageContent from "@/components/common/TourAndPackageContent";
-import TourPackageTab from "@/components/common/TourAndPackageTab";
-import Tour from "@/components/Home/Tours";
-import usePackageStore from "@/stores/packageStore";
-import { usePathname } from "next/navigation";
-import { useFetchOnePackage, useFetchPackageTours } from "@/hooks/usePackages";
-import { PackageDTO } from "@/dto/package.dto";
-import Breadcumb from "@/components/common/Breadcrumb";
-import Package from "@/components/Home/Packages";
-import BookingSummary from "@/components/common/BookingSummary";
-import { useCreateStripeOrder } from "@/hooks/useBookings";
-import TourGuide from "@/components/common/TourGuide";
-import useAuthStore from "@/stores/authStore";
-import RelatedSection from "@/components/common/RelatedSection";
-import { ContextType } from "@/lib/utils/context.utils";
-
+import TourPackageContent from '@/components/common/TourAndPackageContent';
+import TourPackageTab from '@/components/common/TourAndPackageTab';
+import Tour from '@/components/Home/Tours';
+import usePackageStore from '@/stores/packageStore';
+import { usePathname } from 'next/navigation';
+import { useFetchOnePackage, useFetchPackageTours } from '@/hooks/usePackages';
+import { PackageDTO } from '@/dto/package.dto';
+import Breadcumb from '@/components/common/Breadcrumb';
+import Package from '@/components/Home/Packages';
+import BookingSummary from '@/components/common/BookingSummary';
+import { useCreateStripeOrder } from '@/hooks/useBookings';
+import TourGuide from '@/components/common/TourGuide';
+import useAuthStore from '@/stores/authStore';
+import RelatedSection from '@/components/common/RelatedSection';
+import { ContextType } from '@/lib/utils/context.utils';
+import { useFetchOneGuide } from '@/hooks/useUsers';
+import useGuideStore from '@/stores/guidesStore';
 
 export default function PackageDetails() {
-  const { currentPackage: pkg, packages, tours, setCurrentPackage } = usePackageStore();
+  const {
+    currentPackage: pkg,
+    packages,
+    tours,
+    setCurrentPackage,
+  } = usePackageStore();
   const { fetchPackageTours } = useFetchPackageTours();
   const [numberOfPeople, setNumberOfPeople] = useState<number>(1);
   const [tax, setTax] = useState<number>(23);
   const { user } = useAuthStore();
   const pathName = usePathname();
+  const { guides } = useGuideStore();
+  const { fetchOneGuide } = useFetchOneGuide();
   const { fetchOnePackage, loading, error } = useFetchOnePackage();
-    const { createStripeOrder, loading: isCreatingOrder } =
-      useCreateStripeOrder();
+  const { createStripeOrder, loading: isCreatingOrder } =
+    useCreateStripeOrder();
 
   useEffect(() => {
     const fetchCurrentPackage = async () => {
@@ -40,6 +48,11 @@ export default function PackageDetails() {
 
         if (result) {
           setCurrentPackage(result); // Update the store if the package is found
+
+          // fetch tour guide if guide does not exist
+          if (pkg && !guides.get((pkg as PackageDTO).guide)) {
+            await fetchOneGuide((pkg as PackageDTO).guide);
+          }
         } else {
           await fetchOnePackage(currentPackageId); // Fetch from server if not found
         }
@@ -55,48 +68,60 @@ export default function PackageDetails() {
   }, [packages, pkg, tours, pathName, setCurrentPackage, fetchOnePackage]);
   return (
     <>
-      <Breadcumb pageName="Package Details" pageTitle={ pkg?.name } />
+      <Breadcumb pageName="Package Details" pageTitle={pkg?.name} />
       {pkg ? (
-         <>
-         <div className="package-details-wrapper pt-120">
-           <div className="container">
-             <div className="row">
-               <div className="col-lg-8">
-                 <div className="package-details">
-                   <TourPackageContent context={ContextType.package} resource={pkg} />
-                   <TourPackageTab resource={pkg} context={ContextType.package} />
-                 </div>
-               </div>
-               <div className="col-lg-4">
-                 <div className="package-d-sidebar">
-                   <div className="row">
-                     <BookingSummary
-                       tour={pkg}
-                       numberOfPeople={numberOfPeople}
-                       setNumberOfPeople={setNumberOfPeople}
-                       tax={tax}
-                       createStripeOrder={createStripeOrder}
-                       user={user}
-                     />
-                     <TourGuide />
-                   </div>
-                 </div>
-               </div>
-             </div>
-           </div>
-         </div>
-         <RelatedSection context={ ContextType.package } />
-        
-       </>
-      ) : <></>}
+        <>
+          <div className="package-details-wrapper pt-120">
+            <div className="container">
+              <div className="row">
+                <div className="col-lg-8">
+                  <div className="package-details">
+                    <TourPackageContent
+                      context={ContextType.package}
+                      resource={pkg}
+                    />
+                    <TourPackageTab
+                      resource={pkg}
+                      context={ContextType.package}
+                    />
+                  </div>
+                </div>
+                <div className="col-lg-4">
+                  <div className="package-d-sidebar">
+                    <div className="row">
+                      <BookingSummary
+                        tour={pkg}
+                        numberOfPeople={numberOfPeople}
+                        setNumberOfPeople={setNumberOfPeople}
+                        tax={tax}
+                        createStripeOrder={createStripeOrder}
+                        user={user}
+                      />
+                      <TourGuide guide={guides.get(pkg.guide)} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <RelatedSection context={ContextType.package} />
+        </>
+      ) : (
+        <></>
+      )}
       <>
         {/* // Display loading state while packages are being fetched */}
-        {loading && <div className="circular-loader-container"><div className="circular-loader"></div></div>}
-          
+        {loading && (
+          <div className="circular-loader-container">
+            <div className="circular-loader"></div>
+          </div>
+        )}
 
         {/* // Display error message if fetching packages fails */}
-        {error && <div className='circular-loader-container'>Error: {error}</div>}
-        </>
+        {error && (
+          <div className="circular-loader-container">Error: {error}</div>
+        )}
+      </>
     </>
   );
 }

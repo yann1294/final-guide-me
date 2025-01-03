@@ -4,6 +4,8 @@ import { PackageDTO } from "@/dto/package.dto";
 import { useState } from "react";
 import usePackageStore from "@/stores/packageStore";
 import { TourDTO } from "@/dto/tour.dto";
+import useGuideStore from "@/stores/guidesStore";
+import { useFetchOneGuide } from "./useUsers";
 
 export const useCreatePackages = () => {
   const addPackage = usePackageStore((state) => state.addPackage);
@@ -103,6 +105,8 @@ export const useFetchPackageTours = () => {
 
 export const useFetchOnePackage = () => {
   const setCurrentPackage = usePackageStore((state) => state.setCurrentPackage);
+  const { guides } = useGuideStore();
+  const { fetchOneGuide } = useFetchOneGuide();
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -121,7 +125,14 @@ export const useFetchOnePackage = () => {
       }
 
       // Persist the fetched tours in Zustand store
-      setCurrentPackage(response.data.data as PackageDTO);
+      const pkg = response.data.data as PackageDTO;
+      setCurrentPackage(pkg);
+
+      // fetch tour guide if guide does not exist
+      if (!guides.get(pkg.guide)) {
+        await fetchOneGuide(pkg.guide);
+      }
+      
     } catch (err) {
       console.error("Error: ", err);
       setError(err instanceof Error ? err.message : 'Failed to fetch tours');

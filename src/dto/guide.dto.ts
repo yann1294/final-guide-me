@@ -6,7 +6,7 @@ export type GuideDTO = {
     lastName: string;
     phoneNumber: string;
     emailAddress: string;
-    profilePhoto?: string | FileDTO;
+    profilePhoto?: string;
     role: Role;
     accountStatus: string;
     createdAt: string;

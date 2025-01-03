@@ -1,30 +1,38 @@
 // components/tours/TourGuide.tsx
 
+import { GuideDTO } from '@/dto/guide.dto';
 import React from 'react';
 
-const TourGuide = () => {
+const TourGuide = ({ guide }: { guide: GuideDTO | undefined }) => {
   return (
     <div className="col-lg-12 col-md-6">
       <div className="p-sidebar-organizer mt-40">
         <h5 className="package-d-head">Guide By</h5>
-        <div className="col-12">
-          <a href="/organizer-details">
-            <div className="guide-card">
-              <div className="guide-thumb">
-                <img
-                  src={'/assets/images/guide/guide-2.png'}
-                  alt=""
-                  className="img-fluid"
-                />
-                <div className="guide-info">
-                  <strong>{'John Doe'}</strong>
-                  <p>Tour Guide</p>
-                  <a style={{ color: '#ED9734' }}>Click to view profile</a>
+        {guide ? (
+          <div className="col-12">
+            <a href="/organizer-details">
+              <div className="guide-card">
+                <div style={{height: "365px"}} className="guide-thumb">
+                  <img
+                  style={{height: "100%", objectFit: "cover"}}
+                    src={guide.profilePhoto ?? "/assets/images/profile-placeholder.png"}
+                    alt=""
+                    className="img-fluid"
+                  />
+                  <div className="guide-info">
+                    <strong>{guide.firstName}, {guide.lastName}</strong>
+                    <p>Tour Guide</p>
+                    <a style={{ color: '#ED9734' }}>Click to view profile</a>
+                  </div>
                 </div>
               </div>
-            </div>
-          </a>
-        </div>
+            </a>
+          </div>
+        ) : (
+          <div className="circular-loader-container">
+            <div className="circular-loader"></div>
+          </div>
+        )}
       </div>
     </div>
   );
