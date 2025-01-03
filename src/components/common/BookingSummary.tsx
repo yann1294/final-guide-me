@@ -75,8 +75,8 @@ const BookingSummary = ({
                 await createStripeOrder({
                   gateway: 'stripe',
                   amount:
-                    numberOfPeople *
-                    (tour.price + tax - tour.price * (tour.discount / 100)),
+                    parseFloat((numberOfPeople *
+                    (tour.price + tax - tour.price * (tour.discount / 100))).toFixed(2)),
                   currency: 'USD',
                   userId: user?.uid,
                   createdAt: new Date().toISOString(),
