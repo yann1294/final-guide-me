@@ -2,6 +2,7 @@ import { ResponseDTO } from "@/dto/helper.dto";
 import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {
+  console.log("API Entry: GET /packages/:id/tours", { method: req.method });
   try {
     // Send a GET request to the backend API to get all packages
     const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/packages`);

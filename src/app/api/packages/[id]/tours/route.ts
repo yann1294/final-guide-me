@@ -3,27 +3,22 @@ import axios from "axios";
 import { NextResponse } from "next/server";
 
 export async function GET(req: Request, { params }: any) {
-  try {
-    console.log(`${process.env.NEXT_PUBLIC_BACKEND_URL}/packages/${ params.id }/tours`)
-    // Send a GET request to the backend API to get all tours
-    const response = await axios.get<ResponseDTO>(`${process.env.NEXT_PUBLIC_BACKEND_URL}/packages/${ params.id }/tours`);
-    // const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/packages/${ params.id }/tours`);
+  // Log entry into the API
+  console.log("API Entry: GET /packages/:id/tours", { method: req.method, params });
 
-    // If the response from the backend is not OK, throw an error
-    // if (!response.ok) {
-    //   throw new Error("Failed to fetch tours");
-    // }
+  try {
+    // Send a GET request to the backend API to get all tours
+    const response = await axios.get<ResponseDTO>(`${process.env.NEXT_PUBLIC_BACKEND_URL}/packages/${params.id}/tours`);
+    
     if (response.data.status !== "success") {
       throw new Error("Failed to fetch tours");
     }
-    // Parse the response data from the backend
-    // const data = await response.json();
 
     // Return the parsed data in the Next.js response
     return NextResponse.json(response.data);
   } catch (error) {
     // Log the error to the console
-    console.error(error);
+    console.error("API Error:", error);
 
     // Return an error response with status 500
     return NextResponse.json({
