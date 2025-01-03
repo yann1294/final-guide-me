@@ -81,13 +81,12 @@ export default function Tour({ context = 'home' }) {
                       </div>
                       <div className="resource-location">
                         <i className="flaticon-arrival" />
-                        <Link
+                        <span
                           style={{ fontSize: 'small' }}
-                          href={`/tours/${tour.id}`}
                         >
                           &nbsp;{tour.location.name}, {tour.location.city},{' '}
                           {tour.location.country}
-                        </Link>
+                        </span>
                       </div>
                       <div className="card-foot d-flex justify-content-between">
                         {/* tour availability */}

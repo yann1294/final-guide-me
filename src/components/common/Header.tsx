@@ -224,11 +224,11 @@ export default function Header() {
                   <ul>
                     <li className="sidebar-single-contact">
                       <i className="bx bxs-phone" />{" "}
-                      <a href="tel:+17632275032">+1 763-227-5032</a>
+                      <Link href="tel:+17632275032">+1 763-227-5032</Link>
                     </li>
                     <li className="sidebar-single-contact">
                       <i className="bx bxs-envelope" />
-                      <a href="mailto:info@example.com">info@example.com</a>
+                      <Link href="mailto:info@example.com">info@example.com</Link>
                     </li>
                   </ul>
                 </div>

@@ -1,6 +1,7 @@
 // components/tours/TourGuide.tsx
 
 import { GuideDTO } from '@/dto/guide.dto';
+import Link from 'next/link';
 import React from 'react';
 
 const TourGuide = ({ guide }: { guide: GuideDTO | undefined }) => {
@@ -10,7 +11,7 @@ const TourGuide = ({ guide }: { guide: GuideDTO | undefined }) => {
         <h5 className="package-d-head">Guide By</h5>
         {guide ? (
           <div className="col-12">
-            <a href="/organizer-details">
+            <Link href="/organizer-details">
               <div className="guide-card">
                 <div style={{height: "365px"}} className="guide-thumb">
                   <img
@@ -22,11 +23,11 @@ const TourGuide = ({ guide }: { guide: GuideDTO | undefined }) => {
                   <div className="guide-info">
                     <strong>{guide.firstName}, {guide.lastName}</strong>
                     <p>Tour Guide</p>
-                    <a style={{ color: '#ED9734' }}>Click to view profile</a>
+                    <span style={{ color: '#ED9734' }}>Click to view profile</span>
                   </div>
                 </div>
               </div>
-            </a>
+            </Link>
           </div>
         ) : (
           <div className="circular-loader-container">

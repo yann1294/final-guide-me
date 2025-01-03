@@ -45,9 +45,10 @@ const usePackageStore = create<PackageStore>((set) => ({
   // Set tours for a specific package
   setPackageTours: (packageId: string, tours: TourDTO[]) =>
     set((state) => {
+      console.log("Existing packages", state.tours.keys())
       const newTours = new Map(state.tours);  // Create a new Map to trigger re-render
       newTours.set(packageId, tours);
-      // console.log("Zustand is working", state.tours)
+      console.log("After addition packages", newTours.keys())
       return { tours: newTours };
     }),
 

@@ -8,6 +8,7 @@ import TourCard from "../tours/TourCard";
 import { packageSlideConfig } from "@/lib/utils/swipper-configs";
 import { ContextType } from "@/lib/utils/context.utils";
 import usePackageStore from "@/stores/packageStore";
+import Link from "next/link";
 
 export default function PackageCard({ pkg: packageObj }: { pkg: PackageDTO }) {
   const { packages, tours } = usePackageStore(); // Accessing package and tour data from the store
@@ -18,7 +19,7 @@ export default function PackageCard({ pkg: packageObj }: { pkg: PackageDTO }) {
       
       {/* Package Card - Left Section: Package Details */}
       <div className="col-lg-3 col-md-3">
-        <a href={`/packages/${packageObj.id}`} className="package-slider-wrap">
+        <Link href={`/packages/${packageObj.id}`} className="package-slider-wrap">
           
           {/* Package Image */}
           <img
@@ -96,7 +97,7 @@ export default function PackageCard({ pkg: packageObj }: { pkg: PackageDTO }) {
               {convertSecondsToDate(30001897)} {/* Example value */}
             </div>
           </div>
-        </a>
+        </Link>
       </div>
 
       {/* Package Card - Right Section: Tour Slider */}
