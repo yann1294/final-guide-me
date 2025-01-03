@@ -381,18 +381,56 @@ hr {
   padding: 10px;
   background-color: rgba(213, 213, 213, 0.2);
   border-radius: 5px;
+  transition: height 0.3s ease-in-out;
+  border: 1px solid rgba(213, 213, 213, 0.2);
 }
 
-.side-bar-options .active, .side-bar-options .active a, .side-bar-option:hover a, .side-bar-option:hover {
+.side-bar-options .active, .side-bar-options .active a {
   cursor: pointer;
   background-color: #6BC8B4;
   color: white !important;
+}
+
+.side-bar-option:hover {
+  border: 1px solid #6BC8B4;
 }
 
 .side-bar-option:active a, .side-bar-option:active {
   background-color: rgba(213, 213, 213, 0.2);
   color: black !important;
 }
+
+.sub-options {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.sub-option {
+  background-color: rgba(213, 213, 213, 0.2);
+  width: 100%;
+  padding: 10px;
+  text-align: center;
+  border-radius: 5px;
+}
+
+.sub-option a, .sub-option svg {
+  color: white !important;
+}
+
+.sub-options .view {
+  background-color: #ED9734 !important;
+}
+
+.sub-options .create {
+  background-color: #8bc49b !important;
+}
+
+.sub-options .create:hover, .sub-option:hover a, .sub-option:hover svg, .sub-options .view:hover{
+  background-color: white !important;
+  color: black !important;
+}
+
 
 .topbar-area {
   height: 30px;
