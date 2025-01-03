@@ -40,11 +40,12 @@ const usePackageDetails = (pathName: string) => {
         const result = packages.find((p) => p.id === currentPackageId);
         if (result) {
           setCurrentPackage(result);
-          if (result.guide && !guides.get(result.guide)) {
-            await fetchOneGuide(result.guide);
-          }
         } else {
           await fetchOnePackage(currentPackageId);
+        }
+      } else {
+        if (!guides.get(pkg.guide)) {
+          await fetchOneGuide(pkg.guide);
         }
       }
 
@@ -67,6 +68,7 @@ const usePackageDetails = (pathName: string) => {
   ]);
 
   return {
+    packages,
     pkg,
     loading,
     error,
@@ -82,6 +84,7 @@ export default function PackageDetails() {
   const pathName = usePathname();
   const { user } = useAuthStore();
   const {
+    packages,
     pkg,
     loading,
     error,
@@ -135,7 +138,7 @@ export default function PackageDetails() {
           </div>
         </div>
       )}
-      <RelatedSection context={ContextType.package} />
+      <RelatedSection packages={packages.slice(0, 3)} context={ContextType.package} />
       {loading && (
         <div className="circular-loader-container">
           <div className="circular-loader"></div>

@@ -11,6 +11,7 @@ import usePackageStore from "@/stores/packageStore";
 
 export default function PackageCard({ pkg: packageObj }: { pkg: PackageDTO }) {
   const { packages, tours } = usePackageStore(); // Accessing package and tour data from the store
+  
 
   return (
     <div className="row wow fadeInUp animated">

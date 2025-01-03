@@ -36,13 +36,13 @@ const useTourDetails = (pathName: string) => {
 
         if (result) {
           setCurrentTour(result);
-
-          // Fetch tour guide if guide does not exist in store
-          if (result.guide && !guides.get(result.guide)) {
-            await fetchOneGuide(result.guide);
-          }
         } else {
           await fetchOneTour(currentTourId);
+        }
+      } else {
+        // Fetch tour guide if guide does not exist in store
+        if (!guides.get(tour.guide)) {
+          await fetchOneGuide(tour.guide);
         }
       }
     };
@@ -61,6 +61,7 @@ const useTourDetails = (pathName: string) => {
   return {
     tour,
     guides,
+    tours,
     loading,
     error,
     numberOfPeople,
@@ -76,6 +77,7 @@ const TourDetails = () => {
   const {
     tour,
     guides,
+    tours,
     loading,
     error,
     numberOfPeople,
@@ -125,7 +127,7 @@ const TourDetails = () => {
           </div>
         </div>
       )}
-      <RelatedSection context={ContextType.package} />
+      <RelatedSection tours={tours.slice(0, 3)} context={ContextType.tour} />
       {loading && (
         <div className="circular-loader-container">
           <div className="circular-loader"></div>
