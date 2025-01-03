@@ -17,17 +17,15 @@ import useGuideStore from '@/stores/guidesStore';
 import { useFetchOneGuide } from '@/hooks/useUsers';
 import { TourDTO } from '@/dto/tour.dto';
 
-const TourDetails = () => {
+// Custom hook for managing tour details
+const useTourDetails = (pathName: string) => {
   const { currentTour: tour, tours, setCurrentTour } = useTourStore();
+  const { guides } = useGuideStore();
+  const { fetchOneTour, loading, error } = useFetchOneTour();
+  const { fetchOneGuide } = useFetchOneGuide();
+
   const [numberOfPeople, setNumberOfPeople] = useState<number>(1);
   const [tax, setTax] = useState<number>(23);
-  const pathName = usePathname();
-  const { fetchOneTour, loading, error } = useFetchOneTour();
-  const { user } = useAuthStore();
-  const { guides } = useGuideStore();
-  const { fetchOneGuide } = useFetchOneGuide();
-  const { createStripeOrder, loading: isCreatingOrder } =
-    useCreateStripeOrder();
 
   useEffect(() => {
     const fetchCurrentTour = async () => {
@@ -38,10 +36,10 @@ const TourDetails = () => {
 
         if (result) {
           setCurrentTour(result);
-          
-          // fetch tour guide if guide does not exist
-          if (tour && !guides.get((tour as TourDTO).guide)) {
-            await fetchOneGuide((tour as TourDTO).guide);
+
+          // Fetch tour guide if guide does not exist in store
+          if (result.guide && !guides.get(result.guide)) {
+            await fetchOneGuide(result.guide);
           }
         } else {
           await fetchOneTour(currentTourId);
@@ -50,65 +48,95 @@ const TourDetails = () => {
     };
 
     fetchCurrentTour();
-  }, [tour, tours, pathName, setCurrentTour, fetchOneTour]);
+  }, [
+    tour,
+    tours,
+    pathName,
+    setCurrentTour,
+    fetchOneTour,
+    fetchOneGuide,
+    guides,
+  ]);
+
+  return {
+    tour,
+    guides,
+    loading,
+    error,
+    numberOfPeople,
+    setNumberOfPeople,
+    tax,
+    setTax,
+  };
+};
+
+const TourDetails = () => {
+  const pathName = usePathname();
+  const { user } = useAuthStore();
+  const {
+    tour,
+    guides,
+    loading,
+    error,
+    numberOfPeople,
+    setNumberOfPeople,
+    tax,
+    setTax,
+  } = useTourDetails(pathName);
+  const { createStripeOrder, loading: isCreatingOrder } =
+    useCreateStripeOrder();
 
   return (
     <>
       <Breadcumb pageName="Tour Details" pageTitle={tour?.name} />
-      {tour ? (
-        <>
-          <div className="package-details-wrapper pt-120">
-            <div className="container">
-              <div className="row">
-                <div className="col-lg-8">
-                  <div className="package-details">
-                    <TourPackageContent
-                      context={ContextType.tour}
-                      resource={tour}
-                    />
-                    <TourPackageTab
-                      resource={tour}
-                      context={ContextType.tour}
-                    />
-                  </div>
+      {tour && (
+        <div className="package-details-wrapper pt-120">
+          <div className="container">
+            <div className="row">
+              {/* Left Sidebar - Content */}
+              <div className="col-lg-8">
+                <div className="package-details">
+                  <TourPackageContent
+                    context={ContextType.tour}
+                    resource={tour}
+                  />
+                  <TourPackageTab resource={tour} context={ContextType.tour} />
                 </div>
-                <div className="col-lg-4">
-                  <div className="package-d-sidebar">
-                    <div className="row">
-                      <BookingSummary
-                        context={ContextType.tour}
-                        tour={tour}
-                        numberOfPeople={numberOfPeople}
-                        setNumberOfPeople={setNumberOfPeople}
-                        tax={tax}
-                        createStripeOrder={createStripeOrder}
-                        user={user}
-                      />
-                      <TourGuide guide={guides.get(tour.guide)} />
-                    </div>
+              </div>
+
+              {/* Right Sidebar - Booking and Guide */}
+              <div className="col-lg-4">
+                <div className="package-d-sidebar">
+                  <div className="row">
+                    <BookingSummary
+                      context={ContextType.tour}
+                      tour={tour}
+                      numberOfPeople={numberOfPeople}
+                      setNumberOfPeople={setNumberOfPeople}
+                      tax={tax}
+                      createStripeOrder={createStripeOrder}
+                      user={user}
+                    />
+                    <TourGuide guide={guides.get(tour.guide)} />
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <RelatedSection context={ContextType.package} />
-        </>
-      ) : (
-        <></>
+        </div>
       )}
-      <>
-        {/* // Display loading state while packages are being fetched */}
-        {loading && (
-          <div className="circular-loader-container">
-            <div className="circular-loader"></div>
-          </div>
-        )}
+      <RelatedSection context={ContextType.package} />
+      {loading && (
+        <div className="circular-loader-container">
+          <div className="circular-loader"></div>
+        </div>
+      )}
 
-        {/* // Display error message if fetching packages fails */}
-        {error && (
-          <div className="circular-loader-container">Error: {error}</div>
-        )}
-      </>
+      {error && (
+        <div className="circular-loader-container">
+          <div>Error: {error}</div>
+        </div>
+      )}
     </>
   );
 };
