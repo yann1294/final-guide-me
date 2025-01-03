@@ -1,31 +1,38 @@
 import { TourDTO } from '@/dto/tour.dto';
-import useTourStore from '@/stores/tourStore';
+import { PackageDTO } from '@/dto/package.dto';
 import { ImagesIcon } from 'lucide-react';
-import Link from 'next/link';
 import React, { useState } from 'react';
 import Lightbox, { SlideImage } from 'yet-another-react-lightbox';
 import 'yet-another-react-lightbox/styles.css';
 import Fullscreen from 'yet-another-react-lightbox/plugins/fullscreen';
-import { PackageDTO } from '@/dto/package.dto';
+import { CONTEXT, ContextType } from '@/lib/utils/context.utils';
 
-export default function TourPackageContent({ tour, context }: { tour?: TourDTO | PackageDTO, context: "packages" | "tours" }) {
+interface TourPackageContentProps {
+  resource: TourDTO | PackageDTO;
+  context: CONTEXT;
+}
+
+export default function TourPackageContent({ resource, context }: TourPackageContentProps) {
   const [isOpening, setOpening] = useState({
     openingState: false,
     openingIndex: 0,
   });
 
+  if (!resource) return null;
+
+  // Render based on context: "packages" or "tours"
   return (
     <>
       <div className="package-thumb">
-        <img src={tour?.images ? tour?.images[0] : ""} alt="" />
+        <img src={resource.images ? resource.images[0] : ""} alt="" />
       </div>
       <div className="package-header">
         <div className="package-title">
-          <h3>{tour?.name}</h3>
+          <h3>{resource.name}</h3>
           <strong>
             <i className="flaticon-arrival" />
             &nbsp;
-            {tour?.location.name}, {tour?.location.city}, {tour?.location.country}
+            {resource.location?.name}, {resource.location?.city}, {resource.location?.country}
           </strong>
         </div>
         <div
@@ -48,7 +55,7 @@ export default function TourPackageContent({ tour, context }: { tour?: TourDTO |
           <div className="info-texts">
             <strong>Duration</strong>
             <p>
-              {tour?.durationDays} {tour?.durationDays === 1 ? 'day' : 'days'}
+              {resource.durationDays} {resource.durationDays === 1 ? 'day' : 'days'}
             </p>
           </div>
         </div>
@@ -56,7 +63,7 @@ export default function TourPackageContent({ tour, context }: { tour?: TourDTO |
           <i className="flaticon-footprints" />
           <div className="info-texts">
             <strong>Type</strong>
-            <p>{context === "tours" ? "Tour" : "Package"}</p>
+            <p>{context === ContextType.tour ? "Tour" : "Package"}</p>
           </div>
         </div>
         <div className="single-info">
@@ -64,7 +71,7 @@ export default function TourPackageContent({ tour, context }: { tour?: TourDTO |
           <div className="info-texts">
             <strong>Seats</strong>
             <p>
-              {tour?.numberOfSeats} {tour?.numberOfSeats === 1 ? 'seat' : 'seats'}
+              {resource.numberOfSeats} {resource.numberOfSeats === 1 ? 'seat' : 'seats'}
             </p>
           </div>
         </div>
@@ -89,8 +96,8 @@ export default function TourPackageContent({ tour, context }: { tour?: TourDTO |
           },
         }}
         slides={
-          tour?.images
-            ? tour?.images.map(
+          resource.images
+            ? resource.images.map(
                 (image) =>
                   ({
                     src: image,

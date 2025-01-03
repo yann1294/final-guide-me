@@ -1,34 +1,15 @@
-'use client';
-import Image from 'next/image';
-import Link from 'next/link';
-import React, { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import useGlobalStore from '@/stores/globalStore';
-import useTourStore from '@/stores/tourStore';
-import { useFetchTours } from '@/hooks/useTours';
-import packageCardData from '../../data/package_grid.json';
-import { convertSecondsToDate } from '@/lib/utils/utils';
+import { TourDTO } from "@/dto/tour.dto";
+import { CONTEXT, ContextType } from "@/lib/utils/context.utils";
+import { convertSecondsToDate } from "@/lib/utils/utils";
+import useTourStore from "@/stores/tourStore";
+import Link from "next/link";
 
-const TourList = () => {
-  const { tours, setCurrentTour } = useTourStore();
-  const { fetchTours, loading, error } = useFetchTours();
+export default function TourCard({ tour, origin = ContextType.tour }: { tour: TourDTO, origin?: CONTEXT}) {
+    const { setCurrentTour } = useTourStore();
 
-  useEffect(() => {
-    // Fetch tours if not already loaded
-    if (tours.length === 0) {
-      fetchTours();
-    }
-  }, []);
-
-  if (!tours) return null; // Suspense handles the loading skeleton
-
-  return (
-    <div className="container">
-      <div className="row g-4">
-        {tours.map((tour) => {
-          return (
-            <div key={tour.id} className="col-lg-4 col-md-6 col-sm-6">
-              <Link onClick={() => setCurrentTour(tour)} href={`/tours/${tour.id}`}>
+    return (
+        <div className={ "wow fadeInUp animated " + (origin === ContextType.tour ? "col-lg-4 col-md-6 col-sm-6" : "") }>
+            <Link onClick={() => setCurrentTour(tour)} href={`/tours/${tour.id}`}>
               <div className="package-card">
                 <div className="package-thumb">
                   <img
@@ -85,30 +66,6 @@ const TourList = () => {
                 </div>
               </div>
               </Link>
-            </div>
-          );
-        })}
-      </div>
-      <div className="row">
-        <div className="col-lg-12">
-          <div className="pagination mt-30">
-            <a href="#">
-              <i className="bx bx-chevron-left" />
-            </a>
-            <a href="#" className="active">
-              1
-            </a>
-            <a href="#">2</a>
-            <a href="#">3</a>
-            <a href="#">4</a>
-            <a href="#">
-              <i className="bx bx-chevron-right" />
-            </a>
-          </div>
         </div>
-      </div>
-    </div>
-  );
-};
-
-export default TourList;
+    );
+}

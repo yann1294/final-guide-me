@@ -5,14 +5,14 @@ import { TourDTO } from '@/dto/tour.dto';
 import { convertSecondsToDate } from '@/lib/utils/utils';
 import usePackageStore from '@/stores/packageStore';
 import useTourStore from '@/stores/tourStore';
+import { CONTEXT, ContextType } from '@/lib/utils/context.utils';
 
-export default function TourPackageTab({
-  tour,
-  context,
-}: {
-  tour: TourDTO | PackageDTO;
-  context: 'packages' | 'tours';
-}) {
+interface TourPackageTabProps {
+  resource: TourDTO | PackageDTO;
+  context: CONTEXT;
+}
+
+export default function TourPackageTab({ resource, context }: TourPackageTabProps) {
   const { tours } = usePackageStore();
   const { setCurrentTour } = useTourStore();
 
@@ -20,6 +20,7 @@ export default function TourPackageTab({
     <>
       <div className="package-tab">
         <ul className="nav nav-pills" id="pills-tab" role="tablist">
+          {/* Information Tab */}
           <li className="nav-item" role="presentation">
             <button
               className="nav-link active"
@@ -36,7 +37,8 @@ export default function TourPackageTab({
             </button>
           </li>
 
-          {context === 'tours' && (
+          {/* Tour Activities Tab (only for tours) */}
+          {context === ContextType.tour && (
             <li className="nav-item" role="presentation">
               <button
                 className="nav-link"
@@ -49,12 +51,13 @@ export default function TourPackageTab({
                 aria-selected="false"
               >
                 <i className="flaticon-clipboard" />
-                Tour activities
+                Tour Activities
               </button>
             </li>
           )}
 
-          {context === 'packages' && (
+          {/* Package Tours Tab (only for packages) */}
+          {context === ContextType.package && (
             <li className="nav-item" role="presentation">
               <button
                 className="nav-link"
@@ -74,6 +77,7 @@ export default function TourPackageTab({
         </ul>
 
         <div className="tab-content p-tab-content" id="pills-tabContent">
+          {/* Information Tab Content */}
           <div
             className="tab-pane fade show active"
             id="pills-home"
@@ -81,20 +85,20 @@ export default function TourPackageTab({
             aria-labelledby="pills-home-tab"
           >
             <div className="row">
-              {/* Description */}
               <div className="col-lg-12">
                 <div className="tab-content-1">
                   <div className="p-overview">
                     <h5>
-                      {context === 'tours' ? 'Tour' : 'Package'} description
+                      {context === ContextType.tour ? 'Tour' : 'Package'} description
                     </h5>
-                    <p>{tour.description}</p>
+                    <p>{resource.description}</p>
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
+          {/* Tour Activities Tab Content (only for tours) */}
           <div
             className="tab-pane fade"
             id="pills-activities"
@@ -105,8 +109,8 @@ export default function TourPackageTab({
               <div className="row">
                 <div className="col-lg-12">
                   <ul className="p-timeline">
-                    {context !== 'packages' &&
-                      Object.entries((tour as TourDTO).activities).map(
+                    {context === ContextType.tour &&
+                      Object.entries((resource as TourDTO).activities).map(
                         ([activityId, activity], index) => (
                           <li key={activityId}>
                             <div className="timeline-index">
@@ -130,9 +134,7 @@ export default function TourPackageTab({
                                 <li />
                                 <li>
                                   <i className="flaticon-arrival" />
-                                  {activity.location.name},{' '}
-                                  {activity.location.city},{' '}
-                                  {activity.location.country}
+                                  {activity.location.name}, {activity.location.city}, {activity.location.country}
                                 </li>
                                 <li />
                                 <li>
@@ -157,7 +159,7 @@ export default function TourPackageTab({
                               </ul>
                             </div>
                           </li>
-                        ),
+                        )
                       )}
                   </ul>
                 </div>
@@ -165,6 +167,7 @@ export default function TourPackageTab({
             </div>
           </div>
 
+          {/* Package Tours Tab Content (only for packages) */}
           <div
             className="tab-pane fade"
             id="pills-tours"
@@ -173,58 +176,59 @@ export default function TourPackageTab({
           >
             <div className="tab-content-2">
               <div className="row">
-                {tours.get(tour.id as string)?.map((tour) => (
-                  <div key={tour.id} className="col-lg-4 col-md-6 col-sm-6">
-                    <Link
-                      onClick={() => setCurrentTour(tour)}
-                      href={`/tours/${tour.id}`}
-                    >
-                      <div className="package-card">
-                        <div className="package-thumb">
-                          <img
-                            src={tour.images ? tour.images[0] : ''}
-                            alt=""
-                            className="img-fluid"
-                          />
-                        </div>
-                        <div className="package-details">
-                          <div className="resource-name text-black">
-                            {tour.name}
+                {context === ContextType.package &&
+                  tours.get(resource.id as string)?.map((tour) => (
+                    <div key={tour.id} className="col-lg-4 col-md-6 col-sm-6">
+                      <Link
+                        onClick={() => setCurrentTour(tour)}
+                        href={`/tours/${tour.id}`}
+                      >
+                        <div className="package-card">
+                          <div className="package-thumb">
+                            <img
+                              src={tour.images ? tour.images[0] : ''}
+                              alt=""
+                              className="img-fluid"
+                            />
                           </div>
-                          <div className="resource-location">
-                            <i className="flaticon-arrival" />
-                            <Link
-                              style={{ fontSize: 'small' }}
-                              href={`/tours/${tour.id}`}
-                            >
-                              &nbsp;{tour.location.name}, {tour.location.city},{' '}
-                              {tour.location.country}
-                            </Link>
-                          </div>
-                          <div className="card-foot d-flex justify-content-between">
-                            {/* Tour availability */}
-                            {tour.isAvailable ? (
-                              <div className="card-chip package-availability">
-                                Available
-                              </div>
-                            ) : (
-                              <div className="card-chip package-availability card-chip-not-available">
-                                Not Available
-                              </div>
-                            )}
-                            <div className="card-chip number-of-seats">
-                              {tour.numberOfSeats}{' '}
-                              {tour.numberOfSeats === 1 ? 'seat' : 'seats'}
+                          <div className="package-details">
+                            <div className="resource-name text-black">
+                              {tour.name}
                             </div>
-                            <div className="card-chip date">
-                              {convertSecondsToDate(tour.date._seconds)}
+                            <div className="resource-location">
+                              <i className="flaticon-arrival" />
+                              <Link
+                                style={{ fontSize: 'small' }}
+                                href={`/tours/${tour.id}`}
+                              >
+                                &nbsp;{tour.location.name}, {tour.location.city},{' '}
+                                {tour.location.country}
+                              </Link>
+                            </div>
+                            <div className="card-foot d-flex justify-content-between">
+                              {/* Tour availability */}
+                              {tour.isAvailable ? (
+                                <div className="card-chip package-availability">
+                                  Available
+                                </div>
+                              ) : (
+                                <div className="card-chip package-availability card-chip-not-available">
+                                  Not Available
+                                </div>
+                              )}
+                              <div className="card-chip number-of-seats">
+                                {tour.numberOfSeats}{' '}
+                                {tour.numberOfSeats === 1 ? 'seat' : 'seats'}
+                              </div>
+                              <div className="card-chip date">
+                                {convertSecondsToDate(tour.date._seconds)}
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    </Link>
-                  </div>
-                ))}
+                      </Link>
+                    </div>
+                  ))}
               </div>
             </div>
           </div>
