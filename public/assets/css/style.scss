@@ -514,7 +514,7 @@ table tfoot tr th {
     padding: 10px;
 }
 
-a.btn-common-sm{
+div.btn-common, a.btn-common-sm{
   display: inline-block;
   padding: 11px 20px 11px 30px;
   background: $secondary-color;
@@ -546,7 +546,7 @@ a.btn-common-sm{
   }
 }
 
-a.btn-common {
+div.btn-common, a.btn-common {
     display: inline-block;
     padding: 16.5px 32.5px;
     background: $secondary-color;

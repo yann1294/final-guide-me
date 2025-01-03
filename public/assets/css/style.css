@@ -351,6 +351,103 @@ hr {
   background-color: #304F47;
 }
 
+
+/* Side bar */
+.side-bar-container {
+  position: fixed;
+  top: 0;
+  background-color: white;
+  width: 250px;
+  box-shadow: 6px 0px 10px 0px rgba(0, 0, 0, 0.1);
+  user-select: none;
+  height: 100%;
+}
+
+.side-bar-options {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow: hidden;
+  border-top: 1px solid rgba(213, 213, 213, 0.2);
+}
+
+.side-bar-option a {
+  color: black !important;
+  font-size: 16px;
+}
+
+.side-bar-option {
+  padding: 10px;
+  background-color: rgba(213, 213, 213, 0.2);
+  border-radius: 5px;
+}
+
+.side-bar-options .active, .side-bar-options .active a, .side-bar-option:hover a, .side-bar-option:hover {
+  cursor: pointer;
+  background-color: #6BC8B4;
+  color: white !important;
+}
+
+.side-bar-option:active a, .side-bar-option:active {
+  background-color: rgba(213, 213, 213, 0.2);
+  color: black !important;
+}
+
+.topbar-area {
+  height: 30px;
+  display: flex;
+  align-items: center;
+}
+
+.side-bar-container .topbar-area {
+  position: relative;
+  width: 100%;
+}
+
+.hamburger-button {
+  display: absolute;
+  color: white;
+  padding-left: 250px;
+  font-weight: bolder;
+  background-color: #6BC8B4;
+  height: 100%;
+  box-shadow: 6px 0px 10px 0px rgba(0, 0, 0, 0.1);
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  border: 2px solid rgba(213, 213, 213, 1);
+}
+
+.hamburger-button:hover {
+  cursor: pointer;
+}
+
+.hamburger-button:active {
+  background-color: #6BC8B4;
+}
+
+.hamburger-button div {
+  background-color: black;
+  padding-right: 10px;
+  padding-left: 10px;
+  border-radius: 10px;
+}
+
+.close-side-bar {
+  transform: translateX(-100%);
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Open sidebar style */
+.open-side-bar {
+  transform: translateX(0);
+  transition: transform 0.3s ease-in-out;
+}
+
+
+
+
+
 @import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&family=Work+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 /*====================
     1. Global CSS

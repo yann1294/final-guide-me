@@ -120,7 +120,7 @@ export default function Header() {
                   </div>
                   <div className="mobile-menu d-flex ">
                     <div className="top-search-bar m-0 d-block d-xl-none"></div>
-                    <a
+                    {/* <a
                       href="#"
                       onClick={handleSidebar}
                       className={
@@ -132,14 +132,14 @@ export default function Header() {
                       <span className="h-top"  />
                       <span className="h-middle" />
                       <span className="h-bottom" />
-                    </a>
+                    </a> */}
                   </div>
                 </div>
               </div>
             </div>
             <div className="col-lg-10 col-md-10 col-sm-10 col-xs-10">
-              <nav className={sidebar === 1 ? "main-nav slidenav" : "main-nav "}>
-                <div className="navber-logo-sm">
+              <nav className={sidebar === 1 ? "main-nav slidenav" : "main-nav"}>
+                <div className="navbar-logo-sm">
                   <img
                     src="assets/images/logo-2.png"
                     alt=""
@@ -217,18 +217,6 @@ export default function Header() {
                       </ul>
                     </div>
                   </div>
-                </div>
-                <div className="sidebar-contact">
-                  <ul>
-                    <li className="sidebar-single-contact">
-                      <i className="bx bxs-phone" />{" "}
-                      <Link href="tel:+17632275032">+1 763-227-5032</Link>
-                    </li>
-                    <li className="sidebar-single-contact">
-                      <i className="bx bxs-envelope" />
-                      <Link href="mailto:info@example.com">info@example.com</Link>
-                    </li>
-                  </ul>
                 </div>
               </nav>
             </div>
