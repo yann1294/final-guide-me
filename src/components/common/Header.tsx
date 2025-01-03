@@ -7,13 +7,11 @@ export default function Header() {
   interface State {
     activeMenu: string, props?: string
   }
-  
-
-  // const currentRoute = useRouter().pathname;
   const [active, setActive ] = useState<boolean | number>(false);
   const [sidebar, setSidebar ] = useState<boolean | number>(false);
-  const [profile, setProfole ] = useState<boolean | number>(false);
-  const hanldeSearchFullScreen = () => {
+  const [profile, setProfile ] = useState<boolean | number>(false);
+
+  const handleSearchFullScreen = () => {
     if (active === false || active === 0) {
       setActive(1);
       
@@ -21,15 +19,15 @@ export default function Header() {
       setActive(false);
     }
   };
-  const hanldeProfile = () => {
+  const handleProfile = () => {
     if (profile === false || profile === 0) {
-      setProfole(1);
+      setProfile(1);
       
     } else {
-      setProfole(false);
+      setProfile(false);
     }
   };
-  const hanldeSidebar = () => {
+  const handleSidebar = () => {
     if (sidebar === false || sidebar === 0) {
       setSidebar(1);
       
@@ -86,11 +84,11 @@ export default function Header() {
                   </Link>
                 </div>
                 <div className="navbar-icons">
-                  <div className="searchbar-open" onClick={hanldeSearchFullScreen}>
+                  <div className="searchbar-open" onClick={handleSearchFullScreen}>
                     <i className="flaticon-magnifier" />
                   </div>
                   <div className="user-dropdown-icon">
-                    <i className="flaticon-user" onClick={hanldeProfile} />
+                    <i className="flaticon-user" onClick={handleProfile} />
                     <div className={profile === 1? "account-dropdown activeCard":"account-dropdown"}>
                       <ul>
                         <li className="account-el">
@@ -124,7 +122,7 @@ export default function Header() {
                     <div className="top-search-bar m-0 d-block d-xl-none"></div>
                     <a
                       href="#"
-                      onClick={hanldeSidebar}
+                      onClick={handleSidebar}
                       className={
                         sidebar === 1
                           ? "hamburger d-block d-xl-none h-active"
@@ -178,11 +176,11 @@ export default function Header() {
                 <div className="navbar-icons-2">
                   <div
                     className="searchbar-open"
-                    onClick={hanldeSearchFullScreen}
+                    onClick={handleSearchFullScreen}
                   >
                     <i className="flaticon-magnifier" />
                   </div>
-                  <div className="user-dropdown-icon" onClick={hanldeProfile}>
+                  <div className="user-dropdown-icon" onClick={handleProfile}>
                     <i className="flaticon-user" />
                     <div className={profile === 1? "account-dropdown activeCard":"account-dropdown"}>
                       <ul>
@@ -246,7 +244,7 @@ export default function Header() {
           >
             <div
               className="searchbar-close"
-              onClick={hanldeSearchFullScreen}
+              onClick={handleSearchFullScreen}
             >
               <i className="bx bx-x" />
             </div>

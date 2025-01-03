@@ -87,6 +87,10 @@ Last update :
   color: white !important;
 }
 
+.active-link {
+  color: #ED9734 !important
+}
+
 .filter-container .input-group-text {
   background-color: #ED9734 !important;
   color: white !important;
