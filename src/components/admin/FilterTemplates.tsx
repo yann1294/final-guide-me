@@ -168,4 +168,8 @@ export const FilterTemplates = [
     body: () =>
       modifyElement(<ExternalLinkIcon size="18px" />, 'View Guide Profile'),
   },
+  {
+    field: 'actions',
+    exportable: false,
+  }
 ] as ColumnProps[];

@@ -629,7 +629,7 @@ hr {
   height: 69px !important;
 }
 
-.p-dropdown-panel, .p-column-filter-overlay {
+.p-dropdown-panel, .p-column-filter-overlay, .p-datepicker {
   background: #ffffff;
   color: #4b5563;
   border: 0 none;
@@ -723,7 +723,7 @@ hr {
   margin-bottom: 20px;
 }
 
-.action-buttons div {
+.action-buttons div, .save-resource {
   display: flex;
   gap: 10px;
   align-items: center;
@@ -735,12 +735,12 @@ hr {
   user-select: none;
 }
 
-.action-buttons div:hover {
+.action-buttons div:hover, .save-resource:hover {
   box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.3);
   cursor: pointer;
 }
 
-.action-buttons div:active {
+.action-buttons div:active, .save-resource:active {
   box-shadow: none;
 }
 
@@ -749,8 +749,8 @@ hr {
   color: white;
 }
 
-.add-resource {
-  background-color: #8bc49b;
+.add-resource, .save-resource {
+  background-color: #6BC8B4;
   color: white;
 }
 
@@ -774,6 +774,7 @@ hr {
   color: black;
 }
 
+
 .p-dialog {
   display: flex;
   flex-direction: column;
@@ -783,8 +784,27 @@ hr {
   background-color: white;
   border-radius: 6px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.p-dialog~.create-dialog {
   min-width: 80%;
 }
+
+.create-dialog {
+  min-width: 50%;
+}
+
+.create-dialog .p-inputwrapper {
+  padding: 0;
+}
+
+.create-dialog .p-dialog-content {
+  padding-top: 10px;
+}
+.create-dialog .form-group {
+  margin-top: 20px;
+}
+
 
 .p-dialog-mask {
   position: fixed;
@@ -821,6 +841,142 @@ hr {
   padding: 30px;
 }
 
+.p-datepicker {
+  padding: 10px;
+  /* width: 100%; */
+}
+
+.p-datepicker-header, .p-timepicker {
+  padding: 10px;
+}
+.p-datepicker-calendar {
+  /* width: 100%; */
+}
+
+.save-resource {
+  width: 100%;
+  font-weight: bold;
+}
+
+.p-hour-picker, .p-minute-picker {
+  display: flex;
+  gap: 10px;
+}
+
+.p-image-preview-indicator {
+  color: white;
+}
+
+.p-image-preview-indicator svg {
+  width: 20px;
+  height: 20px;
+}
+
+.p-image img {
+  width: 100%;
+  height: 100%;
+  border-radius: 5px;
+}
+
+.p-image-toolbar {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  padding: 10px;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 5px;
+}
+
+.p-image-toolbar svg {
+  width: 20px;
+  height: 20px;
+}
+
+.p-image-toolbar svg:hover {
+  cursor: pointer;
+  color: #6BC8B4;
+}
+
+.p-separator {
+  padding: 10px;
+}
+
+.confirmation-dialog {
+  font-size: 16px !important; 
+}
+
+.confirmation-dialog .p-dialog-content {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  align-items: center;
+}
+
+.confirmation-dialog .p-dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 20px;
+  border-top: 1px solid rgba(213, 213, 213, 0.7);
+  padding: 10px;
+  font-weight: bold;
+}
+
+  .confirmation-dialog button[aria-label="Yes"] {
+    color: #c86b6b;
+  }
+
+  #date {
+    position: relative;
+  }
+
+  #date .p-datepicker-trigger {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+  }
+  .p-inputtextarea {
+    height: auto !important;
+  }
+
+  .images-dialog, .table-dialog {
+    min-width: 80%;
+  }
+
+  .images-dialog .image-container {
+    position: relative;
+  }
+
+  .images-dialog .p-dialog-footer, .create-dialog .p-dialog-footer {
+    padding: 30px;
+    padding-top: 0px;
+  }
+
+  .images-dialog .delete-image {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #c86b6b;
+    padding: 5px;
+    border-radius: 5px;
+    z-index: 100;
+  }
+  .images-dialog .delete-image svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .images-dialog .delete-image:hover {
+    background-color: rgba(213, 213, 213, 0.5);
+    cursor: pointer;
+  }
 
 @import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&family=Work+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 /*====================
