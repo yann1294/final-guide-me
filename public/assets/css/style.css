@@ -484,6 +484,344 @@ hr {
 }
 
 
+/* Data Table */
+
+.management-container {
+  padding: 14px;
+  border: 1px solid rgba(213, 213, 213, 0.3);
+  border-radius: 5px;
+  margin-top: 40px;
+  box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.1)
+}
+
+.p-datatable .p-datatable-header, .action-buttons {
+  /* Styles for the header section */
+  background: #f9fafb;
+  color: #374151;
+  border: 1px solid #e5e7eb;
+  border-width: 1px 0 1px 0;
+  padding: 14px;
+  font-weight: 700;
+
+}
+
+.global-filter-container {
+  position: relative;
+}
+
+.global-filter-container .search-input {
+  padding-left: 40px;
+}
+
+.p-inputtext {
+  padding: 10.5px;
+  border-radius: 5px;
+  font-weight: normal;
+  font-size: 1rem;
+  color: #4b5563;
+  border: 1px solid #d1d5db;
+  transition: background-color 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s;
+  outline-color: transparent !important;
+  outline: none !important;
+  height: 40px !important;
+}
+
+.p-inputtext:hover, .p-inputtext:focus, .p-paginator-bottom .p-dropdown:hover {
+  border-color: #6BC8B4;
+}
+
+.global-filter-container .icon-container {
+  position: absolute;
+  height: 100%;
+  width: 40px;
+  color: #6b7280;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.p-column-title {
+  margin-right: 5px;
+}
+
+.p-column-filter {
+  display: flex;
+  gap: 10px;
+  justify-content: space-evenly !important;
+}
+
+
+.p-paginator-bottom {
+  /* Styles for the paginator section */
+  padding: 14px !important;
+  border-bottom: 1px solid rgba(213, 213, 213, 0.3);
+  color: #6b7280;
+  font-size: 14px;
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+}
+
+.p-paginator-bottom .p-inputtext {
+  font-size: 14px;
+}
+
+.p-paginator-bottom .p-dropdown {
+  min-width: 80px;
+}
+
+.p-paginator-pages button{
+  height: 42px;
+  width: 42px;
+  border-radius: 50px;
+  margin-left: 2px;
+  margin-right: 2px;
+}
+
+.p-paginator-icon:hover {
+  color: #6BC8B4;
+}
+
+.p-paginator-pages button:hover {
+  background-color: rgba(213, 213, 213, 0.3);
+}
+
+.p-paginator-pages button[aria-current|="true"] {
+  background-color: #6BC8B4;
+  color: white;
+}
+
+.p-paginator-current {
+  padding: 5px;
+}
+
+.p-paginator-element.p-disabled {
+  color: rgba(213, 213, 213, 0.8);
+}
+
+.p-checkbox-input {
+  border: 2px solid #d1d5db;
+  border-radius: 6px;
+  outline: none;
+  width: 20px;
+  height: 20px;
+}
+
+.p-checkbox-input:hover {
+  cursor: pointer;
+  border-color: #6BC8B4;
+}
+
+.p-checkbox-input:checked {
+  background-color: #6BC8B4;
+}
+
+.p-checkbox {
+  height: 20px;
+  width: 20px;
+}
+
+.p-selection-column {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 69px !important;
+}
+
+.p-dropdown-panel, .p-column-filter-overlay {
+  background: #ffffff;
+  color: #4b5563;
+  border: 0 none;
+  border-radius: 6px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+}
+
+.p-dropdown-panel .p-focus {
+  background-color: #6BC8B4;
+  color: white;
+  border-radius: 6px;
+}
+
+.p-dropdown-items {
+  display: flex;
+  flex-direction: column;
+}
+
+.p-dropdown-item {
+  padding: 10px;
+}
+
+.p-dropdown-item:hover {
+  background-color: rgba(213, 213, 213, 0.2);
+  color: black !important;
+}
+
+.p-checkbox-icon {
+  display: none;
+}
+
+.p-column-filter-overlay {
+  padding: 20px;
+  
+}
+
+.p-column-filter-constraint {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.p-button[aria-label="Apply"] {
+  color: #6bc86e;
+}
+
+.p-button[aria-label="Clear"] {
+  color: #c86b6b;
+}
+
+.p-dropdown-trigger {
+  position: absolute;
+  right: 0;
+  height: 100%;
+  padding: 10px
+}
+
+.row-action-btns {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px
+}
+
+.row-action-btns div {
+  padding: 10px;
+  border-radius: 20px;
+}
+
+.row-action-btns div:hover {
+  background-color: rgba(213, 213, 213, 0.2);
+}
+
+.row-action-btns div:active {
+  background-color: white;
+}
+
+.row-edit {
+  color: #ED9734;
+}
+
+.row-delete {
+  color: #c86b6b;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 10px;
+  border: 1px solid rgba(213, 213, 213, 0.3);
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+.action-buttons div {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  height: 40px;
+  border-radius: 5px;
+  padding: 10px;
+  user-select: none;
+}
+
+.action-buttons div:hover {
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+}
+
+.action-buttons div:active {
+  box-shadow: none;
+}
+
+.delete-resource {
+  background-color: #c86b6b;
+  color: white;
+}
+
+.add-resource {
+  background-color: #8bc49b;
+  color: white;
+}
+
+.p-datatable-thead {
+  /* Styles for the thead element */
+  padding: 14px;
+  font-size: 14px;
+}
+
+.p-datatable-tbody {
+  /* Styles for the tbody element */
+  font-size: 14px;
+}
+
+.make-clickable:hover {
+  cursor: pointer;
+  color: #6BC8B4;
+}
+
+.make-clickable:active {
+  color: black;
+}
+
+.p-datatable-tfoot {
+  /* Styles for the tfoot element */
+}
+
+.p-column-title {
+  /* Styles for the title of a column */
+}
+
+.p-sortable-column {
+  /* Styles for a sortable column header */
+}
+
+.p-frozen-column {
+  /* Styles for a frozen column header */
+}
+
+.p-rowgroup-header {
+  /* Styles for the header of a rowgroup */
+}
+
+.p-rowgroup-footer {
+  /* Styles for the footer of a rowgroup */
+}
+
+.p-datatable-row-expansion {
+  /* Styles for expanded row content */
+}
+
+.p-row-toggler {
+  /* Styles for the toggle element for row expansion */
+}
+
+.p-datatable-emptymessage {
+  /* Styles for the cell containing the empty message */
+}
+
+.p-row-editor-init {
+  /* Styles for the pencil button of the row editor */
+}
+
+.p-row-editor-save {
+  /* Styles for the save button of the row editor */
+}
+
+.p-row-editor-cancel {
+  /* Styles for the cancel button of the row editor */
+}
+
 
 
 
