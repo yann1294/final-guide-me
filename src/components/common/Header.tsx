@@ -139,13 +139,6 @@ export default function Header() {
             </div>
             <div className="col-lg-10 col-md-10 col-sm-10 col-xs-10">
               <nav className={sidebar === 1 ? "main-nav slidenav" : "main-nav"}>
-                <div className="navbar-logo-sm">
-                  <img
-                    src="assets/images/logo-2.png"
-                    alt=""
-                    className="img-fluid"
-                  />
-                </div>
                 <ul>
                   <li className="">
                     <Link href="/" >

@@ -15,7 +15,7 @@ import '../../public/assets/css/responsive.css';
 import { useEffect } from 'react';
 import { useFetchPackages } from '@/hooks/usePackages';
 import { useFetchTours } from '@/hooks/useTours';
-require('dotenv').config();
+// require('dotenv').config();
 
 const inter = Inter({ subsets: ['latin'] });
 

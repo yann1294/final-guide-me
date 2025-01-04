@@ -39,11 +39,11 @@ export default function SideBar() {
                         <div className="sub-options">
                             <div className="sub-option view d-flex align-items-center">
                                 <Eye size={16} style={{ marginRight: "8px" }} /> 
-                                <Link href={"#"}>View</Link>
+                                <Link href={"/admin/tours"}>View</Link>
                             </div>
                             <div className="sub-option create d-flex align-items-center">
                                 <PlusCircle size={16} style={{ marginRight: "8px" }} /> 
-                                <Link href={"#"}>Create</Link>
+                                <Link href={"/admin/tours/create"}>Create</Link>
                             </div>
                         </div>
                     )}
