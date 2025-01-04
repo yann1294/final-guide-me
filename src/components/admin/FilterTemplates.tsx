@@ -151,8 +151,6 @@ export const FilterTemplates = [
   {
     field: 'description',
     header: 'Description',
-    body: () =>
-      modifyElement(<ReceiptTextIcon size="18px" />, 'View Tour Description'),
   },
   {
     field: 'images',

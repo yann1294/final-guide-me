@@ -39,6 +39,7 @@ import { ActivityDTO } from '@/dto/tour.dto';
 import { Dialog } from 'primereact/dialog';
 import { timestampToDate } from '@/lib/utils/utils';
 import { ActionButtons } from '@/components/admin/ActionButtons';
+import { Image } from 'primereact/image';
 
 export default function AdminToursPage() {
   const { filters, setFilters } = useGlobalFilters();
@@ -50,6 +51,8 @@ export default function AdminToursPage() {
     string,
     ActivityDTO
   > | null>(null);
+  const [tourDescription, setTourDescription] = useState<string | null>(null);
+  const [tourImages, setTourImages] = useState<string[] | null>(null);
 
   const paginatorLeft = <Button type="button" icon="pi pi-refresh" text />;
   const paginatorRight = <Button type="button" icon="pi pi-download" text />;
@@ -146,6 +149,20 @@ export default function AdminToursPage() {
                       'View Tour Activities',
                     );
                 }
+
+                if (template.field === 'description') {
+                  additionalConfig['body'] = (data: any) =>
+                    modifyElement(<ReceiptTextIcon onClick={() => {
+                      setTourDescription(data.description);
+                    }} size="18px" />, 'View Tour Description');
+                }
+
+                if (template.field === 'images') {
+                  additionalConfig['body'] = (data: any) =>
+                    modifyElement(<ViewIcon onClick={() => {
+                      setTourImages(data.images);
+                    }} size="18px" />, 'View Tour Images');
+                }
                 return (
                   <Column
                     key={template.field}
@@ -239,6 +256,37 @@ export default function AdminToursPage() {
               exportable={false}
             ></Column>
               </DataTable>
+            </Dialog>
+            <Dialog
+              visible={tourDescription !== null}
+              style={{ width: '32rem' }}
+              breakpoints={{ '960px': '75vw', '641px': '90vw' }}
+              header="Tour Description"
+              modal
+              resizable
+              onHide={() => setTourDescription(null)}
+            >
+              <div className="tour-description">{tourDescription}</div>
+            </Dialog>
+            <Dialog
+              visible={tourImages !== null}
+              style={{ width: '32rem' }}
+              breakpoints={{ '960px': '75vw', '641px': '90vw' }}
+              header="Tour Images"
+              modal
+              resizable
+              onHide={() => setTourImages(null)}
+            >
+              <div className="container">
+                <ActionButtons />
+                <div className="row">
+                  {tourImages?.map((image) => (
+                    <div className="col-12 col-sm-6 col-md-4 col-lg-3">
+                    <Image src={image} alt="Image" width="250" preview />
+                    </div>
+                  ))}
+                </div>
+              </div>
             </Dialog>
           </div>
         </div>
