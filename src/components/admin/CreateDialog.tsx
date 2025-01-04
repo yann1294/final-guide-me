@@ -1,4 +1,5 @@
 import { TourDTO } from '@/dto/tour.dto';
+import { CONTEXT } from '@/lib/utils/context.utils';
 import { tourTestData } from '@/lib/utils/test.data';
 import { Button } from 'primereact/button';
 import { Calendar } from 'primereact/calendar';
@@ -10,9 +11,11 @@ import { InputTextarea } from 'primereact/inputtextarea';
 import { Dispatch, SetStateAction, useState } from 'react';
 
 export default function CreateDialog({
+  context,
   addResource,
   setAddResource,
 }: {
+  context: CONTEXT;
   addResource: boolean;
   setAddResource: Dispatch<SetStateAction<boolean>>;
 }) {

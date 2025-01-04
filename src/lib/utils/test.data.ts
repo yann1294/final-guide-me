@@ -393,3 +393,78 @@ export const tourTestData = JSON.parse(`{
         }
     ]
 }`)['data'];
+
+
+export const packageTestData = JSON.parse(`{
+    "status": "success",
+    "code": 200,
+    "message": "Successfully feteched documents.",
+    "data": [
+        {
+            "id": "oqL27lHI9zlqIFbEcYgh",
+            "name": "Wildlife Adventure Package",
+            "location": {
+                "name": "Safari Trails",
+                "city": "Various Locations",
+                "country": "Africa",
+                "address": "Safari Starting Point",
+                "location": {
+                    "latitude": -1.2921,
+                    "longitude": 36.8219
+                }
+            },
+            "price": 1250,
+            "durationDays": 10,
+            "discount": 10,
+            "numberOfSeats": 15,
+            "description": "Embark on a thrilling safari in the Serengeti and trek through the scenic Alps. A perfect blend of wildlife and adventure.",
+            "isAvailable": true,
+            "date": {
+                "_seconds": 1736060400,
+                "_nanoseconds": 0
+            },
+            "tours": [
+                "tcKnXCBHdvnrxrAFbl9Y",
+                "fjTILqh2pX7EapDWk0KU"
+            ],
+            "images": [
+                "https://images.unsplash.com/photo-1495562569060-2eec283d3391?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&dl=johan-mouchet-Z95viY3WaZs-unsplash.jpg",
+                "https://images.unsplash.com/photo-1495562569060-2eec283d3391?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&dl=johan-mouchet-Z95viY3WaZs-unsplash.jpg"
+            ],
+            "guide": "TgupNT9l75vO9n2a6s69"
+        },
+        {
+            "id": "q8GElH7cEmL2hBbrM0cU",
+            "name": "Romantic Escape Package",
+            "location": {
+                "name": "Romantic Destinations",
+                "city": "Various Cities",
+                "country": "Europe",
+                "address": "Exclusive Venues",
+                "location": {
+                    "latitude": 45.4408,
+                    "longitude": 12.3155
+                }
+            },
+            "price": 800,
+            "durationDays": 5,
+            "discount": 20,
+            "numberOfSeats": 10,
+            "description": "Enjoy a romantic gondola ride in Venice and witness the magical Northern Lights in Iceland. Perfect for couples.",
+            "isAvailable": true,
+            "date": {
+                "_seconds": 1735149600,
+                "_nanoseconds": 0
+            },
+            "tours": [
+                "fq4rtuj0bWjqwpK1C0fe",
+                "IV4Dt4XQt0VIfJ4zSi8z"
+            ],
+            "images": [
+                "https://images.unsplash.com/photo-1495562569060-2eec283d3391?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&dl=johan-mouchet-Z95viY3WaZs-unsplash.jpg",
+                "https://images.unsplash.com/photo-1495562569060-2eec283d3391?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&dl=johan-mouchet-Z95viY3WaZs-unsplash.jpg"
+            ],
+            "guide": "TgupNT9l75vO9n2a6s69"
+        }
+    ]
+}`)['data'];

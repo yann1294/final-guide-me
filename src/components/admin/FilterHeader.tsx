@@ -1,14 +1,17 @@
 import { useGlobalFilters } from '@/lib/config/data-table.configs';
+import { CONTEXT, ContextType } from '@/lib/utils/context.utils';
 import { SearchIcon } from 'lucide-react';
 import { InputText } from 'primereact/inputtext';
 import { ChangeEvent, Dispatch, SetStateAction, useState } from 'react';
 
 export default function FilterHeader({
+  context,
   globalFilterValue,
   filters,
   setFilters,
   setGlobalFilterValue,
 }: {
+  context: CONTEXT;
   globalFilterValue: string | undefined;
   filters: any;
   setGlobalFilterValue: Dispatch<SetStateAction<string | undefined>>;
@@ -16,7 +19,7 @@ export default function FilterHeader({
 }) {
   return (
     <div className="flex justify-content-between align-items-center">
-      <div className="table-header-title">Manage Tours</div>
+      <div className="table-header-title">Manage {context === ContextType.tour ? "Tours" : "Packages"}</div>
       <div className="global-filter-container">
         <div className="icon-container">
           <SearchIcon size={'18px'} className="search-icon" />

@@ -32,7 +32,7 @@ import { MultiSelect } from 'primereact/multiselect';
 import { InputNumber } from 'primereact/inputnumber';
 import { Button } from 'primereact/button';
 import {
-  FilterTemplates,
+  TourColumnTemplates,
   modifyElement,
 } from '@/components/admin/FilterTemplates';
 import FilterHeader from '@/components/admin/FilterHeader';
@@ -51,6 +51,7 @@ import ImagesDialog from '@/components/admin/ImagesDialog';
 import TextDialog from '@/components/admin/TextDialog';
 import TableDialog from '@/components/admin/TableDialog';
 import MainDataTable from '@/components/admin/MainDataTable';
+import { ContextType } from '@/lib/utils/context.utils';
 
 export default function AdminToursPage() {
   const { filters, setFilters } = useGlobalFilters();
@@ -84,12 +85,14 @@ export default function AdminToursPage() {
           </div>
           <div className="col-12 management-container">
             <ActionButtons
+            context={ContextType.tour}
               setAddAction={setAddResource}
               setDeleteAction={setDeleteResource}
             />
 
             <MainDataTable
-              tours={tours}
+            context={ContextType.tour}
+              resources={tours}
               loading={loading}
               filters={filters}
               setFilters={setFilters}
@@ -98,13 +101,14 @@ export default function AdminToursPage() {
               selectedResources={selectedTours}
               setSelectedResources={setSelectedTours}
               setActivityDialogData={setActivityDialogData}
-              setTourDescription={setTourDescription}
-              setTourImages={setTourImages}
+              setDescription={setTourDescription}
+              setImages={setTourImages}
               setResource={setResource}
               setEditResource={setEditResource}
               setDeleteResource={setDeleteResource}
             />
             <TableDialog
+            context={ContextType.tour}
               activityDialogData={activityDialogData}
               setActivityDialogData={setActivityDialogData}
             />
@@ -114,11 +118,13 @@ export default function AdminToursPage() {
               setText={setTourDescription}
             />
             <ImagesDialog
-              tourImages={tourImages}
-              setTourImages={setTourImages}
+            context={ContextType.tour}
+              images={tourImages}
+              setImages={setTourImages}
               setAddResource={setAddResource}
             />
             <CreateDialog
+              context={ContextType.tour}
               addResource={addResource}
               setAddResource={setAddResource}
             />
@@ -130,7 +136,7 @@ export default function AdminToursPage() {
               }}
               onConfirm={() => console.log('Delete')}
               title="Delete Tour"
-              message={`Are you sure you want to delete ${resourceData.name}?`}
+              message={`Are you sure you want to delete <b>${resourceData.name}?<b>`}
             />
           </div>
         </div>
