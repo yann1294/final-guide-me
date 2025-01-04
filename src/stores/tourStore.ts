@@ -1,4 +1,4 @@
-import { TourDTO } from "@/dto/tour.dto";
+import { ActivityDTO, TourDTO } from "@/dto/tour.dto";
 import { create } from "zustand";
 
 interface TourStore {

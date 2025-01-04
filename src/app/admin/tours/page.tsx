@@ -29,9 +29,16 @@ import { TriStateCheckbox } from 'primereact/tristatecheckbox';
 import { MultiSelect } from 'primereact/multiselect';
 import { InputNumber } from 'primereact/inputnumber';
 import { Button } from 'primereact/button';
-import { FilterTemplates } from '@/components/admin/FilterTemplates';
+import {
+  FilterTemplates,
+  modifyElement,
+} from '@/components/admin/FilterTemplates';
 import FilterHeader from '@/components/admin/FilterHeader';
 import { useFetchTours } from '@/hooks/useTours';
+import { ActivityDTO } from '@/dto/tour.dto';
+import { Dialog } from 'primereact/dialog';
+import { timestampToDate } from '@/lib/utils/utils';
+import { ActionButtons } from '@/components/admin/ActionButtons';
 
 export default function AdminToursPage() {
   const { filters, setFilters } = useGlobalFilters();
@@ -39,6 +46,10 @@ export default function AdminToursPage() {
   const { tours } = useTourStore();
   const { loading, fetchTours } = useFetchTours();
   const [selectedTours, setSelectedTours] = useState<any>(null);
+  const [activityDialogData, setActivityDialogData] = useState<Map<
+    string,
+    ActivityDTO
+  > | null>(null);
 
   const paginatorLeft = <Button type="button" icon="pi pi-refresh" text />;
   const paginatorRight = <Button type="button" icon="pi pi-download" text />;
@@ -90,7 +101,6 @@ export default function AdminToursPage() {
               emptyMessage="No tours found."
               resizableColumns
               onFilter={(e) => setFilters(e.filters)}
-              // showGridlines={true}
               sortMode={'multiple'}
               selectionMode={'multiple'}
               selection={selectedTours}
@@ -102,6 +112,11 @@ export default function AdminToursPage() {
               paginatorLeft={paginatorLeft}
               paginatorRight={paginatorRight}
               loading={loading}
+              loadingIcon={
+                <div className="circular-loader-container">
+                  <div className="circular-loader"></div>
+                </div>
+              }
             >
               <Column
                 selectionMode="multiple"
@@ -114,10 +129,117 @@ export default function AdminToursPage() {
                 )}
               ></Column>
 
-              {FilterTemplates.map((template) => (
-                <Column key={template.field} {...template} />
-              ))}
+              {FilterTemplates.map((template) => {
+                let additionalConfig: any = {};
+
+                if (template.field === 'activities') {
+                  additionalConfig['body'] = (data: any) =>
+                    modifyElement(
+                      <LayoutListIcon
+                        onClick={() => {
+                          setActivityDialogData(
+                            data.activities as Map<string, ActivityDTO>,
+                          );
+                        }}
+                        size="18px"
+                      />,
+                      'View Tour Activities',
+                    );
+                }
+                return (
+                  <Column
+                    key={template.field}
+                    {...template}
+                    {...additionalConfig}
+                  />
+                );
+              })}
+              <Column
+              body={(options) => {
+                return (
+                  <div className="row-action-btns">
+                    <div className="row-edit">
+                      <Edit2Icon size={"18px"}  />
+                    </div>
+                    <div className="row-delete">
+                      <Trash2Icon size={"18px"}  />
+                    </div>
+                  </div>
+                );
+              }}
+              exportable={false}
+            ></Column>
             </DataTable>
+            <Dialog
+              visible={activityDialogData !== null}
+              style={{ width: '32rem' }}
+              breakpoints={{ '960px': '75vw', '641px': '90vw' }}
+              header="Tour Activities"
+              modal
+              resizable
+              onHide={() => setActivityDialogData(null)}
+            >
+              <DataTable
+                value={Object.values(activityDialogData ?? {})}
+                paginator
+                rows={5}
+                dataKey="id"
+                selection={selectedTours}
+                resizableColumns
+                emptyMessage="No activity found."
+                header={<ActionButtons />}
+              >
+            <Column field="id" header="ID" sortable />
+            <Column field="name" header="Tour Name" sortable />
+            <Column field="durationHours" header="Duration (Hours)" sortable />
+            <Column field="location.name" header="Location Name" sortable />
+            <Column field="location.city" header="City" sortable />
+            <Column field="location.country" header="Country" sortable />
+            <Column field="location.address" header="Address" sortable />
+            
+            <Column field="transportation.type" header="Transport Type" sortable />
+            <Column
+            style={{maxWidth: "200px"}}
+              body={(data) => timestampToDate(data.transportation.arrivalTime)}
+              header="Arrival Time"
+              sortable
+            />
+            <Column
+            style={{maxWidth: "200px"}}
+              body={(data) => timestampToDate(data.transportation.departureTime)}
+              header="Departure Time"
+              sortable
+            />
+            <Column field="accommodation.type" header="Accommodation Type" sortable />
+            <Column field="accommodation.name" header="Accommodation Name" sortable />
+            <Column
+              body={(data) => (
+                <Button
+                  label="Delete"
+                  icon="pi pi-trash"
+                  className="p-button-danger"
+                  onClick={() => console.log('Delete tour', data)}
+                />
+              )}
+              header="Actions"
+            />
+            <Column
+              body={(options) => {
+                return (
+                  <div className="row-action-btns">
+                    <div className="row-edit">
+                      <Edit2Icon size={"18px"}  />
+                    </div>
+                    <div className="row-delete">
+                      <Trash2Icon size={"18px"}  />
+                    </div>
+                  </div>
+                );
+              }}
+              exportable={false}
+            ></Column>
+              </DataTable>
+            </Dialog>
           </div>
         </div>
       </div>

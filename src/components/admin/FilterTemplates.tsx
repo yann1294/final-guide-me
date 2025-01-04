@@ -147,8 +147,6 @@ export const FilterTemplates = [
   {
     field: 'activities',
     header: 'Activities',
-    body: () =>
-      modifyElement(<LayoutListIcon size="18px" />, 'View Tour Activities'),
   },
   {
     field: 'description',

@@ -774,55 +774,52 @@ hr {
   color: black;
 }
 
-.p-datatable-tfoot {
-  /* Styles for the tfoot element */
+.p-dialog {
+  display: flex;
+  flex-direction: column;
+  pointer-events: auto;
+  max-height: 90%;
+  position: relative;
+  background-color: white;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  min-width: 80%;
 }
 
-.p-column-title {
-  /* Styles for the title of a column */
+.p-dialog-mask {
+  position: fixed;
+    height: 100%;
+    width: 100%;
+    left: 0px;
+    top: 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1101;
+  background-color:  rgba(0, 0, 0, 0.3);
+
 }
 
-.p-sortable-column {
-  /* Styles for a sortable column header */
+.p-dialog-header {
+  padding: 10px;
+  font-size: 18px;
+  font-weight: bold;
+  border-bottom: 1px solid rgba(213, 213, 213, 0.7);
 }
 
-.p-frozen-column {
-  /* Styles for a frozen column header */
+.p-dialog-header-close {
+  color: #c86b6b;
+  padding: 10px;
+  border-radius: 50px;
 }
 
-.p-rowgroup-header {
-  /* Styles for the header of a rowgroup */
+.p-dialog-header-close:hover {
+  background-color: rgba(213, 213, 213, 0.2);
 }
 
-.p-rowgroup-footer {
-  /* Styles for the footer of a rowgroup */
+.p-dialog-content {
+  padding: 30px;
 }
-
-.p-datatable-row-expansion {
-  /* Styles for expanded row content */
-}
-
-.p-row-toggler {
-  /* Styles for the toggle element for row expansion */
-}
-
-.p-datatable-emptymessage {
-  /* Styles for the cell containing the empty message */
-}
-
-.p-row-editor-init {
-  /* Styles for the pencil button of the row editor */
-}
-
-.p-row-editor-save {
-  /* Styles for the save button of the row editor */
-}
-
-.p-row-editor-cancel {
-  /* Styles for the cancel button of the row editor */
-}
-
-
 
 
 @import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&family=Work+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
