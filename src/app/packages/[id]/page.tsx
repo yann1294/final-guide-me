@@ -11,7 +11,7 @@ import { useCreateStripeOrder } from '@/hooks/useBookings';
 import { usePathname } from 'next/navigation';
 import usePackageStore from '@/stores/packageStore';
 import useUserStore from '@/stores/userStore';
-import { ContextType } from '@/lib/utils/context.utils';
+import { ContextType } from '@/lib/utils/contextUtils';
 import { useFetchOnePackage, useFetchPackageTours } from '@/hooks/usePackages';
 import { useFetchOneGuide } from '@/hooks/useUsers';
 import useAuthStore from '@/stores/authStore';

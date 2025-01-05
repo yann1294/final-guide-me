@@ -1,14 +1,14 @@
 import "swiper/css/autoplay";
 import "swiper/css/autoplay";
 import { PackageDTO } from "@/dto/package.dto";
-import { convertSecondsToDate } from "@/lib/utils/utils";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Autoplay, EffectFade } from 'swiper/modules';
 import TourCard from "../tours/TourCard";
-import { packageSlideConfig } from "@/lib/utils/swipper-configs";
-import { ContextType } from "@/lib/utils/context.utils";
+import { packageSlideConfig } from "@/lib/config/swiperConfig";
+import { ContextType } from "@/lib/utils/contextUtils";
 import usePackageStore from "@/stores/packageStore";
 import Link from "next/link";
+import { convertSecondsToDate } from "@/lib/utils/dateUtils";
 
 export default function PackageCard({ pkg: packageObj }: { pkg: PackageDTO }) {
   const { packages, tours } = usePackageStore(); // Accessing package and tour data from the store

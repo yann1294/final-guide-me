@@ -5,14 +5,12 @@ import useTourStore from '@/stores/tourStore';
 import { DataTable, DataTableExpandedRows } from 'primereact/datatable';
 import { useEffect, useState } from 'react';
 import { Column } from 'primereact/column';
-import { useGlobalFilters } from '@/lib/config/data-table.configs';
+import { resourceGlobalFilterFields, useResourceGlobalFilters } from '@/lib/config/globalSearchConfig';
 import {
-  TourColumnTemplates,
   modifyElement,
-  useDataTableConfig,
 } from '@/components/admin/FilterTemplates';
 import { useFetchTours } from '@/hooks/useTours';
-import { CONTEXT, ContextType } from '@/lib/utils/context.utils';
+import { CONTEXT, ContextType } from '@/lib/utils/contextUtils';
 import { ActionButtons } from '@/components/admin/ActionButtons';
 import {
   Edit2Icon,
@@ -24,10 +22,12 @@ import {
 } from 'lucide-react';
 import ActivityTable from './ActivityTable';
 import { ActivityDTO, TourDTO } from '@/dto/tour.dto';
+import { useDataTableConfig } from '@/lib/config/dataTableConfig';
+import { tourColumnTemplates } from '@/lib/config/tourColumnConfig';
 
 export default function TourTable({ context = ContextType.tour }: { context?: CONTEXT  }) {
   // Global filter state and actions
-  const { filters, setFilters } = useGlobalFilters();
+  const { filters, setFilters } = useResourceGlobalFilters();
   const [globalFilterValue, setGlobalFilterValue] = useState<string>('');
 
   // Fetching tours from the store and hook
@@ -52,6 +52,7 @@ export default function TourTable({ context = ContextType.tour }: { context?: CO
     globalFilterValue,
     setGlobalFilterValue,
     loading,
+    resourceGlobalFilterFields,
   );
 
   return (
@@ -64,7 +65,7 @@ export default function TourTable({ context = ContextType.tour }: { context?: CO
     <Column expander={(data) => Object.keys(data.activities).length > 0} style={{ width: '5rem' }} />
 
       {/* Render columns based on templates */}
-      {TourColumnTemplates.map((template) => {
+      {tourColumnTemplates.map((template) => {
         // Initialize column-specific configurations
         let additionalConfig: any = {};
 

@@ -1,4 +1,4 @@
-import { CONTEXT, ContextType } from '@/lib/utils/context.utils';
+import { CONTEXT, ContextType } from '@/lib/utils/contextUtils';
 import { PlusIcon, Trash2Icon } from 'lucide-react';
 import { Dispatch, SetStateAction } from 'react';
 

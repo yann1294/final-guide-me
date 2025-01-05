@@ -3,7 +3,7 @@ import axios from "axios";
 import { GuideDTO } from "@/dto/guide.dto"; // Assuming GuideDTO is the data structure for guides
 import { TouristDTO } from "@/dto/tourist.dto";
 
-interface GuideStore {
+interface UserStore {
   tourGuides: Map<string, GuideDTO>;  // Map to store guides by their guideId
   guides: GuideDTO[]
   tourists: TouristDTO[]
@@ -13,7 +13,7 @@ interface GuideStore {
   setTourists: (tourGuides: TouristDTO[]) => void;  // Set guides
 }
 
-const useGuideStore = create<GuideStore>((set) => ({
+const useUserStore = create<UserStore>((set) => ({
   tourGuides: new Map<string, GuideDTO>(), // Initialize with an empty map of guides
   guides: [],
   tourists: [],
@@ -37,4 +37,4 @@ const useGuideStore = create<GuideStore>((set) => ({
     })
 }));
 
-export default useGuideStore;
+export default useUserStore;

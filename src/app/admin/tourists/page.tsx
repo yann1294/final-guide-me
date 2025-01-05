@@ -1,32 +1,17 @@
 'use client';
 
-import SideBar from '@/components/common/SideBar';
-import useTourStore from '@/stores/tourStore';
-import { DataTable } from 'primereact/datatable';
-import { useEffect, useState } from 'react';
-import { Column } from 'primereact/column';
-import { userGlobalSearchFields, useUserGlobalFilters } from '@/lib/config/data-table.configs';
-import {
-  TourColumnTemplates,
-  UserColumnConfigs,
-  modifyElement,
-  useDataTableConfig,
-} from '@/components/admin/FilterTemplates';
-import { useFetchTours } from '@/hooks/useTours';
-import { ContextType } from '@/lib/utils/context.utils';
-import { ActionButtons } from '@/components/admin/ActionButtons';
-import {
-    CopyIcon,
-  Edit2Icon,
-  LayoutListIcon,
-  ListIcon,
-  ReceiptTextIcon,
-  Trash2Icon,
-  ViewIcon,
-} from 'lucide-react';
-import TourTable from '@/components/admin/TourTable';
-import useUserStore from '@/stores/userStore';
-import { useFetchTourists } from '@/hooks/useUsers';
+import { modifyElement } from "@/components/admin/FilterTemplates";
+import SideBar from "@/components/common/SideBar";
+import { useFetchTourists } from "@/hooks/useUsers";
+import { useDataTableConfig } from "@/lib/config/dataTableConfig";
+import { userGlobalSearchFields, useUserGlobalFilters } from "@/lib/config/globalSearchConfig";
+import { touristColumnConfigs } from "@/lib/config/touristColumnConfig";
+import { ContextType } from "@/lib/utils/contextUtils";
+import useUserStore from "@/stores/userStore";
+import { CopyIcon } from "lucide-react";
+import { Column } from "primereact/column";
+import { DataTable } from "primereact/datatable";
+import { useEffect, useState } from "react";
 
 export default function AdminTouristsPage() {
   // Global filter state and actions
@@ -53,6 +38,7 @@ export default function AdminTouristsPage() {
     globalFilterValue,
     setGlobalFilterValue,
     loading,
+    userGlobalSearchFields,
   );
 
   return (
@@ -68,7 +54,7 @@ export default function AdminTouristsPage() {
             globalFilterFields={userGlobalSearchFields}
             >
               {/* Render columns based on templates */}
-              {UserColumnConfigs.map((template) => {
+              {touristColumnConfigs.map((template) => {
                 // Initialize column-specific configurations
                 let additionalConfig: any = {};
 

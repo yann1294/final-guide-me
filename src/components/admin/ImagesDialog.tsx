@@ -1,4 +1,4 @@
-import { CONTEXT, ContextType } from '@/lib/utils/context.utils';
+import { CONTEXT, ContextType } from '@/lib/utils/contextUtils';
 import { Trash2Icon } from 'lucide-react';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';

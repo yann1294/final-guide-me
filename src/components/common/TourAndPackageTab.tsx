@@ -5,7 +5,7 @@ import { TourDTO } from '@/dto/tour.dto';
 import { convertSecondsToDate } from '@/lib/utils/utils';
 import usePackageStore from '@/stores/packageStore';
 import useTourStore from '@/stores/tourStore';
-import { CONTEXT, ContextType } from '@/lib/utils/context.utils';
+import { CONTEXT, ContextType } from '@/lib/utils/contextUtils';
 
 interface TourPackageTabProps {
   resource: TourDTO | PackageDTO;

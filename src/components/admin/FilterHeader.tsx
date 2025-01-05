@@ -1,5 +1,5 @@
-import { useGlobalFilters } from '@/lib/config/data-table.configs';
-import { CONTEXT, ContextType } from '@/lib/utils/context.utils';
+import { useResourceGlobalFilters } from '@/lib/config/globalSearchConfig';
+import { CONTEXT, ContextType } from '@/lib/utils/contextUtils';
 import { SearchIcon } from 'lucide-react';
 import { InputText } from 'primereact/inputtext';
 import { ChangeEvent, Dispatch, SetStateAction, useState } from 'react';

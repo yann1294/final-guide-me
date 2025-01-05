@@ -5,15 +5,12 @@ import useTourStore from '@/stores/tourStore';
 import { DataTable } from 'primereact/datatable';
 import { useEffect, useState } from 'react';
 import { Column } from 'primereact/column';
-import { userGlobalSearchFields, useUserGlobalFilters } from '@/lib/config/data-table.configs';
+import { userGlobalSearchFields, useUserGlobalFilters } from '@/lib/config/globalSearchConfig';
 import {
-  TourColumnTemplates,
-  UserColumnConfigs,
   modifyElement,
-  useDataTableConfig,
 } from '@/components/admin/FilterTemplates';
 import { useFetchTours } from '@/hooks/useTours';
-import { ContextType } from '@/lib/utils/context.utils';
+import { ContextType } from '@/lib/utils/contextUtils';
 import { ActionButtons } from '@/components/admin/ActionButtons';
 import {
     CopyIcon,
@@ -27,6 +24,8 @@ import {
 import TourTable from '@/components/admin/TourTable';
 import useUserStore from '@/stores/userStore';
 import { useFetchGuides, useFetchTourists } from '@/hooks/useUsers';
+import { guideColumnConfigs } from '@/lib/config/guideColumnConfig';
+import { useDataTableConfig } from '@/lib/config/dataTableConfig';
 
 export default function AdminTouristsPage() {
   // Global filter state and actions
@@ -54,6 +53,7 @@ export default function AdminTouristsPage() {
     globalFilterValue,
     setGlobalFilterValue,
     loading,
+    userGlobalSearchFields,
   );
 
   return (
@@ -69,7 +69,7 @@ export default function AdminTouristsPage() {
             globalFilterFields={userGlobalSearchFields}
             >
               {/* Render columns based on templates */}
-              {UserColumnConfigs.map((template) => {
+              {guideColumnConfigs.map((template) => {
                 // Initialize column-specific configurations
                 let additionalConfig: any = {};
 

@@ -1,5 +1,5 @@
 import { TourDTO } from '@/dto/tour.dto';
-import { CONTEXT } from '@/lib/utils/context.utils';
+import { CONTEXT } from '@/lib/utils/contextUtils';
 import { tourTestData } from '@/lib/utils/test.data';
 import { Button } from 'primereact/button';
 import { Calendar } from 'primereact/calendar';

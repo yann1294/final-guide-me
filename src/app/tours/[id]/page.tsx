@@ -12,7 +12,7 @@ import TourPackageContent from '@/components/common/TourAndPackageContent';
 import TourPackageTab from '@/components/common/TourAndPackageTab';
 import RelatedSection from '@/components/common/RelatedSection';
 import BookingSummary from '@/components/common/BookingSummary';
-import { ContextType } from '@/lib/utils/context.utils';
+import { ContextType } from '@/lib/utils/contextUtils';
 import useUserStore from '@/stores/userStore';
 import { useFetchOneGuide } from '@/hooks/useUsers';
 import { TourDTO } from '@/dto/tour.dto';

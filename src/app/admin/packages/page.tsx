@@ -3,22 +3,17 @@ import SideBar from '@/components/common/SideBar';
 import { DataTable, DataTableExpandedRows } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import {
-  globalFilterFields,
-  useGlobalFilters,
-} from '@/lib/config/data-table.configs';
-import { Button } from 'primereact/button';
+  resourceGlobalFilterFields,
+  useResourceGlobalFilters,
+} from '@/lib/config/globalSearchConfig';
 import {
-  PackageColumnConfigs,
   modifyElement,
-  useDataTableConfig,
 } from '@/components/admin/FilterTemplates';
-import FilterHeader from '@/components/admin/FilterHeader';
 import { ActionButtons } from '@/components/admin/ActionButtons';
 import usePackageStore from '@/stores/packageStore';
 import { useFetchPackages } from '@/hooks/usePackages';
-import { ContextType } from '@/lib/utils/context.utils';
+import { ContextType } from '@/lib/utils/contextUtils';
 import { useEffect, useState } from 'react';
-import { getTableRange } from '@/lib/utils/utils';
 import {
   CopyIcon,
   Edit2Icon,
@@ -28,13 +23,13 @@ import {
   Trash2Icon,
   ViewIcon,
 } from 'lucide-react';
-import AdminToursPages from '../tours/page';
-import AdminToursPage from '../tours/page';
 import TourTable from '@/components/admin/TourTable';
+import { useDataTableConfig } from '@/lib/config/dataTableConfig';
+import { packageColumnConfigs } from '@/lib/config/packageColumnConfig';
 
 export default function AdminPackagesPage() {
   // State and hooks initialization
-  const { filters, setFilters } = useGlobalFilters(); // Global filter state and setter
+  const { filters, setFilters } = useResourceGlobalFilters(); // Global filter state and setter
   const [globalFilterValue, setGlobalFilterValue] = useState<string>(''); // Local state for global filter value
   const { packages } = usePackageStore(); // Packages from the store
   const { loading, fetchPackages } = useFetchPackages(); // Loading state and fetch function for packages
@@ -55,6 +50,7 @@ export default function AdminPackagesPage() {
     globalFilterValue,
     setGlobalFilterValue,
     loading,
+    resourceGlobalFilterFields,
   );
 
   return (
@@ -79,7 +75,7 @@ export default function AdminPackagesPage() {
               <Column expander={(data) => data.tours.length > 0} style={{ width: '5rem' }} />
 
               {/* Map over column configurations and display columns */}
-              {PackageColumnConfigs.map((template) => {
+              {packageColumnConfigs.map((template) => {
                 let additionalConfig: any = {};
 
                 // Define custom column bodies based on field type

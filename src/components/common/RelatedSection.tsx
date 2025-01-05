@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Tour from '@/components/Home/Tours';
-import { CONTEXT, ContextType } from '@/lib/utils/context.utils';
+import { CONTEXT, ContextType } from '@/lib/utils/contextUtils';
 import { PackageDTO } from '@/dto/package.dto';
 import { TourDTO } from '@/dto/tour.dto';
 import PackageCard from '../packages/PackageCard';

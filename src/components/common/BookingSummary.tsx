@@ -1,7 +1,7 @@
 // components/tours/TourSummary.tsx
 
 import { PaymentDTO } from '@/dto/payment.dto';
-import { ContextType } from '@/lib/utils/context.utils';
+import { ContextType } from '@/lib/utils/contextUtils';
 import React from 'react';
 
 const BookingSummary = ({
