@@ -2,10 +2,10 @@ import React from 'react';
 import Link from 'next/link';
 import { PackageDTO } from '@/dto/package.dto';
 import { TourDTO } from '@/dto/tour.dto';
-import { convertSecondsToDate } from '@/lib/utils/utils';
 import usePackageStore from '@/stores/packageStore';
 import useTourStore from '@/stores/tourStore';
 import { CONTEXT, ContextType } from '@/lib/utils/contextUtils';
+import { convertSecondsToDate } from '@/lib/utils/dateUtils';
 
 interface TourPackageTabProps {
   resource: TourDTO | PackageDTO;

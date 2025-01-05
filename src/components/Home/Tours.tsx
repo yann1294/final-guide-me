@@ -2,7 +2,7 @@ import Link from 'next/link';
 import React from 'react';
 import packageData from '../../data/package_grid.json';
 import useTourStore from '@/stores/tourStore';
-import { convertSecondsToDate } from '@/lib/utils/utils';
+import { convertSecondsToDate } from '@/lib/utils/dateUtils';
 export default function Tour({ context = 'home' }) {
   const { tours, setCurrentTour } = useTourStore();
 

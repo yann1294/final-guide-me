@@ -35,6 +35,8 @@ export default function TourTable({ context = ContextType.tour }: { context?: CO
   const { loading, fetchTours } = useFetchTours();
     const [ expandedRows, setExpandedRows ] = useState<any | DataTableExpandedRows>(null);
 
+  // Handling user actions
+  
 
   // Fetch tours when component mounts if not already fetched
   useEffect(() => {
@@ -88,10 +90,6 @@ export default function TourTable({ context = ContextType.tour }: { context?: CO
           case 'images':
             additionalConfig['body'] = (data: any) =>
               modifyElement(<ViewIcon size="18px" />, 'View Tour Images');
-            break;
-          case 'tours':
-            additionalConfig['body'] = (data: any) =>
-              modifyElement(<ListIcon size="18px" />, 'View Package Tours');
             break;
           case 'actions':
             additionalConfig['body'] = (data: any) => (

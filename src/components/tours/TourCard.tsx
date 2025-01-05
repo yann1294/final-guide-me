@@ -1,6 +1,6 @@
 import { TourDTO } from "@/dto/tour.dto";
 import { CONTEXT, ContextType } from "@/lib/utils/contextUtils";
-import { convertSecondsToDate } from "@/lib/utils/utils";
+import { convertSecondsToDate } from "@/lib/utils/dateUtils";
 import useTourStore from "@/stores/tourStore";
 import Link from "next/link";
 
