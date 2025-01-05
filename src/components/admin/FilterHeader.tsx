@@ -19,7 +19,7 @@ export default function FilterHeader({
 }) {
   return (
     <div className="flex justify-content-between align-items-center">
-      <div className="table-header-title">Manage {context === ContextType.tour ? "Tours" : "Packages"}</div>
+      <div className="table-header-title">Manage {`${context.context}`}</div>
       <div className="global-filter-container">
         <div className="icon-container">
           <SearchIcon size={'18px'} className="search-icon" />
@@ -40,7 +40,7 @@ export default function FilterHeader({
             setGlobalFilterValue(value);
           }}
           placeholder="Search"
-          title="Enter details such as name, country, address, city, guide, price, duration, discount, and number of seats to search for tours."
+          // title="Enter details such as name, country, address, city, guide, price, duration, discount, and number of seats to search for tours."
         />
       </div>
     </div>

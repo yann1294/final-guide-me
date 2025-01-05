@@ -1,4 +1,4 @@
-import { timestampToDate } from '@/lib/utils/utils';
+import { convertSecondsToDate, timestampToDate } from '@/lib/utils/utils';
 import {
   CopyIcon,
   BadgeCheckIcon,
@@ -7,6 +7,8 @@ import {
   ExternalLinkIcon,
   Edit2Icon,
   Trash2Icon,
+  PowerCircleIcon,
+  PowerOffIcon,
 } from 'lucide-react';
 import {
   ColumnFilterElementTemplateOptions,
@@ -24,6 +26,13 @@ import { TourDTO } from '@/dto/tour.dto';
 import { PackageDTO } from '@/dto/package.dto';
 import { Dispatch, SetStateAction } from 'react';
 import { DataTableProps, DataTableStateEvent } from 'primereact/datatable';
+import { TouristDTO } from '@/dto/tourist.dto';
+import { Image } from 'primereact/image';
+import { Calendar } from 'primereact/calendar';
+import { Dropdown } from 'primereact/dropdown';
+import { GuideDTO } from '@/dto/guide.dto';
+import { globalFilterFields } from '@/lib/config/data-table.configs';
+import { BookingDTO } from '@/dto/booking.dto';
 
 export const modifyElement = (element: any, title = '', clickable = true) => (
   <div
@@ -34,6 +43,22 @@ export const modifyElement = (element: any, title = '', clickable = true) => (
     <span title={title}>{element}</span>
   </div>
 );
+
+const dropDownFilterTemplate = (
+  options: ColumnFilterElementTemplateOptions,
+  categories: string[],
+) => {
+  return (
+    <Dropdown
+      value={options.value}
+      options={categories}
+      onChange={(e) => options.filterCallback(e.value, options.index)}
+      placeholder="Select One"
+      className="p-column-filter"
+      showClear
+    />
+  );
+};
 
 export const rangeRowFilterTemplate = (
   options: ColumnFilterElementTemplateOptions,
@@ -58,6 +83,18 @@ export const rangeRowFilterTemplate = (
   );
 };
 
+const dateFilterTemplate = (options: ColumnFilterElementTemplateOptions) => {
+  return (
+    <Calendar
+      value={options.value}
+      onChange={(e) => options.filterCallback(e.value, options.index)}
+      dateFormat="mm/dd/yy"
+      placeholder="mm/dd/yyyy"
+      mask="99/99/9999"
+    />
+  );
+};
+
 export const multiSelectRowFilterTemplate = (
   options: ColumnFilterElementTemplateOptions,
 ) => (
@@ -75,7 +112,7 @@ export const multiSelectRowFilterTemplate = (
 
 export const useDataTableConfig = (
   context: CONTEXT,
-  resources: TourDTO[] | PackageDTO[],
+  resources: TourDTO[] | PackageDTO[] | TouristDTO[] | GuideDTO[] | BookingDTO[],
   filters: any,
   setFilters: Dispatch<SetStateAction<any>>,
   globalFilterValue: string,
@@ -88,7 +125,7 @@ export const useDataTableConfig = (
     rows: 10,
     dataKey: 'id',
     filters: filters,
-    globalFilterFields: ['name', 'category', 'status'], // Example fields for resources
+    globalFilterFields: globalFilterFields, // Example fields for resources
     filterDisplay: 'menu',
     header: (
       <FilterHeader
@@ -99,8 +136,7 @@ export const useDataTableConfig = (
         setGlobalFilterValue={setGlobalFilterValue}
       />
     ),
-    emptyMessage:
-      context === ContextType.tour ? 'No tours found.' : 'No packages found.',
+    emptyMessage: `No ${context} found.`,
     resizableColumns: true,
     onFilter: (e: DataTableStateEvent) => setFilters(e.filters),
     sortMode: 'multiple',
@@ -108,9 +144,7 @@ export const useDataTableConfig = (
     rowsPerPageOptions: getTableRange(resources.length),
     paginatorTemplate:
       'FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown',
-    currentPageReportTemplate: `Showing {first} to {last} of {totalRecords} ${
-      context === ContextType.tour ? 'Tours' : 'Packages'
-    }`,
+    currentPageReportTemplate: `Showing {first} to {last} of {totalRecords} ${context.context}`,
     paginatorLeft: <Button type="button" icon="pi pi-refresh" text />,
     paginatorRight: <Button type="button" icon="pi pi-download" text />,
     loading: loading,
@@ -119,7 +153,7 @@ export const useDataTableConfig = (
         <div className="circular-loader"></div>
       </div>
     ),
-  } as DataTableProps<TourDTO[] | PackageDTO[]>;
+  } as DataTableProps<TourDTO[] | PackageDTO[] | TouristDTO[] | GuideDTO[]> | BookingDTO[];
 };
 
 export const TourColumnTemplates = [
@@ -407,13 +441,28 @@ export const PackageColumnConfigs = [
   },
 ] as ColumnProps[];
 
-export const UserColumnConfigs = [
+export const UserColumnConfigs
+ = [
   {
     field: 'uid',
     header: 'UID',
-    sortable: true,
-    filter: true,
-    filterPlaceholder: 'Search by UID',
+  },
+  {
+    field: 'profilePhoto',
+    header: 'Profile Photo',
+    body: (data: any) => (
+      <Image
+        style={{
+          height: '42px',
+          width: '64px',
+          objectFit: 'fill',
+          borderRadius: '5px',
+        }}
+        src={data.profilePhoto}
+        alt="Image"
+        preview
+      />
+    ),
   },
   {
     field: 'firstName',
@@ -444,54 +493,57 @@ export const UserColumnConfigs = [
     filterPlaceholder: 'Search by email',
   },
   {
-    field: 'profilePhoto',
-    header: 'Profile Photo',
-    body: (data: any) => (
-      <img
-        src={data.profilePhoto}
-        alt="Profile"
-        style={{ width: '50px', height: '50px', borderRadius: '50%' }}
-      />
-    ),
-  },
-  {
-    field: 'role.name',
-    header: 'Role',
-    sortable: true,
-    filter: true,
-    filterPlaceholder: 'Search by role',
-    body: (data: any) => data.role?.name || 'N/A',
-  },
-  {
     field: 'accountStatus',
     header: 'Account Status',
     sortable: true,
     filter: true,
-    filterPlaceholder: 'Search by account status',
+    filterElement: (options: ColumnFilterElementTemplateOptions) => (
+      <TriStateCheckbox
+        value={options.value}
+        onChange={(e) => options.filterApplyCallback(e.value)}
+      />
+    ),
+    showFilterMenu: false,
+    body: (data: any) =>
+      modifyElement(
+        data.accountStatus === 'active' ? (
+          <PowerCircleIcon size="18px" className="text-success" />
+        ) : (
+          <PowerOffIcon size="18px" className="text-danger" />
+        ),
+      ),
   },
   {
-    field: 'createdAt',
+    field: 'createdAt._seconds',
     header: 'Account Created',
     sortable: true,
     filter: true,
-    filterElement: rangeRowFilterTemplate,
-    body: (data: any) => new Date(data.createdAt).toLocaleString(),
+    filterElement: dateFilterTemplate,
+    body: (data: any) => convertSecondsToDate(data.createdAt._seconds),
   },
   {
-    field: 'updatedAt',
+    field: 'updatedAt._seconds',
     header: 'Last Updated',
     sortable: true,
     filter: true,
-    filterElement: rangeRowFilterTemplate,
-    body: (data: any) => new Date(data.updatedAt).toLocaleString(),
+    filterElement: dateFilterTemplate,
+    body: (data: any) => convertSecondsToDate(data.updatedAt._seconds),
   },
   {
     field: 'identification.file',
     header: 'Identification File',
     body: (data: any) => (
-      <a href={data.identification?.file} target="_blank" rel="noopener noreferrer">
-        View ID
-      </a>
+      <Image
+        style={{
+          height: '42px',
+          width: '64px',
+          objectFit: 'fill',
+          borderRadius: '5px',
+        }}
+        src={data.identification.file}
+        alt="Image"
+        preview
+      />
     ),
   },
   {
@@ -499,8 +551,10 @@ export const UserColumnConfigs = [
     header: 'Identification Type',
     sortable: true,
     filter: true,
-    filterPlaceholder: 'Search by ID type',
-    body: (data: any) => data.identification?.type || 'N/A',
+    filterElement: (options) =>
+      dropDownFilterTemplate(options, ['passport', 'license', 'national']),
+    body: (data: any) =>
+      (data.identification?.type as string).toUpperCase() || 'N/A',
   },
   {
     field: 'spokenLanguages',
@@ -520,5 +574,50 @@ export const UserColumnConfigs = [
         </div>
       </div>
     ),
+  },
+] as ColumnProps[];
+
+
+export const BookingColumnConfigs = [
+  {
+    field: 'id',
+    header: 'Booking ID',
+  },
+  {
+    field: 'status',
+    header: 'Status',
+    filter: true,
+    sortable: true,
+    filterPlaceholder: 'Search by status',
+    style: { minWidth: '10rem' },
+    body: (data) =>
+      data.status === 'booked'
+        ? 'Booked'
+        : data.status === 'cancelled'
+        ? 'Cancelled'
+        : 'Pending',
+  },
+  {
+    field: 'bookedOn._seconds',
+    header: 'Booked On',
+    filter: true,
+    sortable: true,
+    filterPlaceholder: 'Search by booking date',
+    body: (data) => new Date(data.bookedOn._seconds * 1000).toLocaleDateString(),
+  },
+  {
+    field: 'resourceId',
+    header: 'Resource ID',
+    filter: true,
+    sortable: true,
+    filterPlaceholder: 'Search by resource ID',
+  },
+  {
+    field: 'bookingType',
+    header: 'Booking Type',
+    filter: true,
+    sortable: true,
+    filterElement: (options) => dropDownFilterTemplate(options, ['tour', 'package']),
+
   },
 ] as ColumnProps[];

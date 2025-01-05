@@ -41,7 +41,7 @@ export const useFetchTours = () => {
 
 export const useFetchOneTour = () => {
   const setCurrentTour = useTourStore((state) => state.setCurrentTour);
-  const { guides } = useUserStore();
+  const { tourGuides: guides } = useUserStore();
   const { fetchOneGuide } = useFetchOneGuide();
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);

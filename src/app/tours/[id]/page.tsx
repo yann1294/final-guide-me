@@ -20,7 +20,7 @@ import { TourDTO } from '@/dto/tour.dto';
 // Custom hook for managing tour details
 const useTourDetails = (pathName: string) => {
   const { currentTour: tour, tours, setCurrentTour } = useTourStore();
-  const { guides } = useUserStore();
+  const { tourGuides: guides } = useUserStore();
   const { fetchOneTour, loading, error } = useFetchOneTour();
   const { fetchOneGuide } = useFetchOneGuide();
 

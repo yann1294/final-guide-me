@@ -105,7 +105,7 @@ export const useFetchPackageTours = () => {
 
 export const useFetchOnePackage = () => {
   const setCurrentPackage = usePackageStore((state) => state.setCurrentPackage);
-  const { guides } = useUserStore();
+  const { tourGuides: guides } = useUserStore();
   const { fetchOneGuide } = useFetchOneGuide();
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);

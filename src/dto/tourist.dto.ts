@@ -9,8 +9,14 @@ export type TouristDTO = {
     profilePhoto: string | FileDTO;
     role: Role;
     accountStatus: string;
-    createdAt: string;
-    updatedAt: string;
+    createdAt: {
+        _seconds: number;
+        _nanoseconds: number;
+    };
+    updatedAt: {
+        _seconds: number;
+        _nanoseconds: number;
+    };
     identification: Identification;
     spokenLanguages: string[];
 }

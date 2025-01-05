@@ -59,7 +59,8 @@ export default function TourTable({ context = ContextType.tour }: { context?: CO
     expandedRows={expandedRows}
     onRowToggle={(e) => setExpandedRows(e.data)}
     rowExpansionTemplate={(data: TourDTO) => <div className='expansion-container container-fluid'><ActivityTable activities={data.activities} /></div>}
-    {...dataTableConfig}>
+    {...dataTableConfig}
+    >
     <Column expander={(data) => Object.keys(data.activities).length > 0} style={{ width: '5rem' }} />
 
       {/* Render columns based on templates */}

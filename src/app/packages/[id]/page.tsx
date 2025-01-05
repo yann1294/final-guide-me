@@ -23,7 +23,7 @@ const usePackageDetails = (pathName: string) => {
     tours,
     setCurrentPackage,
   } = usePackageStore();
-  const { guides } = useUserStore();
+  const { tourGuides: guides } = useUserStore();
   const { fetchPackageTours } = useFetchPackageTours();
   const { fetchOnePackage, loading, error } = useFetchOnePackage();
   const { fetchOneGuide } = useFetchOneGuide();

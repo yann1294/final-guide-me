@@ -7,7 +7,7 @@ import axios from "axios";
 import { useState } from "react";
 
 export const useFetchOneGuide = () => {
-    const setGuides = useUserStore((state) => state.setGuides);
+    const setTourGuides = useUserStore((state) => state.setTourGuides);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
   
@@ -26,7 +26,7 @@ export const useFetchOneGuide = () => {
         }
   
         // Persist the fetched tours in Zustand store
-        setGuides([response.data.data] as GuideDTO[]);
+        setTourGuides(response.data.data as Map<string, GuideDTO>);
       } catch (err) {
         console.error("Error: ", err);
         setError(err instanceof Error ? err.message : 'Failed to fetch guides');
@@ -89,6 +89,7 @@ export const useFetchTourists = () => {
           throw new Error(response.data.message);
         }
   
+        console.log("Tourists: ", response.data.data);
         // Persist the fetched tourists in Zustand store
         setTourists(response.data.data as TouristDTO[]);
       } catch (err) {

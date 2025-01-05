@@ -2,23 +2,6 @@ import { FilterMatchMode } from "primereact/api";
 import { useState } from "react";
 
 // global config
-interface FilterValue {
-  value: any;
-  matchMode: FilterMatchMode;
-}
-
-interface Filters {
-  global: FilterValue;
-  name: FilterValue;
-  location: FilterValue;
-  priceExact: FilterValue;
-  priceRange: FilterValue;
-  duration: FilterValue;
-  discount: FilterValue;
-  isAvailable: FilterValue;
-  date: FilterValue;
-  guide: FilterValue;
-}
 
 export const useGlobalFilters = () => {
     const [filters, setFilters] = useState<any>({
@@ -37,6 +20,38 @@ export const useGlobalFilters = () => {
   return { filters, setFilters };
 };
 
+export const useUserGlobalFilters = () => {
+  const [filters, setFilters] = useState<any>({
+    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    firstName: { value: null, matchMode: FilterMatchMode.CONTAINS }, // First name search
+    lastName: { value: null, matchMode: FilterMatchMode.CONTAINS }, // Last name search
+    phoneNumber: { value: null, matchMode: FilterMatchMode.CONTAINS }, // Phone number search
+    emailAddress: { value: null, matchMode: FilterMatchMode.CONTAINS }, // Email address search
+    accountStatus: { value: null, matchMode: FilterMatchMode.EQUALS }, // Account status (active/inactive)
+    // createdAt: { value: [null, null], matchMode: FilterMatchMode.DATE_IS }, // Date range for account creation
+    // updatedAt: { value: [null, null], matchMode: FilterMatchMode.DATE_IS }, // Date range for last update
+    identificationType: { value: null, matchMode: FilterMatchMode.EQUALS }, // Identification type (passport, etc.)
+    spokenLanguages: { value: null, matchMode: FilterMatchMode.CONTAINS }, // Spoken languages search
+  });
+
+  return { filters, setFilters };
+};
+
+export const useBookingGlobalFilters = () => {
+  const [filters, setFilters] = useState<any>({
+    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    id: { value: null, matchMode: FilterMatchMode.CONTAINS }, // Booking ID search
+    status: { value: null, matchMode: FilterMatchMode.EQUALS }, // Booking status (e.g., booked, cancelled)
+    // bookedOn: { value: [null, null], matchMode: FilterMatchMode.DATE_IS }, // Booking date range
+    tourist: { value: null, matchMode: FilterMatchMode.CONTAINS }, // Tourist names
+    resourceId: { value: null, matchMode: FilterMatchMode.CONTAINS }, // Resource ID search
+    bookingType: { value: null, matchMode: FilterMatchMode.EQUALS }, // Booking type (e.g., tour, package)
+  });
+
+  return { filters, setFilters };
+};
+
+
 
 // global filter fields
 export const globalFilterFields = [
@@ -52,8 +67,23 @@ export const globalFilterFields = [
     'numberOfSeats'
   ];
 
+  export const userGlobalSearchFields = [
+    'firstName',
+    'lastName',
+    'phoneNumber',
+    'emailAddress',
+    'accountStatus',
+    'identification.type',
+    'spokenLanguages',
+  ];
+  
 
-
+  export const bookingGlobalSearchFields = [
+    'status',
+    'resourceId',
+    'bookingType',
+  ];
+  
 
   // Important attributes to set 
 /**
