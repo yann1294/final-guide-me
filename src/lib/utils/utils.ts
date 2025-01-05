@@ -25,3 +25,8 @@ export const timestampToDate = (timestamp: { _seconds: number; _nanoseconds: num
     second: '2-digit',
   });
 };
+
+  export const getTableRange = (length: number): number[] => {
+    const numberOfDivisions = Math.ceil(length / 10);
+    return Array.from({ length: numberOfDivisions }, (_, i) => (i + 1) * 10);
+  };

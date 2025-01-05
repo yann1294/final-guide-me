@@ -5,7 +5,7 @@ export async function POST(req: Request) {
       const { username, password } = await req.json();
   
       // Send a POST request to the backend API to authenticate the user
-      const response = await fetch(`${process.env.BACKEND_URL}/auth/login`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

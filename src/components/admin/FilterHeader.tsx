@@ -12,9 +12,9 @@ export default function FilterHeader({
   setGlobalFilterValue,
 }: {
   context: CONTEXT;
-  globalFilterValue: string | undefined;
+  globalFilterValue: string;
   filters: any;
-  setGlobalFilterValue: Dispatch<SetStateAction<string | undefined>>;
+  setGlobalFilterValue: Dispatch<SetStateAction<string>>;
   setFilters: Dispatch<any>;
 }) {
   return (

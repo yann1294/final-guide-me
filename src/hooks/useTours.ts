@@ -4,7 +4,7 @@ import { ResponseDTO } from "@/dto/helper.dto";
 import { TourDTO } from "@/dto/tour.dto";
 import { useState } from "react";
 import useTourStore from "@/stores/tourStore";
-import useGuideStore from "@/stores/guidesStore";
+import useUserStore from "@/stores/userStore";
 import { useFetchOneGuide } from "./useUsers";
 
 export const useFetchTours = () => {
@@ -41,7 +41,7 @@ export const useFetchTours = () => {
 
 export const useFetchOneTour = () => {
   const setCurrentTour = useTourStore((state) => state.setCurrentTour);
-  const { guides } = useGuideStore();
+  const { guides } = useUserStore();
   const { fetchOneGuide } = useFetchOneGuide();
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);

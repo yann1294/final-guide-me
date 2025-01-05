@@ -13,14 +13,14 @@ import TourPackageTab from '@/components/common/TourAndPackageTab';
 import RelatedSection from '@/components/common/RelatedSection';
 import BookingSummary from '@/components/common/BookingSummary';
 import { ContextType } from '@/lib/utils/context.utils';
-import useGuideStore from '@/stores/guidesStore';
+import useUserStore from '@/stores/userStore';
 import { useFetchOneGuide } from '@/hooks/useUsers';
 import { TourDTO } from '@/dto/tour.dto';
 
 // Custom hook for managing tour details
 const useTourDetails = (pathName: string) => {
   const { currentTour: tour, tours, setCurrentTour } = useTourStore();
-  const { guides } = useGuideStore();
+  const { guides } = useUserStore();
   const { fetchOneTour, loading, error } = useFetchOneTour();
   const { fetchOneGuide } = useFetchOneGuide();
 

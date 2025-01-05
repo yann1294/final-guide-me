@@ -10,7 +10,7 @@ import RelatedSection from '@/components/common/RelatedSection';
 import { useCreateStripeOrder } from '@/hooks/useBookings';
 import { usePathname } from 'next/navigation';
 import usePackageStore from '@/stores/packageStore';
-import useGuideStore from '@/stores/guidesStore';
+import useUserStore from '@/stores/userStore';
 import { ContextType } from '@/lib/utils/context.utils';
 import { useFetchOnePackage, useFetchPackageTours } from '@/hooks/usePackages';
 import { useFetchOneGuide } from '@/hooks/useUsers';
@@ -23,7 +23,7 @@ const usePackageDetails = (pathName: string) => {
     tours,
     setCurrentPackage,
   } = usePackageStore();
-  const { guides } = useGuideStore();
+  const { guides } = useUserStore();
   const { fetchPackageTours } = useFetchPackageTours();
   const { fetchOnePackage, loading, error } = useFetchOnePackage();
   const { fetchOneGuide } = useFetchOneGuide();

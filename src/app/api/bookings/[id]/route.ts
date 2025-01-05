@@ -5,10 +5,10 @@ import { NextResponse } from 'next/server';
 
 export async function GET(req: Request, { params }: { params: { id: string } }) {
   try {
-    const { id } = params;
+    console.log("API Entry: GET /bookings/:id", { method: req.method, params });
 
     // Send a GET request to the backend API to fetch the booking by ID
-    const response = await fetch(`${process.env.BACKEND_URL}/bookings/${id}`);
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings/${params.id}`);
 
     // If the response from the backend is not OK, throw an error
     if (!response.ok) {
@@ -44,7 +44,7 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
     const bookingData = await req.json();
 
     // Send a PUT request to the backend API to update the booking by ID
-    const response = await fetch(`${process.env.BACKEND_URL}/bookings/${id}`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings/${id}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',

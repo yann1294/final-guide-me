@@ -8,9 +8,6 @@ interface PackageStore {
   currentPackage: PackageDTO | null;
 
   setPackages: (packages: PackageDTO[]) => void;   // Set all packages from an external source (e.g., API)
-  addPackage: (pkg: PackageDTO) => void;            // Add a new package
-  updatePackage: (updatedPkg: PackageDTO) => void;  // Update an existing package
-  cancelPackage: (id: string) => void;              // Cancel a package by its ID
   setPackageTours: (packageId: string, tour: TourDTO[]) => void;
   setCurrentPackage: (pkg: PackageDTO) => void;     // Set the current tour being viewed
 }
@@ -23,24 +20,6 @@ const usePackageStore = create<PackageStore>((set) => ({
 
   // Set all packages
   setPackages: (packages: PackageDTO[]) => set({ packages }),
-
-  // Add a new package
-  addPackage: (pkg: PackageDTO) =>
-    set((state) => ({ packages: [...state.packages, pkg] })),
-
-  // Update an existing package
-  updatePackage: (updatedPkg: PackageDTO) =>
-    set((state) => ({
-      packages: state.packages.map((pkg) =>
-        pkg.id === updatedPkg.id ? updatedPkg : pkg
-      ),
-    })),
-
-  // Cancel (remove) a package by its id
-  cancelPackage: (id: string) =>
-    set((state) => ({
-      packages: state.packages.filter((pkg) => pkg.id !== id),
-    })),
 
   // Set tours for a specific package
   setPackageTours: (packageId: string, tours: TourDTO[]) =>

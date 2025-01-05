@@ -4,7 +4,7 @@ import { PackageDTO } from "@/dto/package.dto";
 import { useState } from "react";
 import usePackageStore from "@/stores/packageStore";
 import { TourDTO } from "@/dto/tour.dto";
-import useGuideStore from "@/stores/guidesStore";
+import useUserStore from "@/stores/userStore";
 import { useFetchOneGuide } from "./useUsers";
 
 export const useCreatePackages = () => {
@@ -105,7 +105,7 @@ export const useFetchPackageTours = () => {
 
 export const useFetchOnePackage = () => {
   const setCurrentPackage = usePackageStore((state) => state.setCurrentPackage);
-  const { guides } = useGuideStore();
+  const { guides } = useUserStore();
   const { fetchOneGuide } = useFetchOneGuide();
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);

@@ -1,84 +1,61 @@
 'use client';
 import SideBar from '@/components/common/SideBar';
-import useTourStore from '@/stores/tourStore';
-import { DataTable } from 'primereact/datatable';
-import { ChangeEvent, Fragment, useEffect, useState } from 'react';
-import { Column, ColumnFilterElementTemplateOptions } from 'primereact/column';
-import { tourTestData } from '@/lib/utils/test.data';
+import { DataTable, DataTableExpandedRows } from 'primereact/datatable';
+import { Column } from 'primereact/column';
 import {
   globalFilterFields,
   useGlobalFilters,
 } from '@/lib/config/data-table.configs';
-import { InputText } from 'primereact/inputtext';
-import { IconField } from 'primereact/iconfield';
-import { InputIcon } from 'primereact/inputicon';
-import {
-  BadgeCheckIcon,
-  BadgeXIcon,
-  Calendar1Icon,
-  CircleAlertIcon,
-  CopyIcon,
-  Edit2Icon,
-  ExternalLinkIcon,
-  LayoutListIcon,
-  PlusIcon,
-  ReceiptTextIcon,
-  SearchIcon,
-  Trash2Icon,
-  ViewIcon,
-} from 'lucide-react';
-import { TriStateCheckbox } from 'primereact/tristatecheckbox';
-import { MultiSelect } from 'primereact/multiselect';
-import { InputNumber } from 'primereact/inputnumber';
 import { Button } from 'primereact/button';
 import {
-  TourColumnTemplates,
+  PackageColumnConfigs,
   modifyElement,
+  useDataTableConfig,
 } from '@/components/admin/FilterTemplates';
 import FilterHeader from '@/components/admin/FilterHeader';
-import { useFetchTours } from '@/hooks/useTours';
-import { ActivityDTO, TourDTO } from '@/dto/tour.dto';
-import { Dialog } from 'primereact/dialog';
-import { convertSecondsToDate, timestampToDate } from '@/lib/utils/utils';
 import { ActionButtons } from '@/components/admin/ActionButtons';
-import { Image } from 'primereact/image';
-import { Checkbox } from 'primereact/checkbox';
-import { InputTextarea } from 'primereact/inputtextarea';
-import { Calendar } from 'primereact/calendar';
-import ConfirmationDialog from '@/components/admin/ConfirmationDialog';
-import CreateDialog from '@/components/admin/CreateDialog';
-import ImagesDialog from '@/components/admin/ImagesDialog';
-import TextDialog from '@/components/admin/TextDialog';
-import TableDialog from '@/components/admin/TableDialog';
-import MainDataTable from '@/components/admin/MainDataTable';
 import usePackageStore from '@/stores/packageStore';
 import { useFetchPackages } from '@/hooks/usePackages';
 import { ContextType } from '@/lib/utils/context.utils';
-import { PackageDTO } from '@/dto/package.dto';
+import { useEffect, useState } from 'react';
+import { getTableRange } from '@/lib/utils/utils';
+import {
+  CopyIcon,
+  Edit2Icon,
+  LayoutListIcon,
+  ListIcon,
+  ReceiptTextIcon,
+  Trash2Icon,
+  ViewIcon,
+} from 'lucide-react';
+import AdminToursPages from '../tours/page';
+import AdminToursPage from '../tours/page';
+import TourTable from '@/components/admin/TourTable';
 
 export default function AdminPackagesPage() {
-  const { filters, setFilters } = useGlobalFilters();
-  const [globalFilterValue, setGlobalFilterValue] = useState<string>();
-  const { packages } = usePackageStore();
-  const { loading, fetchPackages } = useFetchPackages();
-  const [selectedPackages, setSelectedPackages] = useState<any>(null);
-  const [packageTourDialogData, setPackageTourDialogData] = useState<PackageDTO | null>(null);
-  const [tourDescription, setTourDescription] = useState<string | null>(null);
-  const [tourImages, setImages] = useState<string[] | null>(null);
-  const [addResource, setAddResource] = useState<boolean>(false);
-  const [editResource, setEditResource] = useState<boolean>(false);
-  const [deleteResource, setDeleteResource] = useState<boolean>(false);
-  const [resourceData, setResource] = useState<TourDTO>({} as TourDTO);
-  const [activityDialogData, setActivityDialogData] = useState<Map<
-  string,
-  ActivityDTO
-> | null>(null);
-
+  // State and hooks initialization
+  const { filters, setFilters } = useGlobalFilters(); // Global filter state and setter
+  const [globalFilterValue, setGlobalFilterValue] = useState<string>(''); // Local state for global filter value
+  const { packages } = usePackageStore(); // Packages from the store
+  const { loading, fetchPackages } = useFetchPackages(); // Loading state and fetch function for packages
+  const [ expandedRows, setExpandedRows ] = useState<any | DataTableExpandedRows>(null);
+  // Fetch packages on mount if not already fetched
   useEffect(() => {
     if (packages.length === 0) {
       fetchPackages();
     }
   }, [fetchPackages]);
+
+  // Get DataTable configuration
+  const dataTableConfig = useDataTableConfig(
+    ContextType.package,
+    packages,
+    filters,
+    setFilters,
+    globalFilterValue,
+    setGlobalFilterValue,
+    loading,
+  );
 
   return (
     <>
@@ -87,73 +64,91 @@ export default function AdminPackagesPage() {
           <div className="page-header col-12">
             <h2>Packages</h2>
           </div>
+
           <div className="col-12 management-container">
-            <ActionButtons
-            context={ContextType.package}
-              setAddAction={setAddResource}
-              setDeleteAction={setDeleteResource}
-            />
+            {/* Action buttons */}
+            <ActionButtons context={ContextType.package} />
 
-            <MainDataTable
-              context={ContextType.package}
-              resources={packages}
-              loading={loading}
-              filters={filters}
-              setFilters={setFilters}
-              globalFilterValue={globalFilterValue}
-              setGlobalFilterValue={setGlobalFilterValue}
-              selectedResources={selectedPackages}
-              setSelectedResources={setSelectedPackages}
-              setPackageTourDialogData={setPackageTourDialogData}
-              setDescription={setTourDescription}
-              setImages={setImages}
-              setResource={setResource}
-              setEditResource={setEditResource}
-              setDeleteResource={setDeleteResource}
-            />
-            <TableDialog
-            activityDialogData={activityDialogData}
-            setActivityDialogData={setActivityDialogData}
-            setDeleteResource={setDeleteResource}
-            setEditResource={setEditResource}
-            setImages={setImages}
-            setResource={setResource}
-            setTourDescription={setTourDescription}
-            context={ContextType.package}
-              setPackageTourDialogData={setPackageTourDialogData}
-              packageTourDialogData={packageTourDialogData}
-              
-            />
-            <TextDialog
-              title="Package Description"
-              text={tourDescription}
-              setText={setTourDescription}
-            />
-            <ImagesDialog
-              context={ContextType.package}
+            {/* Data table */}
+            <DataTable
+            expandedRows={expandedRows}
+            onRowToggle={(e) => setExpandedRows(e.data)}
+            rowExpansionTemplate={(data) => <div className='expansion-container container-fluid'><TourTable /></div>}
+            {...dataTableConfig}>
+              {/* For row expansion */}
+              <Column expander={(data) => data.tours.length > 0} style={{ width: '5rem' }} />
 
-              images={tourImages}
-              setImages={setImages}
-              setAddResource={setAddResource}
-            />
-            <CreateDialog
-              context={ContextType.package}
-              addResource={addResource}
-              setAddResource={setAddResource}
-            />
-            <ConfirmationDialog
-              isOpen={deleteResource}
-              onClose={() => {
-                setDeleteResource(false);
-                setResource({} as TourDTO);
-              }}
-              onConfirm={() => console.log('Delete')}
-              title="Delete Package"
-              message={`Are you sure you want to delete ${resourceData.name}?`}
-            />
+              {/* Map over column configurations and display columns */}
+              {PackageColumnConfigs.map((template) => {
+                let additionalConfig: any = {};
+
+                // Define custom column bodies based on field type
+                if (template.field === 'id') {
+                  additionalConfig['body'] = (data: any) =>
+                    modifyElement(
+                      <CopyIcon
+                        onClick={() => navigator.clipboard.writeText(data.id)}
+                        size="18px"
+                      />,
+                      'Copy package ID',
+                    );
+                }
+                if (template.field === 'activities') {
+                  additionalConfig['body'] = (data: any) =>
+                    modifyElement(
+                      <LayoutListIcon onClick={() => {}} size="18px" />,
+                      'View Tour Activities',
+                    );
+                }
+                if (template.field === 'description') {
+                  additionalConfig['body'] = (data: any) =>
+                    modifyElement(
+                      <ReceiptTextIcon onClick={() => {}} size="18px" />,
+                      'View Tour Description',
+                    );
+                }
+                if (template.field === 'images') {
+                  additionalConfig['body'] = (data: any) =>
+                    modifyElement(
+                      <ViewIcon onClick={() => {}} size="18px" />,
+                      'View Tour Images',
+                    );
+                }
+                if (template.field === 'tours') {
+                  additionalConfig['body'] = (data: any) =>
+                    modifyElement(
+                      <ListIcon onClick={() => {}} size="18px" />,
+                      'View Package Tours',
+                    );
+                }
+                if (template.field === 'actions') {
+                  additionalConfig['body'] = (data: any) => (
+                    <div className="row-action-btns">
+                      <div className="row-edit">
+                        <Edit2Icon onClick={() => {}} size="18px" />
+                      </div>
+                      <div className="row-delete">
+                        <Trash2Icon onClick={() => {}} size="18px" />
+                      </div>
+                    </div>
+                  );
+                }
+
+                // Return the column with additional configurations
+                return (
+                  <Column
+                    key={template.field}
+                    {...template}
+                    {...additionalConfig}
+                  />
+                );
+              })}
+            </DataTable>
           </div>
         </div>
       </div>
+
+      {/* Sidebar */}
       <SideBar />
     </>
   );
