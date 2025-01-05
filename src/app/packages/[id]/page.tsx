@@ -23,7 +23,7 @@ const usePackageDetails = (pathName: string) => {
     tours,
     setCurrentPackage,
   } = usePackageStore();
-  const { tourGuides: guides } = useUserStore();
+  const { tourGuides } = useUserStore();
   const { fetchPackageTours } = useFetchPackageTours();
   const { fetchOnePackage, loading, error } = useFetchOnePackage();
   const { fetchOneGuide } = useFetchOneGuide();
@@ -44,7 +44,7 @@ const usePackageDetails = (pathName: string) => {
           await fetchOnePackage(currentPackageId);
         }
       } else {
-        if (!guides.get(pkg.guide)) {
+        if (!tourGuides.has(pkg.guide)) {
           await fetchOneGuide(pkg.guide);
         }
       }
@@ -76,7 +76,7 @@ const usePackageDetails = (pathName: string) => {
     setNumberOfPeople,
     tax,
     setTax,
-    guides,
+    tourGuides,
   };
 };
 
@@ -92,7 +92,7 @@ export default function PackageDetails() {
     setNumberOfPeople,
     tax,
     setTax,
-    guides,
+    tourGuides,
   } = usePackageDetails(pathName);
   const { createStripeOrder, loading: isCreatingOrder } =
     useCreateStripeOrder();
@@ -130,7 +130,7 @@ export default function PackageDetails() {
                       createStripeOrder={createStripeOrder}
                       user={user}
                     />
-                    <TourGuide guide={guides.get(pkg.guide)} />
+                    <TourGuide guide={tourGuides.get(pkg.guide)} />
                   </div>
                 </div>
               </div>

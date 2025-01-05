@@ -7,37 +7,6 @@ import { TourDTO } from "@/dto/tour.dto";
 import useUserStore from "@/stores/userStore";
 import { useFetchOneGuide } from "./useUsers";
 
-export const useCreatePackages = () => {
-  const addPackage = usePackageStore((state) => state.addPackage);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const createPackage = async (newPackage: PackageDTO) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await axios.post<ResponseDTO>('/bookings', newPackage);
-      
-      // check if the response.data.status is 'success'
-      if (response.data.status !== 'success') {
-        throw new Error(response.data.message);
-      }
-
-      // update the booking id with the one returned from the server
-      newPackage.id = response.data.data as string;
-
-      // Persist the new booking in Zustand store
-      addPackage(newPackage);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create booking');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return { createPackage, loading, error };
-};
-
 export const useFetchPackages = () => {
   const setPackages = usePackageStore((state) => state.setPackages);
   const [loading, setLoading] = useState<boolean>(false);

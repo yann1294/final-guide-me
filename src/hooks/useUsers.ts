@@ -26,7 +26,7 @@ export const useFetchOneGuide = () => {
         }
   
         // Persist the fetched tours in Zustand store
-        setTourGuides(response.data.data as Map<string, GuideDTO>);
+        setTourGuides(response.data.data as GuideDTO);
       } catch (err) {
         console.error("Error: ", err);
         setError(err instanceof Error ? err.message : 'Failed to fetch guides');
