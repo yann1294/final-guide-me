@@ -1,26 +1,26 @@
-type TourLocationDTO = {
+export type TourLocationDTO = {
     name: string;
     city: string;
     country: string;
 }
 
-type GMGeoPoint = {
+export type GMGeoPoint = {
     latitude: number;
     longitude: number;
 }
 
-type TransportationDTO = {
+export type TransportationDTO = {
     arrivalTime: Date;
     departureTime: Date;
     type: string;
 }
 
-type AccommodationDTO = {
+export type AccommodationDTO = {
     type: string;
     name: string;
 }
 
-type ActivityLocationDTO = {
+export type ActivityLocationDTO = {
     name: string;
     city: string;
     country: string;
@@ -29,7 +29,7 @@ type ActivityLocationDTO = {
 }
 
 export type ActivityDTO = {
-    id: number;
+    id?: number;
     name: string;
     durationHours: number;
     location: ActivityLocationDTO;
@@ -41,7 +41,7 @@ export type TourDTO = {
     id?: string;
     name: string;
     price: number;
-    date: { _seconds: number; _nanoseconds: number };
+    date: any;
     images?: string[];
     durationDays: number;
     discount: number;

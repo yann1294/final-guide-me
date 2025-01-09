@@ -10,8 +10,7 @@ export function ActionButtons({
   return (
     <div className="action-buttons">
       <div onClick={() => {
-        console.log("New clicked");
-        // setAddAction(true)
+        window.location.assign(`${context.context}/new`)
       }} className="add-resource">
         <PlusIcon size="14px" /> New {context === ContextType.tour ? "Tour" : "Package"}
       </div>
