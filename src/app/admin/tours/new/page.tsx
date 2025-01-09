@@ -7,6 +7,7 @@ import {
 import { ImagePlusIcon, PlusIcon, Trash2Icon } from 'lucide-react';
 import { Calendar } from 'primereact/calendar';
 import { Checkbox } from 'primereact/checkbox';
+import { Dropdown } from 'primereact/dropdown';
 import { Image } from 'primereact/image';
 import { InputNumber } from 'primereact/inputnumber';
 import { InputText } from 'primereact/inputtext';
@@ -18,9 +19,9 @@ export default function CreateTour() {
   const [activities, setActivities] = useState<
     Map<number, typeof emptyActivityObject>
   >(new Map([[0, emptyActivityObject]]));
-  const [photos, setPhotos] = useState<Map<number, { file: File; dataString: string }>>(
-    new Map()
-  );
+  const [photos, setPhotos] = useState<
+    Map<number, { file: File; dataString: string }>
+  >(new Map());
 
   function handleFileUpload(event: any) {
     const file = event.target.files[0]; // Get the first uploaded file
@@ -31,9 +32,9 @@ export default function CreateTour() {
         const dataUrl = e.target?.result; // The Data URL as a string
         let photo = new Map(photos);
         photo.set(new Date().getMilliseconds(), {
-            file: file,
-            dataString: dataUrl as string,
-          });
+          file: file,
+          dataString: dataUrl as string,
+        });
 
         setPhotos(photo);
         console.log('Data URL:', dataUrl);
@@ -70,7 +71,16 @@ export default function CreateTour() {
   return (
     <div className="container create-form mt-20">
       <h2>Create a New Tour</h2>
-      <div className="create-form-section-title mt-20">Tour Details</div>
+      <div className="create-form-section-title  mt-20">Tour Details</div>
+      <div className="action-buttons mb-0 mt-20 justify-content-between align-item-center">
+      <div className="guide-area p-0">
+      <select className='form-select m-0 w-auto' defaultValue={""}>
+            <option value="">Assign guide to tour</option>
+            <option value="">Guide 1</option>
+          </select>
+        </div>
+        <div className="save-button add-resource">Save tour</div>
+      </div>
       <div className="row">
         {/* Tour Name */}
         <div className="field col-md-6">
@@ -502,26 +512,24 @@ export default function CreateTour() {
         />
       </div>
       <div className="container">
-      <div  className="row photos-container">
-
-      {Array.from(photos.entries()).map(([key, photo]) => (
+        <div className="row photos-container">
+          {Array.from(photos.entries()).map(([key, photo]) => (
             <div key={key} className="col-12 col-sm-6 col-md-4 col-lg-3">
-                <div className="image-card mt-3">
+              <div className="image-card mt-3">
                 <div className="remove-activity">
-              <Trash2Icon
-                onClick={() => {
-                    let newPhotos = new Map(photos);
-                    newPhotos.delete(key);
-                  setPhotos(newPhotos);
-                }}
-              />
-            </div>
-              <Image src={photo.dataString ?? ""} preview />
+                  <Trash2Icon
+                    onClick={() => {
+                      let newPhotos = new Map(photos);
+                      newPhotos.delete(key);
+                      setPhotos(newPhotos);
+                    }}
+                  />
+                </div>
+                <Image src={photo.dataString ?? ''} preview />
               </div>
             </div>
-        ))}
-          </div>
-
+          ))}
+        </div>
       </div>
     </div>
   );

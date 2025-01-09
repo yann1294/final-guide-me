@@ -571,6 +571,10 @@ hr {
   min-width: 80px;
 }
 
+.create-form .p-dropdown {
+  width: 200px;
+}
+
 .p-paginator-pages button{
   height: 42px;
   width: 42px;
