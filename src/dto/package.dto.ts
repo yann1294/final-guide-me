@@ -11,6 +11,7 @@ export type PackageDTO = {
   guide: string;
   location: PackageLocationDTO;
   tours: string[];
+  date: Date
 }
 
 type PackageLocationDTO = {

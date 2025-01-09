@@ -3,7 +3,7 @@ import { ActivityDTO, TourDTO } from '@/dto/tour.dto';
 import {
   emptyActivityObject,
   emptyTourObject,
-} from '@/lib/utils/empty_objects';
+} from '@/lib/utils/emptyObjects';
 import { ImagePlusIcon, PlusIcon, Trash2Icon } from 'lucide-react';
 import { Calendar } from 'primereact/calendar';
 import { Checkbox } from 'primereact/checkbox';

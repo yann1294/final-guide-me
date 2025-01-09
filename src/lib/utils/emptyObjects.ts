@@ -1,3 +1,4 @@
+import { PackageDTO } from "@/dto/package.dto";
 import { ActivityDTO, TourDTO, TransportationDTO } from "@/dto/tour.dto";
 
 export const emptyTourObject = {
@@ -49,3 +50,26 @@ export const emptyActivityObject = {
         }
     } as ActivityDTO;
 
+export const emptyPackageObject = {
+    name: "",
+    location: {
+      name: "",
+      city: "",
+      country: "",
+      address: "",
+      location: {
+        latitude: 0,
+        longitude: 0,
+      },
+    },
+    price: 0,
+    durationDays: 0,
+    discount: 0,
+    numberOfSeats: 0,
+    description: "",
+    isAvailable: false,
+    date: new Date(),
+    tours: [],
+    images: [],
+    guide: "",
+} as PackageDTO;
