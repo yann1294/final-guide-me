@@ -1,7 +1,7 @@
 'use client';
 import { PackageDTO } from '@/dto/package.dto';
 import { emptyPackageObject } from '@/lib/utils/emptyObjects';
-import { ImagePlusIcon, PlusIcon, Trash2Icon } from 'lucide-react';
+import { ImagePlusIcon, Trash2Icon } from 'lucide-react';
 import { Calendar } from 'primereact/calendar';
 import { Checkbox } from 'primereact/checkbox';
 import { Image } from 'primereact/image';
@@ -12,7 +12,9 @@ import { useState } from 'react';
 
 export default function CreatePackage() {
   const [pkg, setPackage] = useState<PackageDTO>(emptyPackageObject);
-  const [photos, setPhotos] = useState<Map<number, { file: File; dataString: string }>>(new Map());
+  const [photos, setPhotos] = useState<
+    Map<number, { file: File; dataString: string }>
+  >(new Map());
 
   function handleFileUpload(event: any) {
     const file = event.target.files[0]; // Get the first uploaded file
@@ -41,12 +43,17 @@ export default function CreatePackage() {
     }
   }
 
-  const handlePackageInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handlePackageInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     const { name, value } = e.target;
     setPackage((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleNestedChange = (e: React.ChangeEvent<HTMLInputElement>, field: keyof PackageDTO['location']) => {
+  const handleNestedChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    field: keyof PackageDTO['location'],
+  ) => {
     const { value } = e.target;
     setPackage((prev) => ({
       ...prev,
@@ -55,6 +62,8 @@ export default function CreatePackage() {
   };
 
   const handleDateChange = (e: any) => {
+    const form = document.getElementById('tourForm') as HTMLFormElement;
+
     setPackage((prev) => ({
       ...prev,
       date: e.value.getTime(),
@@ -72,13 +81,34 @@ export default function CreatePackage() {
             <option value="">Guide 1</option>
           </select>
         </div>
-        <div className="save-button add-resource">Save package</div>
+        <div
+          onClick={() => {
+            const form = document.getElementById(
+              'create-package-form',
+            ) as HTMLFormElement;
+
+            // Check if the form is valid (using HTML5 checkValidity)
+            if (form.checkValidity()) {
+              // Form is valid, proceed with submission or any other action
+              console.log('Form is valid!');
+            } else {
+              // Form is invalid, trigger validation
+              console.log('Form is invalid!');
+              form.reportValidity(); // This will show the built-in validation messages
+            }
+          }}
+          className="save-button add-resource"
+        >
+          Save package
+        </div>
       </div>
-      <div className="row">
+      <form id="create-package-form" className="row">
         {/* Tour Name */}
         <div className="field col-md-6">
           <div className="form-group">
-            <label htmlFor="name" className="form-label">Package Name</label>
+            <label htmlFor="name" className="form-label">
+              Package Name
+            </label>
             <InputText
               className="form-control"
               id="name"
@@ -93,7 +123,9 @@ export default function CreatePackage() {
         {/* Location Name */}
         <div className="field col-md-6">
           <div className="form-group">
-            <label htmlFor="locationName" className="form-label">Location Name</label>
+            <label htmlFor="locationName" className="form-label">
+              Location Name
+            </label>
             <InputText
               className="form-control"
               id="locationName"
@@ -107,7 +139,9 @@ export default function CreatePackage() {
         {/* City */}
         <div className="field col-md-6">
           <div className="form-group">
-            <label htmlFor="city" className="form-label">City</label>
+            <label htmlFor="city" className="form-label">
+              City
+            </label>
             <InputText
               className="form-control"
               id="city"
@@ -121,7 +155,9 @@ export default function CreatePackage() {
         {/* Country */}
         <div className="field col-md-6">
           <div className="form-group">
-            <label htmlFor="country" className="form-label">Country</label>
+            <label htmlFor="country" className="form-label">
+              Country
+            </label>
             <InputText
               className="form-control"
               id="country"
@@ -135,12 +171,16 @@ export default function CreatePackage() {
         {/* Price */}
         <div className="field col-md-6">
           <div className="form-group">
-            <label htmlFor="price" className="form-label">Price (USD)</label>
+            <label htmlFor="price" className="form-label">
+              Price (USD)
+            </label>
             <InputNumber
               className="form-control"
               id="price"
               value={pkg.price}
-              onValueChange={(e: any) => setPackage((prev) => ({ ...prev, price: e.value }))}
+              onValueChange={(e: any) =>
+                setPackage((prev) => ({ ...prev, price: e.value }))
+              }
               mode="currency"
               currency="USD"
               required
@@ -151,12 +191,16 @@ export default function CreatePackage() {
         {/* Duration (Days) */}
         <div className="field col-md-6">
           <div className="form-group">
-            <label htmlFor="durationDays" className="form-label">Duration (Days)</label>
+            <label htmlFor="durationDays" className="form-label">
+              Duration (Days)
+            </label>
             <InputNumber
               className="form-control"
               id="durationDays"
               value={pkg.durationDays}
-              onValueChange={(e: any) => setPackage((prev) => ({ ...prev, durationDays: e.value }))}
+              onValueChange={(e: any) =>
+                setPackage((prev) => ({ ...prev, durationDays: e.value }))
+              }
               required
             />
           </div>
@@ -165,12 +209,16 @@ export default function CreatePackage() {
         {/* Discount */}
         <div className="field col-md-6">
           <div className="form-group">
-            <label htmlFor="discount" className="form-label">Discount (%)</label>
+            <label htmlFor="discount" className="form-label">
+              Discount (%)
+            </label>
             <InputNumber
               className="form-control"
               id="discount"
               value={pkg.discount}
-              onValueChange={(e: any) => setPackage((prev) => ({ ...prev, discount: e.value }))}
+              onValueChange={(e: any) =>
+                setPackage((prev) => ({ ...prev, discount: e.value }))
+              }
             />
           </div>
         </div>
@@ -178,12 +226,16 @@ export default function CreatePackage() {
         {/* Number of Seats */}
         <div className="field col-md-6">
           <div className="form-group">
-            <label htmlFor="numberOfSeats" className="form-label">Number of Seats</label>
+            <label htmlFor="numberOfSeats" className="form-label">
+              Number of Seats
+            </label>
             <InputNumber
               className="form-control"
               id="numberOfSeats"
               value={pkg.numberOfSeats}
-              onValueChange={(e: any) => setPackage((prev) => ({ ...prev, numberOfSeats: e.value }))}
+              onValueChange={(e: any) =>
+                setPackage((prev) => ({ ...prev, numberOfSeats: e.value }))
+              }
               required
             />
           </div>
@@ -192,7 +244,9 @@ export default function CreatePackage() {
         {/* Date */}
         <div className="field col-md-6">
           <div className="form-group">
-            <label htmlFor="date" className="form-label">Date</label>
+            <label htmlFor="date" className="form-label">
+              Date
+            </label>
             <Calendar
               className="form-control date-element"
               id="date"
@@ -208,11 +262,15 @@ export default function CreatePackage() {
         {/* Availability */}
         <div className="field col-md-6">
           <div className="form-group">
-            <label htmlFor="isAvailable" className="form-label">Is Available</label>
+            <label htmlFor="isAvailable" className="form-label">
+              Is Available
+            </label>
             <Checkbox
               inputId="isAvailable"
               checked={pkg.isAvailable}
-              onChange={(e) => setPackage((prev) => ({ ...prev, isAvailable: e.checked! }))}
+              onChange={(e) =>
+                setPackage((prev) => ({ ...prev, isAvailable: e.checked! }))
+              }
             />
           </div>
         </div>
@@ -220,18 +278,20 @@ export default function CreatePackage() {
         {/* Description */}
         <div className="field col-12">
           <div className="form-group">
-            <label htmlFor="description" className="form-label">Description</label>
-            <InputTextarea
+            <label htmlFor="description" className="form-label">
+              Description
+            </label>
+            <textarea
               className="form-control"
               id="description"
               value={pkg.description}
               onChange={handlePackageInputChange}
               rows={3}
               required
-            />
+            ></textarea>
           </div>
         </div>
-      </div>
+      </form>
 
       {/* Tour Photos */}
       <div className="tour-activities-actions mt-40">
