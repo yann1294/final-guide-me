@@ -28,7 +28,7 @@ const useUserStore = create<UserStore>((set) => ({
 
   setGuides: (guides: GuideDTO[]) =>
     set((state) => {
-      return { guides: [...state.guides, ...guides] };
+      return { guides: guides };
     }),
 
   setTourists: (tourists: TouristDTO[]) =>

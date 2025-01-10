@@ -15,7 +15,7 @@ export const emptyTourObject = {
         }
     },
     price: 0,
-    durationDays: 0,
+    durationDays: 1,
     discount: 0,
     numberOfSeats: 0,
     description: "",
@@ -28,7 +28,7 @@ export const emptyTourObject = {
 
 export const emptyActivityObject = {
         name: "",
-        durationHours: 0,
+        durationHours: 1,
         location: {
             name: "",
             city: "",
@@ -63,7 +63,7 @@ export const emptyPackageObject = {
       },
     },
     price: 0,
-    durationDays: 0,
+    durationDays: 1,
     discount: 0,
     numberOfSeats: 0,
     description: "",

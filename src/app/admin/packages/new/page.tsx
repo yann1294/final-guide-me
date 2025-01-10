@@ -8,7 +8,7 @@ import { Image } from 'primereact/image';
 import { InputNumber } from 'primereact/inputnumber';
 import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
-import { useState } from 'react';
+import { SyntheticEvent, useState } from 'react';
 
 export default function CreatePackage() {
   const [pkg, setPackage] = useState<PackageDTO>(emptyPackageObject);
@@ -46,6 +46,7 @@ export default function CreatePackage() {
   const handlePackageInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
+    console.log("Change", e.target.name)
     const { name, value } = e.target;
     setPackage((prev) => ({ ...prev, [name]: value }));
   };
@@ -62,11 +63,9 @@ export default function CreatePackage() {
   };
 
   const handleDateChange = (e: any) => {
-    const form = document.getElementById('tourForm') as HTMLFormElement;
-
     setPackage((prev) => ({
       ...prev,
-      date: e.value.getTime(),
+      date:  new Date(e.target.value),
     }));
   };
 
@@ -91,6 +90,7 @@ export default function CreatePackage() {
             if (form.checkValidity()) {
               // Form is valid, proceed with submission or any other action
               console.log('Form is valid!');
+              console.log(pkg)
             } else {
               // Form is invalid, trigger validation
               console.log('Form is invalid!');
@@ -234,8 +234,9 @@ export default function CreatePackage() {
               id="numberOfSeats"
               value={pkg.numberOfSeats}
               onValueChange={(e: any) =>
-                setPackage((prev) => ({ ...prev, numberOfSeats: e.value }))
+                setPackage((prev) => ({ ...prev, numberOfSeats: e.value < 1 ? 1 : e.value }))
               }
+              defaultValue={1}
               required
             />
           </div>
@@ -283,6 +284,7 @@ export default function CreatePackage() {
             </label>
             <textarea
               className="form-control"
+              name='description'
               id="description"
               value={pkg.description}
               onChange={handlePackageInputChange}

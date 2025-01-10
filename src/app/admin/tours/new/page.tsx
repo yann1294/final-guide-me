@@ -1,9 +1,8 @@
 'use client';
 import { ActivityDTO, TourDTO } from '@/dto/tour.dto';
-import {
-  emptyActivityObject,
-  emptyTourObject,
-} from '@/lib/utils/emptyObjects';
+import { useFetchGuides } from '@/hooks/useUsers';
+import { emptyActivityObject, emptyTourObject } from '@/lib/utils/emptyObjects';
+import useUserStore from '@/stores/userStore';
 import { ImagePlusIcon, PlusIcon, Trash2Icon } from 'lucide-react';
 import { Calendar } from 'primereact/calendar';
 import { Checkbox } from 'primereact/checkbox';
@@ -12,17 +11,29 @@ import { Image } from 'primereact/image';
 import { InputNumber } from 'primereact/inputnumber';
 import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
-import { FormEvent, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 
 export default function CreateTour() {
   const [tour, setTour] = useState<TourDTO>(emptyTourObject);
+  const {guides} = useUserStore();
+  const {fetchGuides, loading, error} = useFetchGuides();
   const [activities, setActivities] = useState<
     Map<number, typeof emptyActivityObject>
-  >(new Map([[0, emptyActivityObject]]));
+  >(new Map([[new Date().getMilliseconds(), emptyActivityObject]]));
   const [photos, setPhotos] = useState<
     Map<number, { file: File; dataString: string }>
   >(new Map());
+  const [activityType, setActivityType] = useState<{
+    type: string;
+    key: number;
+  }>({ type: 'normal', key: new Date().getMilliseconds() });
 
+  useEffect(() => {
+    if (guides.length === 0) {
+      fetchGuides();
+    }
+    console.log(guides)
+  }, [fetchGuides, guides]);
   function handleFileUpload(event: any) {
     const file = event.target.files[0]; // Get the first uploaded file
     if (file) {
@@ -68,20 +79,74 @@ export default function CreateTour() {
     }));
   };
 
+  // Handle change in the input fields
+  const handleInputChange = (e: any, key: number) => {
+    const { name, value } = {
+      name: (e.target ?? e.originalEvent.target).name,
+      value: (e.target ?? e.originalEvent.target).value,
+    };
+    const [mainKey, subKey] = name.split('.'); // Handle nested keys with dot notation
+
+    setActivities((prevActivities) => {
+      const updatedActivities = new Map(prevActivities);
+      const activity = updatedActivities.get(key);
+
+      const newActivity: any = Object.assign({}, activity ?? {});
+      console.log(newActivity);
+      // Check if it's a nested field and update accordingly
+      if (subKey) {
+        let temp: any = {};
+        temp[subKey] = value;
+        newActivity[mainKey] = { ...newActivity[mainKey], ...temp };
+      } else {
+        newActivity[mainKey] = value;
+      }
+      console.log(newActivity);
+
+      updatedActivities.set(key, (newActivity ?? {}) as ActivityDTO); // Set updated activity back
+      return updatedActivities;
+    });
+  };
+
   return (
     <div className="container create-form mt-20">
       <h2>Create a New Tour</h2>
       <div className="create-form-section-title  mt-20">Tour Details</div>
       <div className="action-buttons mb-0 mt-20 justify-content-between align-item-center">
-      <div className="guide-area p-0">
-      <select className='form-select m-0 w-auto' defaultValue={""}>
-            <option value="">Assign guide to tour</option>
-            <option value="">Guide 1</option>
+        <div className="guide-area p-0">
+          <select
+            style={{ height: '40px' }}
+            className="form-select m-0 w-auto"
+            defaultValue={''}
+            name='guide'
+            onChange={(e) => handleInputChange}
+          >
+            <option key={"initial"}>Assign guide to tour</option>
+            {guides.map((guide) => (<option key={guide.uid} value={guide.uid}>{guide.firstName} {guide.lastName}</option>))}
           </select>
         </div>
-        <div className="save-button add-resource">Save tour</div>
+        <div
+          onClick={() => {
+            const form = document.getElementById(
+              'create-tour-form',
+            ) as HTMLFormElement;
+
+            // Check if the form is valid (using HTML5 checkValidity)
+            if (form.checkValidity()) {
+              // combine activities and tour
+              tour.activities = activities;
+            } else {
+              // Form is invalid, trigger validation
+              console.log('Form is invalid!');
+              form.reportValidity(); // This will show the built-in validation messages
+            }
+          }}
+          className="save-button add-resource"
+        >
+          Save tour
+        </div>
       </div>
-      <div className="row">
+      <form id="create-tour-form" className="row">
         {/* Tour Name */}
         <div className="field col-md-6">
           <div className="form-group">
@@ -233,8 +298,8 @@ export default function CreateTour() {
             <Calendar
               className="form-control date-element"
               id="date"
-              // value={tour.date}
-              // onChange={(e) => setTour((prev) => ({ ...prev, date: e.value }))}
+              value={tour.date}
+              onChange={(e) => setTour((prev) => ({ ...prev, date: e.value }))}
               showTime
               showIcon={true}
               required
@@ -267,8 +332,9 @@ export default function CreateTour() {
             <label htmlFor="description" className="form-label">
               Description
             </label>
-            <InputTextarea
+            <textarea
               className="form-control"
+              name="description"
               id="description"
               value={tour.description}
               onChange={handleTourInputChange}
@@ -281,18 +347,32 @@ export default function CreateTour() {
                 }
               }}
               required
-            />
+            ></textarea>
           </div>
         </div>
-      </div>
+      </form>
       {/* <hr /> */}
       <div className="tour-activities-actions mt-40">
         <div className="create-form-section-title ">Tour Activities</div>
         <div
           onClick={() => {
-            const activity = new Map(activities);
-            activity.set(new Date().getMilliseconds(), emptyActivityObject);
-            setActivities(activity);
+            const form = document.querySelector(
+              '.create-activity-form',
+            ) as HTMLFormElement;
+
+            // Check if the form is valid (using HTML5 checkValidity)
+            if (form.checkValidity()) {
+              // Form is valid, proceed with submission or any other action
+              console.log('Form is valid!');
+
+              const activity = new Map(activities);
+              activity.set(new Date().getMilliseconds(), emptyActivityObject);
+              setActivities(activity);
+            } else {
+              // Form is invalid, trigger validation
+              console.log('Form is invalid!');
+              form.reportValidity(); // This will show the built-in validation messages
+            }
           }}
           className="add-activity"
         >
@@ -301,7 +381,11 @@ export default function CreateTour() {
       </div>
       <div className="container">
         {Array.from(activities.entries()).map(([key, activity]) => (
-          <div id={`${key}`} key={key} className="row activity-card">
+          <form
+            id={`${key}`}
+            key={key}
+            className="row activity-card create-activity-form"
+          >
             <div className="field col-md-3">
               <div className="form-group">
                 <label htmlFor="name" className="form-label">
@@ -312,7 +396,7 @@ export default function CreateTour() {
                   id="name"
                   name="name"
                   value={activity.name}
-                  onChange={handleTourInputChange}
+                  onChange={(e) => handleInputChange(e, key)}
                   required
                 />
               </div>
@@ -328,6 +412,7 @@ export default function CreateTour() {
                   id="durationHours"
                   name="durationHours"
                   value={activity.durationHours}
+                  onChange={(e) => handleInputChange(e, key)}
                   required
                 />
               </div>
@@ -343,7 +428,22 @@ export default function CreateTour() {
                   id="locationName"
                   name="location.name"
                   value={activity.location.name}
-                  onChange={handleTourInputChange}
+                  onChange={(e) => handleInputChange(e, key)}
+                  required
+                />
+              </div>
+            </div>
+            <div className="field col-md-3">
+              <div className="form-group">
+                <label htmlFor="address" className="form-label">
+                  Address
+                </label>
+                <InputText
+                  className="form-control"
+                  id="address"
+                  name="location.address"
+                  value={activity.location.address}
+                  onChange={(e) => handleInputChange(e, key)}
                   required
                 />
               </div>
@@ -359,7 +459,7 @@ export default function CreateTour() {
                   id="city"
                   name="location.city"
                   value={activity.location.city}
-                  onChange={handleTourInputChange}
+                  onChange={(e) => handleInputChange(e, key)}
                   required
                 />
               </div>
@@ -375,109 +475,127 @@ export default function CreateTour() {
                   id="country"
                   name="location.country"
                   value={activity.location.country}
-                  onChange={handleTourInputChange}
+                  onChange={(e) => handleInputChange(e, key)}
                   required
                 />
               </div>
             </div>
 
-            <div className="field col-md-3">
+            <div className="filed col-md-3">
               <div className="form-group">
-                <label htmlFor="address" className="form-label">
-                  Address
-                </label>
-                <InputText
-                  className="form-control"
-                  id="address"
-                  name="location.address"
-                  value={activity.location.address}
-                  onChange={handleTourInputChange}
-                  required
-                />
-              </div>
-            </div>
-
-            <div className="field col-md-3">
-              <div className="form-group">
-                <label htmlFor="arrivalTime" className="form-label">
+                <label htmlFor="activityType" className="form-label">
                   Arrival Time
                 </label>
-                <Calendar
-                  className="form-control date-element"
-                  id="arrivalTime"
-                  // value={tour.date}
-                  // onChange={(e) => setTour((prev) => ({ ...prev, date: e.value }))}
-                  showTime
-                  showIcon={true}
-                  required
-                />
+                <select
+                  onChange={(e) => {
+                    setActivityType({ type: e.target.value, key: key });
+                  }}
+                  style={{ height: '40px' }}
+                  defaultValue={'normal'}
+                  name="activityType"
+                  id="activityType"
+                  className="activityType form-select"
+                >
+                  <option value="normal">Normal</option>
+                  <option value="accommodation">Accommodation</option>
+                  <option value="transportation">Transportation</option>
+                </select>
               </div>
             </div>
 
-            <div className="field col-md-3">
-              <div className="form-group">
-                <label htmlFor="departureTime" className="form-label">
-                  Departure Time
-                </label>
-                <Calendar
-                  className="form-control date-element"
-                  id="departureTime"
-                  // value={tour.date}
-                  // onChange={(e) => setTour((prev) => ({ ...prev, date: e.value }))}
-                  showTime
-                  showIcon={true}
-                  required
-                />
-              </div>
-            </div>
+            {activityType.type == 'transportation' &&
+              activityType.key == key && (
+                <>
+                  <div className="field col-md-3">
+                    <div className="form-group">
+                      <label htmlFor="transportType" className="form-label">
+                        Transportation Type
+                      </label>
+                      <InputText
+                        className="form-control"
+                        id="transportType"
+                        name="transportation.type"
+                        value={activity.transportation.type}
+                        onChange={(e) => handleInputChange(e, key)}
+                        required
+                      />
+                    </div>
+                  </div>
 
-            <div className="field col-md-3">
-              <div className="form-group">
-                <label htmlFor="transportType" className="form-label">
-                  Transportation Type
-                </label>
-                <InputText
-                  className="form-control"
-                  id="transportType"
-                  name="transportation.type"
-                  value={activity.transportation.type}
-                  onChange={handleTourInputChange}
-                  required
-                />
-              </div>
-            </div>
+                  <div className="field col-md-3">
+                    <div className="form-group">
+                      <label htmlFor="departureTime" className="form-label">
+                        Departure Time
+                      </label>
+                      <Calendar
+                        className="form-control date-element"
+                        id="departureTime"
+                        name="transportation.departureTime"
+                        value={activity.transportation.departureTime}
+                        onChange={(e) => handleInputChange(e, key)}
+                        showTime
+                        showIcon={true}
+                        required
+                      />
+                    </div>
+                  </div>
 
-            <div className="field col-md-3">
-              <div className="form-group">
-                <label htmlFor="accommodationType" className="form-label">
-                  Accommodation Type
-                </label>
-                <InputText
-                  className="form-control"
-                  id="accommodationType"
-                  name="accommodation.type"
-                  value={activity.accommodation.type}
-                  onChange={handleTourInputChange}
-                  required
-                />
-              </div>
-            </div>
+                  <div className="field col-md-3">
+                    <div className="form-group">
+                      <label htmlFor="arrivalTime" className="form-label">
+                        Arrival Time
+                      </label>
+                      <Calendar
+                        className="form-control date-element"
+                        id="arrivalTime"
+                        name="transportation.arrivalTime"
+                        value={activity.transportation.arrivalTime}
+                        onChange={(e) => handleInputChange(e, key)}
+                        showTime
+                        showIcon={true}
+                        required
+                      />
+                    </div>
+                  </div>
+                </>
+              )}
 
-            <div className="field col-md-3">
-              <div className="form-group">
-                <label htmlFor="accommodationName" className="form-label">
-                  Accommodation Name
-                </label>
-                <InputText
-                  className="form-control"
-                  id="accommodationName"
-                  name="accommodation.name"
-                  value={activity.accommodation.name}
-                  onChange={handleTourInputChange}
-                  required
-                />
-              </div>
-            </div>
+            {activityType.type == 'accommodation' &&
+              activityType.key == key && (
+                <>
+                  <div className="field col-md-3">
+                    <div className="form-group">
+                      <label htmlFor="accommodationType" className="form-label">
+                        Accommodation Type
+                      </label>
+                      <InputText
+                        className="form-control"
+                        id="accommodationType"
+                        name="accommodation.type"
+                        value={activity.accommodation.type}
+                        onChange={(e) => handleInputChange(e, key)}
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="field col-md-3">
+                    <div className="form-group">
+                      <label htmlFor="accommodationName" className="form-label">
+                        Accommodation Name
+                      </label>
+                      <InputText
+                        className="form-control"
+                        id="accommodationName"
+                        name="accommodation.name"
+                        value={activity.accommodation.name}
+                        onChange={(e) => handleInputChange(e, key)}
+                        required
+                      />
+                    </div>
+                  </div>
+                </>
+              )}
 
             <div className="remove-activity">
               <Trash2Icon
@@ -488,7 +606,7 @@ export default function CreateTour() {
                 }}
               />
             </div>
-          </div>
+          </form>
         ))}
       </div>
       {/* Uploading photos */}
