@@ -7,12 +7,6 @@ export const emptyTourObject = {
         name: "",
         city: "",
         country: "",
-        address: "",
-        location: {
-            name: "",
-            city: "",
-            country: ""
-        }
     },
     price: 0,
     durationDays: 1,

@@ -1,7 +1,9 @@
 'use client';
 import { ActivityDTO, TourDTO } from '@/dto/tour.dto';
+import { useCreateOneTour } from '@/hooks/useTours';
 import { useFetchGuides } from '@/hooks/useUsers';
 import { emptyActivityObject, emptyTourObject } from '@/lib/utils/emptyObjects';
+import useTourStore from '@/stores/tourStore';
 import useUserStore from '@/stores/userStore';
 import { ImagePlusIcon, PlusIcon, Trash2Icon } from 'lucide-react';
 import { Calendar } from 'primereact/calendar';
@@ -15,8 +17,14 @@ import { FormEvent, useEffect, useState } from 'react';
 
 export default function CreateTour() {
   const [tour, setTour] = useState<TourDTO>(emptyTourObject);
-  const {guides} = useUserStore();
-  const {fetchGuides, loading, error} = useFetchGuides();
+  const [action, setAction] = useState<"creating" | "updating" | "nothing">("nothing");
+  const { guides } = useUserStore();
+  const { fetchGuides, loading, error } = useFetchGuides();
+  const {
+    createOneTour,
+    loading: isCreatingTour,
+    error: createTourError,
+  } = useCreateOneTour();
   const [activities, setActivities] = useState<
     Map<number, typeof emptyActivityObject>
   >(new Map([[new Date().getMilliseconds(), emptyActivityObject]]));
@@ -32,7 +40,7 @@ export default function CreateTour() {
     if (guides.length === 0) {
       fetchGuides();
     }
-    console.log(guides)
+    console.log(guides);
   }, [fetchGuides, guides]);
   function handleFileUpload(event: any) {
     const file = event.target.files[0]; // Get the first uploaded file
@@ -62,7 +70,7 @@ export default function CreateTour() {
   }
 
   const handleTourInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
   ) => {
     const { name, value } = e.target;
     setTour((prev) => ({ ...prev, [name]: value }));
@@ -102,6 +110,12 @@ export default function CreateTour() {
         newActivity[mainKey] = value;
       }
       console.log(newActivity);
+      // remove accommodation or transportation
+      if (mainKey === 'accommodation') {
+        delete newActivity['transportation'];
+      } else if (mainKey === 'transportation') {
+        delete newActivity['accommodation'];
+      }
 
       updatedActivities.set(key, (newActivity ?? {}) as ActivityDTO); // Set updated activity back
       return updatedActivities;
@@ -111,39 +125,69 @@ export default function CreateTour() {
   return (
     <div className="container create-form mt-20">
       <h2>Create a New Tour</h2>
+      { action === "creating" && !createTourError && (
+      <div className="alert alert-success alert-dismissible fade show mt-20" role="alert">
+        Successfully created <strong>{tour.name}!</strong>.
+        <button
+          type="button"
+          className="btn-close"
+          aria-label="Close"
+          onClick={() => setAction('nothing')}
+        ></button>
+      </div>
+    )}
       <div className="create-form-section-title  mt-20">Tour Details</div>
       <div className="action-buttons mb-0 mt-20 justify-content-between align-item-center">
         <div className="guide-area p-0">
-          <select
-            style={{ height: '40px' }}
-            className="form-select m-0 w-auto"
-            defaultValue={''}
-            name='guide'
-            onChange={(e) => handleInputChange}
-          >
-            <option key={"initial"}>Assign guide to tour</option>
-            {guides.map((guide) => (<option key={guide.uid} value={guide.uid}>{guide.firstName} {guide.lastName}</option>))}
-          </select>
+            <select
+              style={{ height: '40px' }}
+              className="form-select m-0 w-auto"
+              name="guide"
+              onChange={handleTourInputChange}
+              required
+            >
+              <option key={'initial'}>
+                Assign guide to tour
+              </option>
+              {guides.map((guide) => (
+                <option key={guide.uid} value={guide.uid}>
+                  {guide.firstName} {guide.lastName}
+                </option>
+              ))}
+            </select>
         </div>
         <div
-          onClick={() => {
-            const form = document.getElementById(
-              'create-tour-form',
-            ) as HTMLFormElement;
+          onClick={
+            isCreatingTour
+              ? () => {}
+              : () => {
+                  const form = document.getElementById(
+                    'create-tour-form',
+                  ) as HTMLFormElement;
 
-            // Check if the form is valid (using HTML5 checkValidity)
-            if (form.checkValidity()) {
-              // combine activities and tour
-              tour.activities = activities;
-            } else {
-              // Form is invalid, trigger validation
-              console.log('Form is invalid!');
-              form.reportValidity(); // This will show the built-in validation messages
-            }
-          }}
+                  // Check if the form is valid (using HTML5 checkValidity)
+                  if (form.checkValidity()) {
+                    // check whether guide was assigned
+                    if (tour.guide.trim() !== "") {
+                      // combine activities and tour
+                      tour.activities = activities;
+
+                      // create tour
+                      createOneTour(tour);
+                      setAction("creating");
+                    } else {
+                      alert("Please select a guide");
+                    }
+                  } else {
+                    // Form is invalid, trigger validation
+                    console.log('Form is invalid!');
+                    form.reportValidity(); // This will show the built-in validation messages
+                  }
+                }
+          }
           className="save-button add-resource"
         >
-          Save tour
+          {isCreatingTour ? 'Creating...' : 'Save tour'}
         </div>
       </div>
       <form id="create-tour-form" className="row">
@@ -262,6 +306,8 @@ export default function CreateTour() {
               className="form-control"
               id="discount"
               value={tour.discount}
+              min={0}
+              max={100}
               onValueChange={(e) =>
                 setTour((prev) => ({ ...prev, discount: e.value } as TourDTO))
               }
@@ -302,6 +348,7 @@ export default function CreateTour() {
               onChange={(e) => setTour((prev) => ({ ...prev, date: e.value }))}
               showTime
               showIcon={true}
+              minDate={new Date()}
               required
             />
           </div>
@@ -536,6 +583,7 @@ export default function CreateTour() {
                         showTime
                         showIcon={true}
                         required
+                        minDate={new Date()}
                       />
                     </div>
                   </div>
@@ -553,6 +601,7 @@ export default function CreateTour() {
                         onChange={(e) => handleInputChange(e, key)}
                         showTime
                         showIcon={true}
+                        minDate={activity.transportation.arrivalTime}
                         required
                       />
                     </div>

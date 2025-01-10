@@ -18,7 +18,7 @@ export const useFetchTours = () => {
     try {
       // Replace with the actual endpoint for fetching tours
       const response = await axios.get<ResponseDTO>(`/api/tours`);
-      
+
       // Check if the response status is 'success'
       if (response.data.status !== 'success') {
         console.error(response.data);
@@ -53,7 +53,7 @@ export const useFetchOneTour = () => {
     try {
       // Replace with the actual endpoint for fetching tours
       const response = await axios.get<ResponseDTO>(`/api/tours/${tourId}`);
-      
+
       // Check if the response status is 'success'
       if (response.data.status !== 'success') {
         console.error(response.data);
@@ -80,3 +80,36 @@ export const useFetchOneTour = () => {
   return { fetchOneTour, loading, error };
 };
 
+export const useCreateOneTour = () => {
+  const { addTour } = useTourStore();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const createOneTour = async (tour: TourDTO) => {
+    setLoading(true);
+    setError(null);
+    console.log("Fetching one tour ", tour.name);
+    try {
+      // Replace with the actual endpoint for fetching tours
+      const response = await axios.post<ResponseDTO>(`/api/tours`, JSON.stringify(tour));
+
+      // Check if the response status is 'success'
+      if (response.data.status !== 'success') {
+        console.log(JSON.parse(response.data.message))
+        setError(response.data.message);
+        throw new Error(response.data.message);
+      }
+
+      // add tour to tours
+      tour.id = response.data.data as string;
+      addTour(tour);
+    } catch (err: any) {
+      // console.error("Error: ", err);
+      setError(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { createOneTour, loading, error };
+};
