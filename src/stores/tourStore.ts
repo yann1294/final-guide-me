@@ -9,6 +9,7 @@ interface TourStore {
   setTours: (tours: TourDTO[]) => void;   // Set all tours from an external source (e.g., API)
   addTour: (tour: TourDTO) => void;       // Add a new tour
   setCurrentTour: (tour: TourDTO) => void; // Set the current tour being viewed
+  updateTour: (tour: TourDTO) => void
 }
 
 // Define the Zustand store
@@ -25,6 +26,11 @@ const useTourStore = create<TourStore>((set) => ({
 
   // Set the current tour being viewed
   setCurrentTour: (tour: TourDTO) => set({ currentTour: tour }),
+  updateTour: (tour: TourDTO) => set((state) => {
+    let newTours: TourDTO[] = state.tours.filter((t) => t.id != tour.id);
+
+    return { tours: [...newTours, tour ]}
+  }),
 }));
 
 export default useTourStore;

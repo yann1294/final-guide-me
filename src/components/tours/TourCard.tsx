@@ -1,6 +1,6 @@
 import { TourDTO } from "@/dto/tour.dto";
 import { CONTEXT, ContextType } from "@/lib/utils/contextUtils";
-import { convertSecondsToDate } from "@/lib/utils/dateUtils";
+import { convertSecondsToDateString } from "@/lib/utils/dateUtils";
 import useTourStore from "@/stores/tourStore";
 import Link from "next/link";
 
@@ -62,7 +62,7 @@ export default function TourCard({ tour, origin = ContextType.tour }: { tour: To
                       </div>
                     )}
                     <div className="card-chip number-of-seats">{tour.numberOfSeats} {tour.numberOfSeats === 1 ? "seat" : "seats"}</div>
-                    <div className="card-chip date">{ convertSecondsToDate(tour.date._seconds) }</div>
+                    <div className="card-chip date">{ convertSecondsToDateString(tour.date._seconds) }</div>
                   </div>
                 </div>
               </div>

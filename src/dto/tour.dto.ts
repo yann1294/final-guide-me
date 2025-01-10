@@ -10,8 +10,8 @@ export type GMGeoPoint = {
 }
 
 export type TransportationDTO = {
-    arrivalTime: Date;
-    departureTime: Date;
+    arrivalTime: | { _seconds: number, _nanoseconds: number };
+    departureTime: Date | { _seconds: number, _nanoseconds: number };
     type: string;
 }
 

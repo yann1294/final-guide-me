@@ -113,3 +113,35 @@ export const useCreateOneTour = () => {
 
   return { createOneTour, loading, error };
 };
+
+export const useUpdateOneTour = () => {
+  const { addTour } = useTourStore();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const updateOneTour = async (tour: Partial<TourDTO>) => {
+    setLoading(true);
+    setError(null);
+    console.log("Fetching one tour ", tour.name);
+    try {
+      // Replace with the actual endpoint for fetching tours
+      const response = await axios.patch<ResponseDTO>(`/api/tours/${tour.id}`, tour);
+
+      // Check if the response status is 'success'
+      if (response.data.status !== 'success') {
+        console.log(JSON.parse(response.data.message))
+        setError(response.data.message);
+        throw new Error(response.data.message);
+      }
+
+      console.log(response)
+    } catch (err: any) {
+      // console.error("Error: ", err);
+      setError(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { updateOneTour, loading, error };
+};

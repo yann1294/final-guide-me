@@ -600,7 +600,7 @@ hr {
   padding: 5px;
 }
 
-.p-paginator-element.p-disabled {
+.p-paginator-element.p-disabled, .p-datepicker span[aria-disabled|="true"] {
   color: rgba(213, 213, 213, 0.8);
 }
 
@@ -711,12 +711,16 @@ hr {
   background-color: white;
 }
 
-.row-edit {
-  color: #ED9734;
+.row-edit a {
+  color: #ED9734 !important;
 }
 
-.row-delete {
-  color: #c86b6b;
+.row-view a {
+  color: #6BC8B4 !important;
+}
+
+.row-delete a {
+  color: #c86b6b !important;
 }
 
 .action-buttons {

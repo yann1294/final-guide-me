@@ -34,8 +34,8 @@ export const emptyActivityObject = {
             }
         },
         transportation: {
-            arrivalTime: new Date(),
-            departureTime: new Date(),
+            arrivalTime: new Date() as unknown,
+            departureTime: new Date() as unknown,
             type: ""
         },
         accommodation: {

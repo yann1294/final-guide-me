@@ -5,7 +5,7 @@ import { TourDTO } from '@/dto/tour.dto';
 import usePackageStore from '@/stores/packageStore';
 import useTourStore from '@/stores/tourStore';
 import { CONTEXT, ContextType } from '@/lib/utils/contextUtils';
-import { convertSecondsToDate } from '@/lib/utils/dateUtils';
+import { convertSecondsToDateString } from '@/lib/utils/dateUtils';
 
 interface TourPackageTabProps {
   resource: TourDTO | PackageDTO;
@@ -221,7 +221,7 @@ export default function TourPackageTab({ resource, context }: TourPackageTabProp
                                 {tour.numberOfSeats === 1 ? 'seat' : 'seats'}
                               </div>
                               <div className="card-chip date">
-                                {convertSecondsToDate(tour.date._seconds)}
+                                {convertSecondsToDateString(tour.date._seconds)}
                               </div>
                             </div>
                           </div>

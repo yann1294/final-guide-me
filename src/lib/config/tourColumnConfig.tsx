@@ -90,19 +90,6 @@ export const tourColumnTemplates = [
         ),
     },
     {
-      field: 'activities',
-      header: 'Activities',
-    },
-    {
-      field: 'description',
-      header: 'Description',
-    },
-    {
-      field: 'images',
-      header: 'Images',
-      body: () => modifyElement(<ViewIcon size="18px" />, 'View Tour Images'),
-    },
-    {
       field: 'guide',
       header: 'Guide',
       filter: true,
@@ -114,6 +101,7 @@ export const tourColumnTemplates = [
         modifyElement(<ExternalLinkIcon size="18px" />, 'View Guide Profile'),
     },
     {
+      header: "Actions",
       field: 'actions',
       exportable: false,
     },

@@ -4,19 +4,30 @@ import { Dispatch, SetStateAction } from 'react';
 
 export function ActionButtons({
   context,
+  actions,
 }: {
-  context: CONTEXT,
+  context: CONTEXT;
+  actions: ('create' | 'delete')[];
 }) {
   return (
     <div className="action-buttons">
-      <div onClick={() => {
-        window.location.assign(`${context.context}/new`)
-      }} className="add-resource">
-        <PlusIcon size="14px" /> New {context === ContextType.tour ? "Tour" : "Package"}
-      </div>
-      <div className="delete-resource">
-        <Trash2Icon size="14px" /> Delete {context === ContextType.tour ? "Tour" : "Package"}
-      </div>
+      {actions.includes('create') && (
+        <div
+          onClick={() => {
+            window.location.assign(`${context.context}/new`);
+          }}
+          className="add-resource"
+        >
+          <PlusIcon size="14px" /> New{' '}
+          {context === ContextType.tour ? 'Tour' : 'Package'}
+        </div>
+      )}
+      {actions.includes('delete') && (
+        <div className="delete-resource">
+          <Trash2Icon size="14px" /> Delete{' '}
+          {context === ContextType.tour ? 'Tour' : 'Package'}
+        </div>
+      )}
     </div>
   );
 }

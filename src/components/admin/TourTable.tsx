@@ -14,6 +14,7 @@ import { CONTEXT, ContextType } from '@/lib/utils/contextUtils';
 import { ActionButtons } from '@/components/admin/ActionButtons';
 import {
   Edit2Icon,
+  EyeIcon,
   LayoutListIcon,
   ListIcon,
   ReceiptTextIcon,
@@ -24,6 +25,7 @@ import ActivityTable from './ActivityTable';
 import { ActivityDTO, TourDTO } from '@/dto/tour.dto';
 import { useDataTableConfig } from '@/lib/config/dataTableConfig';
 import { tourColumnTemplates } from '@/lib/config/tourColumnConfig';
+import Link from 'next/link';
 
 export default function TourTable({ context = ContextType.tour }: { context?: CONTEXT  }) {
   // Global filter state and actions
@@ -31,7 +33,7 @@ export default function TourTable({ context = ContextType.tour }: { context?: CO
   const [globalFilterValue, setGlobalFilterValue] = useState<string>('');
 
   // Fetching tours from the store and hook
-  const { tours } = useTourStore();
+  const { tours, setCurrentTour } = useTourStore();
   const { loading, fetchTours } = useFetchTours();
     const [ expandedRows, setExpandedRows ] = useState<any | DataTableExpandedRows>(null);
 
@@ -73,32 +75,17 @@ export default function TourTable({ context = ContextType.tour }: { context?: CO
 
         // Configure column bodies based on field names
         switch (template.field) {
-          case 'activities':
-            additionalConfig['body'] = (data: any) =>
-              modifyElement(
-                <LayoutListIcon size="18px" />,
-                'View Tour Activities',
-              );
-            break;
-          case 'description':
-            additionalConfig['body'] = (data: any) =>
-              modifyElement(
-                <ReceiptTextIcon size="18px" />,
-                'View Tour Description',
-              );
-            break;
-          case 'images':
-            additionalConfig['body'] = (data: any) =>
-              modifyElement(<ViewIcon size="18px" />, 'View Tour Images');
-            break;
           case 'actions':
             additionalConfig['body'] = (data: any) => (
               <div className="row-action-btns">
                 <div className="row-edit">
-                  <Edit2Icon onClick={() => {}} size="18px" />
+                  <Link href={"/admin/tours/" + data.id}><Edit2Icon onClick={() => setCurrentTour(data as TourDTO)} size="18px" /></Link>
+                </div>
+                <div className="row-view">
+                  <Link href={"/admin/tours/" + data.id}><EyeIcon onClick={() => setCurrentTour(data as TourDTO)} size="18px" /></Link>
                 </div>
                 <div className="row-delete">
-                  <Trash2Icon onClick={() => {}} size="18px" />
+                  <Link href={"#"}><Trash2Icon onClick={() => setCurrentTour(data as TourDTO)} size="18px" /></Link>
                 </div>
               </div>
             );

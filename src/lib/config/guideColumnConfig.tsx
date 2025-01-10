@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import { TriStateCheckbox } from "primereact/tristatecheckbox";
 import { dateFilterTemplate, dropDownFilterTemplate, modifyElement } from "@/components/admin/FilterTemplates";
-import { convertSecondsToDate } from "../utils/dateUtils";
+import { convertSecondsToDateString } from "../utils/dateUtils";
 
 export const guideColumnConfigs= [
   {
@@ -87,7 +87,7 @@ export const guideColumnConfigs= [
     sortable: true,
     filter: true,
     filterElement: dateFilterTemplate,
-    body: (data: any) => convertSecondsToDate(data.createdAt),
+    body: (data: any) => convertSecondsToDateString(data.createdAt),
   },
   {
     field: 'updatedAt._seconds',
@@ -95,7 +95,7 @@ export const guideColumnConfigs= [
     sortable: true,
     filter: true,
     filterElement: dateFilterTemplate,
-    body: (data: any) => convertSecondsToDate(data.updatedAt),
+    body: (data: any) => convertSecondsToDateString(data.updatedAt),
   },
   {
     field: 'identification.file',

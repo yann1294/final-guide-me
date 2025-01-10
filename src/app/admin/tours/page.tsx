@@ -16,7 +16,7 @@ export default function AdminToursPage() {
 
           <div className="col-12 management-container">
             {/* Action buttons (e.g., Add, Edit, Delete) */}
-            <ActionButtons context={ContextType.tour} />
+            <ActionButtons context={ContextType.tour} actions={["create"]} />
             <TourTable />
           </div>
         </div>

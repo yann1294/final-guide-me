@@ -8,7 +8,7 @@ import { packageSlideConfig } from "@/lib/config/swiperConfig";
 import { ContextType } from "@/lib/utils/contextUtils";
 import usePackageStore from "@/stores/packageStore";
 import Link from "next/link";
-import { convertSecondsToDate } from "@/lib/utils/dateUtils";
+import { convertSecondsToDateString } from "@/lib/utils/dateUtils";
 
 export default function PackageCard({ pkg: packageObj }: { pkg: PackageDTO }) {
   const { packages, tours } = usePackageStore(); // Accessing package and tour data from the store
@@ -94,7 +94,7 @@ export default function PackageCard({ pkg: packageObj }: { pkg: PackageDTO }) {
 
             {/* Date Information (converted seconds to date) */}
             <div className="card-chip date">
-              {convertSecondsToDate(30001897)} {/* Example value */}
+              {convertSecondsToDateString(30001897)} {/* Example value */}
             </div>
           </div>
         </Link>

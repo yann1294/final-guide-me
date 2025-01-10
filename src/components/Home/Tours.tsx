@@ -2,7 +2,7 @@ import Link from 'next/link';
 import React from 'react';
 import packageData from '../../data/package_grid.json';
 import useTourStore from '@/stores/tourStore';
-import { convertSecondsToDate } from '@/lib/utils/dateUtils';
+import { convertSecondsToDateString } from '@/lib/utils/dateUtils';
 export default function Tour({ context = 'home' }) {
   const { tours, setCurrentTour } = useTourStore();
 
@@ -106,7 +106,7 @@ export default function Tour({ context = 'home' }) {
                           {tour.numberOfSeats === 1 ? 'seat' : 'seats'}
                         </div>
                         <div className="card-chip date">
-                          {convertSecondsToDate(tour.date._seconds)}
+                          {convertSecondsToDateString(tour.date._seconds)}
                         </div>
                       </div>
                     </div>
