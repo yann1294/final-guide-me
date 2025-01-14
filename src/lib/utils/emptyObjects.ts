@@ -21,40 +21,33 @@ export const emptyTourObject = {
 } as TourDTO;
 
 export const emptyActivityObject = {
+    id: 0,
+    name: "",
+    durationHours: 1,
+    location: {
         name: "",
-        durationHours: 1,
+        city: "",
+        country: "",
+        address: "",
         location: {
-            name: "",
-            city: "",
-            country: "",
-            address: "",
-            location: {
-                latitude: 0,
-                longitude: 0
-            }
-        },
-        transportation: {
-            arrivalTime: new Date() as unknown,
-            departureTime: new Date() as unknown,
-            type: ""
-        },
-        accommodation: {
-            type: "",
-            name: ""
+            latitude: 0,
+            longitude: 0
         }
-    } as ActivityDTO;
+    },
+} as ActivityDTO
+
 
 export const emptyPackageObject = {
     name: "",
     location: {
-      name: "",
-      city: "",
-      country: "",
-      address: "",
-      location: {
-        latitude: 0,
-        longitude: 0,
-      },
+        name: "",
+        city: "",
+        country: "",
+        address: "",
+        location: {
+            latitude: 0,
+            longitude: 0,
+        },
     },
     price: 0,
     durationDays: 1,

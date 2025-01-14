@@ -24,7 +24,7 @@ export default function CreatePackage() {
       reader.onload = (e: ProgressEvent<FileReader>) => {
         const dataUrl = e.target?.result; // The Data URL as a string
         let photo = new Map(photos);
-        photo.set(new Date().getMilliseconds(), {
+        photo.set(new Date().getTime(), {
           file: file,
           dataString: dataUrl as string,
         });

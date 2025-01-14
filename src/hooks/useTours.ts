@@ -88,14 +88,16 @@ export const useCreateOneTour = () => {
   const createOneTour = async (tour: TourDTO) => {
     setLoading(true);
     setError(null);
-    console.log("Fetching one tour ", tour.name);
+    console.log("Creating one tour ", tour.activities);
     try {
+      // convert activities to object
+      let data: any = Object.assign({}, tour);
+      data['activities'] = Object.fromEntries(tour.activities.entries());
       // Replace with the actual endpoint for fetching tours
-      const response = await axios.post<ResponseDTO>(`/api/tours`, JSON.stringify(tour));
+      const response = await axios.post<ResponseDTO>(`/api/tours`, JSON.stringify(data));
 
       // Check if the response status is 'success'
       if (response.data.status !== 'success') {
-        console.log(JSON.parse(response.data.message))
         setError(response.data.message);
         throw new Error(response.data.message);
       }
@@ -103,6 +105,7 @@ export const useCreateOneTour = () => {
       // add tour to tours
       tour.id = response.data.data as string;
       addTour(tour);
+      console.log(response.data)
     } catch (err: any) {
       // console.error("Error: ", err);
       setError(err);

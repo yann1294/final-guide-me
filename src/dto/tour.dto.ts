@@ -29,12 +29,12 @@ export type ActivityLocationDTO = {
 }
 
 export type ActivityDTO = {
-    id?: number;
+    id: number;
     name: string;
     durationHours: number;
     location: ActivityLocationDTO;
-    transportation: TransportationDTO;
-    accommodation: AccommodationDTO;
+    transportation?: TransportationDTO;
+    accommodation?: AccommodationDTO;
 }
 
 export type TourDTO = {
