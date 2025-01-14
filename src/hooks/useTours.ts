@@ -1,7 +1,7 @@
 import useSWR from "swr";
 import axios from "axios";
 import { ResponseDTO } from "@/dto/helper.dto";
-import { TourDTO } from "@/dto/tour.dto";
+import { ActivityDTO, TourDTO } from "@/dto/tour.dto";
 import { useState } from "react";
 import useTourStore from "@/stores/tourStore";
 import useUserStore from "@/stores/userStore";
@@ -62,8 +62,12 @@ export const useFetchOneTour = () => {
 
       // Persist the fetched tours in Zustand store
       const tour: TourDTO = response.data.data as TourDTO;
+      let activities = new Map<number, ActivityDTO>(
+        Object.entries(tour.activities).map(([key, value]) => [parseInt(key), value])
+      );
+      tour.activities = activities;
       setCurrentTour(tour);
-
+      console.log("Fetched One", tour);
       // fetch tour guide if guide does not exist
       if (!guides.get(tour.guide)) {
         await fetchOneGuide(tour.guide);

@@ -295,6 +295,11 @@ export default function CreateTour({
                       // check whether guide was assigned
                       console.log('Guide', tour.guide.trim());
                       if (tour.guide.trim() !== '') {
+                        // checking whether activities is present
+                        if (activities.size === 0) {
+                          alert('At least one tour activity is required');
+                          return;
+                        }
                         // combine activities and tour
                         tour.activities = activities;
                         console.log('Saving', tour);
@@ -593,14 +598,32 @@ export default function CreateTour({
         </div>
       </div>
       <div className="container">
-        {(origin === 'new'
-          ? Array.from(activities.entries())
-          : Object.entries(activities)
-        ).map(([keyObj, activityObj]) => {
-          const key: any =
-            origin === 'new' ? keyObj : parseInt(keyObj as string);
+        {Array.from(activities.entries()).map(([keyObj, activityObj]) => {
+          const key: number = keyObj;
           // const key: number = parseInt(keyObj);
           const activity: ActivityDTO = activityObj as ActivityDTO;
+
+          function getDateValue(
+            origin: 'transportation' | 'accommodation',
+            obj: any,
+            field: string,
+          ): Date | null {
+            console.log(obj);
+            let date = new Date();
+
+            if (!obj || !obj[field]) return null;
+
+            if (origin === 'transportation') {
+              // check whether date contains _seconds
+              if (Object.keys(obj[field]).includes('_seconds')) {
+                date = convertSecondsToDate(obj[field]['_seconds']);
+              } else {
+                date = obj[field];
+              }
+            }
+            return date;
+          }
+
           return (
             <form
               id={`${key}`}
@@ -709,6 +732,7 @@ export default function CreateTour({
                   </label>
                   <select
                     onChange={(e) => {
+                      console.log(activities);
                       let temp = new Map(activities);
                       // update activity information based on selected type
                       switch (e.target.value) {
@@ -780,12 +804,38 @@ export default function CreateTour({
                         className="form-control date-element"
                         id="departureTime"
                         name="transportation.departureTime"
-                        value={
-                          origin === 'new'
-                            ? (activity.transportation?.departureTime as any)
-                            : convertSecondsToDate(tour.date._seconds)
-                        }
-                        onChange={(e) => handleInputChange(e, key)}
+                        value={getDateValue(
+                          'transportation',
+                          activity.transportation,
+                          'departureTime',
+                        )}
+                        onChange={(e) => {
+                          const arrivalTime =
+                            activity.transportation?.arrivalTime;
+                          let arrivalIsGreat = true;
+
+                          if (arrivalTime instanceof Date && e.target.value) {
+                            arrivalIsGreat = arrivalTime > e.target.value;
+                          } else if (arrivalTime?._seconds && e.target.value) {
+                            arrivalIsGreat =
+                              convertSecondsToDate(arrivalTime?._seconds) >
+                              e.target.value;
+                          }
+
+                          if (!arrivalIsGreat) {
+                            handleInputChange(
+                              {
+                                target: {
+                                  name: 'transportation.arrivalTime',
+                                  value: e.target.value,
+                                },
+                              },
+                              key,
+                            );
+                          }
+
+                          handleInputChange(e, key);
+                        }}
                         showTime
                         showIcon={true}
                         required
@@ -803,25 +853,20 @@ export default function CreateTour({
                         className="form-control date-element"
                         id="arrivalTime"
                         name="transportation.arrivalTime"
-                        value={
-                          origin === 'new'
-                            ? (activity.transportation?.arrivalTime as any)
-                            : convertSecondsToDate(
-                                activity.transportation
-                                  ? activity.transportation.arrivalTime._seconds
-                                  : new Date().getSeconds(),
-                              )
-                        }
+                        value={getDateValue(
+                          'transportation',
+                          activity.transportation,
+                          'arrivalTime',
+                        )}
                         onChange={(e) => handleInputChange(e, key)}
                         showTime
                         showIcon={true}
                         minDate={
-                          origin === 'new'
-                            ? (activity.transportation?.departureTime as any)
-                            : convertSecondsToDate(
-                                (activity.transportation?.departureTime as any)
-                                  ._seconds,
-                              )
+                          getDateValue(
+                            'transportation',
+                            activity.transportation,
+                            'departureTime',
+                          ) ?? undefined
                         }
                         required
                       />
@@ -881,10 +926,7 @@ export default function CreateTour({
           );
         })}
 
-        {(origin === 'new'
-          ? Array.from(activities.entries())
-          : Object.entries(activities)
-        ).length === 0 && (
+        {Array.from(activities.entries()).length === 0 && (
           <div className="flex justify-content-center">No Activities</div>
         )}
       </div>
@@ -910,14 +952,14 @@ export default function CreateTour({
       </div>
       <div className="container">
         <div className="row photos-container">
-          {Object.entries(photos).map(([key, photo]) => (
+          {Array.from(photos.entries()).map(([key, photo]) => (
             <div key={key} className="col-12 col-sm-6 col-md-4 col-lg-3">
               <div className="image-card mt-3">
                 <div className="remove-activity">
                   <Trash2Icon
                     onClick={() => {
                       let newPhotos = new Map(photos);
-                      newPhotos.delete(parseInt(key));
+                      newPhotos.delete(key);
                       setPhotos(newPhotos);
                     }}
                   />
@@ -926,10 +968,7 @@ export default function CreateTour({
               </div>
             </div>
           ))}
-          {(origin === 'new'
-            ? Array.from(activities.entries())
-            : Object.entries(activities)
-          ).length === 0 && (
+          {Array.from(activities.entries()).length === 0 && (
             <div className="flex justify-content-center">No Images</div>
           )}
         </div>
