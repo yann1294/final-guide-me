@@ -29,7 +29,7 @@ export default function CreateTour({
   );
   const { guides } = useUserStore();
   const { fetchOneTour, loading: fetchingTourData } = useFetchOneTour();
-  const { updateOneTour, loading: isUpdatingTour } = useUpdateOneTour();
+  const { updateOneTour, loading: isUpdatingTour, error: updateTourError } = useUpdateOneTour();
   const { fetchGuides, loading, error } = useFetchGuides();
   const [updatedTourFields, setUpdatedTourFields] = useState<Set<string>>(new Set());
   const {
@@ -197,12 +197,12 @@ export default function CreateTour({
   return (
     <div className="container create-form mt-20">
       <h2>Create a New Tour</h2>
-      {action === 'creating' && !createTourError && (
+      {(action === 'creating' && !createTourError) || (action === 'updating' && !updateTourError) && (
         <div
           className="alert alert-success alert-dismissible fade show mt-20"
           role="alert"
         >
-          Successfully created <strong>{tour.name}!</strong>.
+          Successfully {action === "updating" ? "updated" : "created"} <strong>{tour.name}!</strong>.
           <button
             type="button"
             className="btn-close"
@@ -251,13 +251,12 @@ export default function CreateTour({
         </div>
         <div
           onClick={
-            isCreatingTour
-              ? () => {}
+            isCreatingTour || isUpdatingTour || updatedTourFields.size === 0
+              ? () => { console.log("No click action")}
               : () => {
                   const form = document.getElementById(
                     'create-tour-form',
                   ) as HTMLFormElement;
-
                   // Check if the form is valid (using HTML5 checkValidity)
                   if (form.checkValidity()) {
                     console.log(updatedTourFields);
@@ -281,6 +280,11 @@ export default function CreateTour({
 
                       // update id
                       newTour["id"] = currentTour?.id;
+                      console.log("Update data", newTour);
+
+
+                      // update action
+                      setAction("updating");
 
                       // update data
                       updateOneTour(newTour as Partial<TourDTO>);
@@ -291,6 +295,9 @@ export default function CreateTour({
                       // update current
                       setCurrentTour(tour);
 
+                      // clear updated field
+                      updatedTourFields.clear();
+
                     }
                   } else {
                     // Form is invalid, trigger validation
@@ -299,9 +306,9 @@ export default function CreateTour({
                   }
                 }
           }
-          className="save-button add-resource"
+          className={isCreatingTour || isUpdatingTour || updatedTourFields.size === 0 ? "disabled-button" : "" + " save-button add-resource"}
         >
-          {isCreatingTour ? 'Creating...' : 'Save'}
+          {isCreatingTour ? 'Creating...' : isUpdatingTour ? "Updating..." : 'Save'}
         </div>
       </div>
       <form id="create-tour-form" className="row">

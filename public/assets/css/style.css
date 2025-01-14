@@ -661,6 +661,15 @@ hr {
   color: black !important;
 }
 
+.disabled-button {
+  background-color: rgba(213, 213, 213, 1);
+}
+
+.disabled-button:hover {
+  cursor: not-allowed !important;
+  box-shadow: none !important;
+}
+
 .p-checkbox-icon {
   display: none;
 }
