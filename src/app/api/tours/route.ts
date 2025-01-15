@@ -2,7 +2,7 @@ import { ResponseDTO } from "@/dto/helper.dto";
 import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {
-    console.log("API Entry: GET /tours", { method: req.method });
+    
     try {
         // Send a GET request to the backend API to get all tours
         const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/tours`);
@@ -32,7 +32,7 @@ export async function GET(req: Request) {
 }
 
 export async function POST(req: Request) {
-    console.log("API Entry: POST /tours", { method: req.method });
+    
     try {
         // Send a POST request to the backend API to create a tour
         const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/tours`, {

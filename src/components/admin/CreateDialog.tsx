@@ -41,7 +41,7 @@ export default function CreateDialog({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Tour submitted:', tour);
+    
   };
   return (
     <Dialog

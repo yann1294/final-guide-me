@@ -45,6 +45,9 @@ export default function CreateTour({
   const [updatedTourFields, setUpdatedTourFields] = useState<Set<string>>(
     new Set(),
   );
+  const [updatedActivitiesFields, setUpdatedActivitiesFields] = useState<
+    Set<string>
+  >(new Set());
   const {
     createOneTour,
     loading: isCreatingTour,
@@ -71,7 +74,7 @@ export default function CreateTour({
     if (!currentTour && origin !== 'new') {
       fetchOneTour(window.location.pathname.split('/').slice(-1)[0]);
     }
-    console.log(currentTour);
+    
   }, [fetchGuides, guides, fetchOneTour, currentTour]);
 
   // Effect to update `tour` when `currentTour` changes
@@ -101,7 +104,7 @@ export default function CreateTour({
         });
 
         setPhotos(photo);
-        console.log('Data URL:', dataUrl);
+        
       };
 
       reader.onerror = (e) => {
@@ -110,7 +113,7 @@ export default function CreateTour({
 
       reader.readAsDataURL(file); // Convert the file to a Data URL
     } else {
-      console.log('No file selected.');
+      
     }
   }
 
@@ -157,7 +160,7 @@ export default function CreateTour({
       const activity = updatedActivities.get(key);
 
       const newActivity: any = Object.assign({}, activity ?? {});
-      console.log(newActivity);
+      
       // Check if it's a nested field and update accordingly
       if (subKey) {
         let temp: any = {};
@@ -166,36 +169,53 @@ export default function CreateTour({
       } else {
         newActivity[mainKey] = value;
       }
+      setUpdatedActivitiesFields((prevFields) =>
+        new Set(prevFields).add(`${key}.${name}`),
+      );
       updatedActivities.set(key, (newActivity ?? {}) as ActivityDTO); // Set updated activity back
       return updatedActivities;
     });
   };
 
-  const generateUpdatedData = () => {
-    let updated: any = {}; // This will hold the final structure
+  const generateUpdatedData = (origin: 'tour' | 'activity') => {
+    const updated: Record<string, any> = {}; // Holds the final nested structure
+    const fields =
+      origin === 'tour' ? updatedTourFields : updatedActivitiesFields;
+    const source =
+      origin === 'tour' ? tour : Object.fromEntries(activities.entries());
+    
 
-    updatedTourFields.forEach((path) => {
-      const keys = path.split('.'); // Split path (e.g., 'location.city')
-      let current = updated; // Start at the root of `updated`
-      let source: any = tour; // Start at the root of `tour`
+    fields.forEach((path) => {
+      const keys = path.split('.'); // Split the path into keys
+      let currentSource: any = source; // Traverse source object to get value
+      let currentUpdated = updated; // Traverse updated object to build structure
 
       keys.forEach((key, index) => {
-        // Traverse `tour` to fetch the nested value
-        if (source && key in source) {
-          source = source[key]; // Go deeper into `tour`
+        // Fetch the value from the source object
+        if (currentSource && key in currentSource) {
+          console.log(
+            key,
+            currentSource,
+            currentSource && key in currentSource,
+          );
+
+          currentSource = currentSource[key];
+          
         } else {
-          source = undefined; // If the key doesn't exist, break out
+          currentSource = undefined; // Stop if key doesn't exist
         }
 
-        // Build the structure in `updated`
-        if (!current[key]) {
-          if (index === keys.length - 1) {
-            current[key] = source; // Assign the final value
-          } else {
-            current[key] = {}; // Create a nested object if not at the last key
+        // Build the updated object structure
+        if (index === keys.length - 1) {
+          // Assign the final value
+          currentUpdated[key] = currentSource;
+        } else {
+          // Create nested object if it doesn't exist
+          if (!currentUpdated[key] || typeof currentUpdated[key] !== 'object') {
+            currentUpdated[key] = {};
           }
+          currentUpdated = currentUpdated[key]; // Move deeper into `updated`
         }
-        current = current[key]; // Move deeper into `updated`
       });
     });
 
@@ -278,22 +298,37 @@ export default function CreateTour({
         </div>
         <div
           onClick={
-            isCreatingTour || isUpdatingTour || updatedTourFields.size === 0
+            isCreatingTour ||
+            isUpdatingTour ||
+            (updatedTourFields.size === 0 && updatedActivitiesFields.size === 0)
               ? () => {
-                  console.log('No click action');
+                  
                 }
               : () => {
                   const form = document.getElementById(
                     'create-tour-form',
                   ) as HTMLFormElement;
+                  const activityForm = document.querySelectorAll(
+                    '.create-activity-form',
+                  ) as NodeListOf<HTMLFormElement>;
+                  let activityFormIsValid = true;
+
+                  // Check if the form is valid
+                  activityForm.forEach((form) => {
+                    if (!form.checkValidity()) {
+                      form.reportValidity();
+                      activityFormIsValid = false;
+                    }
+                  });
+
                   // Check if the form is valid (using HTML5 checkValidity)
-                  if (form.checkValidity()) {
-                    console.log(updatedTourFields);
+                  if (form.checkValidity() && activityFormIsValid) {
+                    
 
                     // check if origin is new
                     if (origin === 'new') {
                       // check whether guide was assigned
-                      console.log('Guide', tour.guide.trim());
+                      
                       if (tour.guide.trim() !== '') {
                         // checking whether activities is present
                         if (activities.size === 0) {
@@ -302,23 +337,30 @@ export default function CreateTour({
                         }
                         // combine activities and tour
                         tour.activities = activities;
-                        console.log('Saving', tour);
+                        
 
                         // create tour
                         createOneTour(tour);
                         setAction('creating');
                         updatedTourFields.clear();
+                        updatedActivitiesFields.clear();
                         // setTour({ ...emptyTourObject, ...{ name: tour.name } });
                       } else {
                         alert('Please select a guide');
                       }
                     } else {
+                      let newTour: any = {};
                       // get generated data
-                      let newTour = generateUpdatedData();
+                      if (updatedTourFields.size !== 0) {
+                        newTour = generateUpdatedData('tour');
+                      }
+
+                      if (updatedActivitiesFields.size !== 0) {
+                        newTour['activities'] = generateUpdatedData('activity');
+                      }
 
                       // update id
                       newTour['id'] = currentTour?.id;
-                      console.log('Update data', newTour);
 
                       // update action
                       setAction('updating');
@@ -334,16 +376,19 @@ export default function CreateTour({
 
                       // clear updated field
                       updatedTourFields.clear();
+                      updatedActivitiesFields.clear();
                     }
                   } else {
                     // Form is invalid, trigger validation
-                    console.log('Form is invalid!');
+                    
                     form.reportValidity(); // This will show the built-in validation messages
                   }
                 }
           }
           className={
-            isCreatingTour || isUpdatingTour || updatedTourFields.size === 0
+            isCreatingTour ||
+            isUpdatingTour ||
+            (updatedTourFields.size === 0 && updatedActivitiesFields.size === 0)
               ? 'disabled-button'
               : '' + ' save-button add-resource'
           }
@@ -570,26 +615,30 @@ export default function CreateTour({
         <div className="create-form-section-title ">Tour Activities</div>
         <div
           onClick={() => {
-            const form = document.querySelector(
+            const form = document.querySelectorAll(
               '.create-activity-form',
-            ) as HTMLFormElement;
+            ) as NodeListOf<HTMLFormElement>;
+            let isValid = true;
 
             // Check if the form is valid (using HTML5 checkValidity)
-            if (!form || form.checkValidity()) {
+            form.forEach((form) => {
+              if (!form.checkValidity()) {
+                form.reportValidity();
+                isValid = false;
+              }
+            });
+
+            if (!form || isValid) {
               // Form is valid, proceed with submission or any other action
-              console.log('Form is valid!');
+              
 
               const activity = new Map(activities);
               let activityObject = emptyActivityObject;
               activityObject.id = new Date().getTime();
               activity.set(activityObject.id, activityObject);
-              console.log(activity);
+              
               setActivities(activity);
-              console.log(activities);
-            } else {
-              // Form is invalid, trigger validation
-              console.log('Form is invalid!');
-              form.reportValidity(); // This will show the built-in validation messages
+              
             }
           }}
           className="add-activity"
@@ -608,7 +657,7 @@ export default function CreateTour({
             obj: any,
             field: string,
           ): Date | null {
-            console.log(obj);
+            
             let date = new Date();
 
             if (!obj || !obj[field]) return null;
@@ -732,7 +781,7 @@ export default function CreateTour({
                   </label>
                   <select
                     onChange={(e) => {
-                      console.log(activities);
+                      
                       let temp = new Map(activities);
                       // update activity information based on selected type
                       switch (e.target.value) {
@@ -753,6 +802,23 @@ export default function CreateTour({
                         default:
                           break;
                       }
+
+                      setUpdatedActivitiesFields(
+                        new Set(
+                          Array.from(updatedActivitiesFields).filter(
+                            (field) => {
+                              if (e.target.value === 'normal') {
+                                return (
+                                  !field.includes('accommodation') &&
+                                  !field.includes('transportation')
+                                );
+                              }
+                              return !field.includes(e.target.value);
+                            },
+                          ),
+                        ),
+                      );
+
                       setActivities(temp);
                       setActivityType({ type: e.target.value, key: key });
                     }}

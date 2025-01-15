@@ -36,7 +36,7 @@ export default function ActivityTable({
       )}
     >
       {ActivityColumnConfigs.map((template) => {
-        console.log(template.field);
+        
         const additionalConfig: any = {};
         if (template.field === 'actions') {
           additionalConfig['body'] = (data: any) => (
@@ -44,7 +44,7 @@ export default function ActivityTable({
               <div className="row-edit">
                 <Edit2Icon
                   onClick={() => {
-                    console.log('Edit clicked');
+                    
                   }}
                   size={'18px'}
                 />
@@ -52,7 +52,7 @@ export default function ActivityTable({
               <div className="row-delete">
                 <Trash2Icon
                   onClick={() => {
-                    console.log('Delete clicked');
+                    
                   }}
                   size={'18px'}
                 />

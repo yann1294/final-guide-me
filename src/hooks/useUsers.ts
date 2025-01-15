@@ -14,7 +14,7 @@ export const useFetchOneGuide = () => {
     const fetchOneGuide = async (guideId: string) => {
       setLoading(true);
       setError(null);
-      console.log("Fetching one guide ", guideId);
+      
       try {
         // Replace with the actual endpoint for fetching packages
         const response = await axios.get<ResponseDTO>(`/api/users/guides/${guideId}`);
@@ -89,7 +89,7 @@ export const useFetchTourists = () => {
           throw new Error(response.data.message);
         }
   
-        console.log("Tourists: ", response.data.data);
+        
         // Persist the fetched tourists in Zustand store
         setTourists(response.data.data as TouristDTO[]);
       } catch (err) {
@@ -112,7 +112,7 @@ export const useFetchOneTourist = () => {
     const fetchOneTourist = async (touristId: string) => {
       setLoading(true);
       setError(null);
-      console.log("Fetching one tourist ", touristId);
+      
       try {
         // Replace with the actual endpoint for fetching packages
         const response = await axios.get<ResponseDTO>(`/api/users/tourists/${touristId}`);

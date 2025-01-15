@@ -13,7 +13,7 @@ export const useCreateStripeOrder = () => {
   const createStripeOrder = async (payment: PaymentDTO) => {
     setLoading(true);
     setError(null);
-    console.log("Creating new stripe order ");
+    
 
     try {
       // Replace with the actual endpoint for fetching packages

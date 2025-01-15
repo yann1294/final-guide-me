@@ -38,7 +38,7 @@ export default function AdminTouristsPage() {
 
   // Fetch tours when component mounts if not already fetched
   useEffect(() => {
-    console.log('tourists', guides);
+    
     if (guides.length === 0) {
       fetchGuides();
     }

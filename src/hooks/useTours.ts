@@ -25,7 +25,7 @@ export const useFetchTours = () => {
         throw new Error(response.data.message);
       }
 
-      console.log('Tours', response.data.data as TourDTO[]);
+      
       // Persist the fetched tours in Zustand store
       setTours(response.data.data as TourDTO[]);
     } catch (err) {
@@ -49,7 +49,7 @@ export const useFetchOneTour = () => {
   const fetchOneTour = async (tourId: string) => {
     setLoading(true);
     setError(null);
-    console.log("Fetching one tour ", tourId);
+    
     try {
       // Replace with the actual endpoint for fetching tours
       const response = await axios.get<ResponseDTO>(`/api/tours/${tourId}`);
@@ -67,7 +67,7 @@ export const useFetchOneTour = () => {
       );
       tour.activities = activities;
       setCurrentTour(tour);
-      console.log("Fetched One", tour);
+      
       // fetch tour guide if guide does not exist
       if (!guides.get(tour.guide)) {
         await fetchOneGuide(tour.guide);
@@ -92,7 +92,7 @@ export const useCreateOneTour = () => {
   const createOneTour = async (tour: TourDTO) => {
     setLoading(true);
     setError(null);
-    console.log("Creating one tour ", tour.activities);
+    
     try {
       // convert activities to object
       let data: any = Object.assign({}, tour);
@@ -129,7 +129,7 @@ export const useUpdateOneTour = () => {
   const updateOneTour = async (tour: Partial<TourDTO>) => {
     setLoading(true);
     setError(null);
-    console.log("Fetching one tour ", tour.name);
+    
     try {
       // Replace with the actual endpoint for fetching tours
       const response = await axios.patch<ResponseDTO>(`/api/tours/${tour.id}`, tour);

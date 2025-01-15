@@ -51,7 +51,7 @@ export default function BookTourPage() {
 
       if (response.ok) {
         // Handle successful booking
-        console.log("Booking successful");
+        
         // You can redirect to a confirmation page or show a success message
       } else {
         // Handle error

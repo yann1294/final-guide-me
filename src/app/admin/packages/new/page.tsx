@@ -30,7 +30,7 @@ export default function CreatePackage() {
         });
 
         setPhotos(photo);
-        console.log('Data URL:', dataUrl);
+        
       };
 
       reader.onerror = (e) => {
@@ -39,7 +39,7 @@ export default function CreatePackage() {
 
       reader.readAsDataURL(file); // Convert the file to a Data URL
     } else {
-      console.log('No file selected.');
+      
     }
   }
 
@@ -89,11 +89,11 @@ export default function CreatePackage() {
             // Check if the form is valid (using HTML5 checkValidity)
             if (form.checkValidity()) {
               // Form is valid, proceed with submission or any other action
-              console.log('Form is valid!');
+              
               console.log(pkg)
             } else {
               // Form is invalid, trigger validation
-              console.log('Form is invalid!');
+              
               form.reportValidity(); // This will show the built-in validation messages
             }
           }}

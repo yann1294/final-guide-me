@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 // fetch all guides
 export async function GET(req: Request) {
-    console.log("API Entry: GET /guides", { method: req.method });
+    
     try {
         // Send a GET request to the backend API to get all guides
         const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/guides`);

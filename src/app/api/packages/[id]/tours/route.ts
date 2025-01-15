@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 
 export async function GET(req: Request, { params }: any) {
   // Log entry into the API
-  console.log("API Entry: GET /packages/:id/tours", { method: req.method, params });
+  
 
   try {
     // Send a GET request to the backend API to get all tours

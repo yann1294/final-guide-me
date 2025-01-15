@@ -2,7 +2,7 @@ import { ResponseDTO } from "@/dto/helper.dto";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
-  console.log("API Entry: POST /payments", { method: req.method });
+  
   try {
     // Parse the incoming request body as JSON
     const request = await req.json();

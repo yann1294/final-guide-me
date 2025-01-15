@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 // fetch particular tourist
 export async function GET(req: Request, { params } : any) {
-    console.log("API Entry: GET /tourists/:id", { method: req.method, params });
+    
     try {
         // Send a GET request to the backend API to get a particular tourist
         const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/tourists/${params.id}`);

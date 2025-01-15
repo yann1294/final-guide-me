@@ -46,7 +46,7 @@ export const useAuth = () => {
       // Get the token from the user data
       const authToken: string = loggedInUser.uid as string;
 
-      console.log('User logged in:', loggedInUser);
+      
 
       // Store user data and token in Zustand store
       login(loggedInUser, authToken);

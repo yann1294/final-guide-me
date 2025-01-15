@@ -50,7 +50,7 @@ const GuideProfilePage: React.FC = () => {
   const { theme, setTheme } = useTheme();
 
   // In a real application, you'd use the ID to fetch the guide's data
-  console.log("Guide ID:", params.id);
+  
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-200">

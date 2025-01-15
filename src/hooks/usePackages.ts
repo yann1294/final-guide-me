@@ -25,7 +25,7 @@ export const useFetchPackages = () => {
         throw new Error(response.data.message);
       }
 
-      console.log('response.data.data', response.data.data);
+      
       // Persist the fetched packages in Zustand store
       setPackages(response.data.data as PackageDTO[]);
     } catch (err) {
@@ -57,7 +57,7 @@ export const useFetchPackageTours = () => {
         throw new Error(response.data.message);
       }
 
-      console.log('Package tour: ', response.data.data);
+      
       // Persist the fetched packages in Zustand store
       setPackageTours(packageId, response.data.data as TourDTO[]);
     } catch (err) {
@@ -82,7 +82,7 @@ export const useFetchOnePackage = () => {
   const fetchOnePackage = async (packageId: string) => {
     setLoading(true);
     setError(null);
-    console.log("Fetching one package ", packageId);
+    
     try {
       // Replace with the actual endpoint for fetching packages
       const response = await axios.get<ResponseDTO>(`/api/packages/${packageId}`);

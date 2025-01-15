@@ -5,7 +5,7 @@ import { NextResponse } from 'next/server';
 
 export async function GET(req: Request, { params }: { params: { id: string } }) {
   try {
-    console.log("API Entry: GET /bookings/:id", { method: req.method, params });
+    
 
     // Send a GET request to the backend API to fetch the booking by ID
     const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings/${params.id}`);

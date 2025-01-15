@@ -43,7 +43,7 @@ export async function POST(req: Request) {
 
 // get all bookings
 export async function GET(req: Request) {
-  console.log("API Entry: GET /bookings", { method: req.method });
+  
   try {
     // Send a GET request to the backend API to get all bookings
     const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings`);

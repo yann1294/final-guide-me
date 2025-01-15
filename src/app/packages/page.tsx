@@ -24,16 +24,16 @@ const Packages: React.FC = () => {
 
   // useEffect to fetch packages and their corresponding tours
   useEffect(() => {
-    console.log(tours);
+    
 
     const fetchToursForPackages = async () => {
-      console.log('Outside: Fetching tours for each package');
+      
 
       // Ensure packages are available before running the loop
       if (packages.length === 0) return;
 
       for (const pkg of packages) {
-        console.log('Inside: Fetching tours for package', pkg);
+        
         if (!tours.has(pkg.id as string)) {
           await fetchPackageTours(pkg.id as string); // Fetch tours for the current package
         }
