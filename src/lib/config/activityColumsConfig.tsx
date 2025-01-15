@@ -30,21 +30,16 @@ export const activityColumnConfigs = [
     field: 'transportation.arrivalTime',
     header: 'Arrival Time',
     sortable: true,
-    body: (data) => timestampToDate(data.transportation.arrivalTime),
+    body: (data) => "timestampToDate(data.transportation.arrivalTime)",
     style: { maxWidth: '200px' },
   },
   {
     field: 'transportation.departureTime',
     header: 'Departure Time',
     sortable: true,
-    body: (data) => timestampToDate(data.transportation.departureTime),
+    body: (data) => "timestampToDate(data.transportation.departureTime)",
     style: { maxWidth: '200px' },
   },
   { field: 'accommodation.type', header: 'Accommodation Type', sortable: true },
   { field: 'accommodation.name', header: 'Accommodation Name', sortable: true },
-  {
-    field: 'actions',
-    header: 'Actions',
-    exportable: false,
-  },
 ] as ColumnProps[];

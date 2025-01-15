@@ -1,9 +1,9 @@
 import { Column } from 'primereact/column';
-import { ActivityColumnConfigs } from './FilterTemplates';
 import { Edit2Icon, Trash2Icon } from 'lucide-react';
 import { DataTable } from 'primereact/datatable';
 import { Button } from 'primereact/button';
 import { ActivityDTO } from '@/dto/tour.dto';
+import { activityColumnConfigs } from '@/lib/config/activityColumsConfig';
 
 export default function ActivityTable({
   activities,
@@ -25,45 +25,8 @@ export default function ActivityTable({
           <div className="circular-loader"></div>
         </div>
       }
-      footer={() => (
-        <div className="field col-md-12">
-          <Button
-            label="Add Activity"
-            className="mt-3 save-resource"
-            onClick={() => console.log('Add activity clicked')}
-          />
-        </div>
-      )}
     >
-      {ActivityColumnConfigs.map((template) => {
-        
-        const additionalConfig: any = {};
-        if (template.field === 'actions') {
-          additionalConfig['body'] = (data: any) => (
-            <div className="row-action-btns">
-              <div className="row-edit">
-                <Edit2Icon
-                  onClick={() => {
-                    
-                  }}
-                  size={'18px'}
-                />
-              </div>
-              <div className="row-delete">
-                <Trash2Icon
-                  onClick={() => {
-                    
-                  }}
-                  size={'18px'}
-                />
-              </div>
-            </div>
-          );
-        }
-        return (
-          <Column key={template.field} {...template} {...additionalConfig} />
-        );
-      })}
+      {activityColumnConfigs.map((template) => <Column key={template.field} {...template} /> )}
     </DataTable>
   );
 }

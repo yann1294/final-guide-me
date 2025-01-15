@@ -117,10 +117,6 @@ export const packageColumnConfigs = [
         new Date(data.date._seconds * 1000).toLocaleDateString(),
     },
     {
-      field: 'tours',
-      header: 'Package Tours',
-    },
-    {
       field: 'actions',
       exportable: false,
     },

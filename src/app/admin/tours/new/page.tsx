@@ -1,262 +1,81 @@
 'use client';
-import { ActivityDTO, TourDTO } from '@/dto/tour.dto';
+import { ActivityDTO } from '@/dto/tour.dto';
+import { useTourManagement } from '@/hooks/useTourManagement';
+import { convertSecondsToDate, getDateValue } from '@/lib/utils/dateUtils';
+import { emptyActivityObject } from '@/lib/utils/emptyObjects';
 import {
-  useCreateOneTour,
-  useFetchOneTour,
-  useUpdateOneTour,
-} from '@/hooks/useTours';
-import { useFetchGuides } from '@/hooks/useUsers';
-import { convertSecondsToDate } from '@/lib/utils/dateUtils';
-import { emptyActivityObject, emptyTourObject } from '@/lib/utils/emptyObjects';
-import useTourStore from '@/stores/tourStore';
-import useUserStore from '@/stores/userStore';
+  handleFileUpload,
+  handleInputChange,
+  handleNestedChange,
+  handleTourInputChange,
+} from '@/lib/utils/formInputHandlers';
 import { ImagePlusIcon, PlusIcon, Trash2Icon } from 'lucide-react';
-import { useRouter } from 'next/router';
 import { Calendar } from 'primereact/calendar';
 import { Checkbox } from 'primereact/checkbox';
-import { Dropdown } from 'primereact/dropdown';
 import { Image } from 'primereact/image';
-import {
-  InputNumber,
-  InputNumberValueChangeEvent,
-} from 'primereact/inputnumber';
+import { InputNumber } from 'primereact/inputnumber';
 import { InputText } from 'primereact/inputtext';
-import { InputTextarea } from 'primereact/inputtextarea';
-import { FormEvent, useEffect, useState } from 'react';
 
 export default function CreateTour({
   origin = 'new',
 }: {
   origin: 'new' | 'edit/view';
 }) {
-  const { currentTour, setCurrentTour, updateTour } = useTourStore();
-  const [tour, setTour] = useState<TourDTO>(emptyTourObject);
-  const [action, setAction] = useState<'creating' | 'updating' | 'nothing'>(
-    'nothing',
-  );
-  const { guides } = useUserStore();
-  const { fetchOneTour, loading: fetchingTourData } = useFetchOneTour();
-  const {
-    updateOneTour,
-    loading: isUpdatingTour,
-    error: updateTourError,
-  } = useUpdateOneTour();
-  const { fetchGuides, loading, error } = useFetchGuides();
-  const [updatedTourFields, setUpdatedTourFields] = useState<Set<string>>(
-    new Set(),
-  );
-  const [updatedActivitiesFields, setUpdatedActivitiesFields] = useState<
-    Set<string>
-  >(new Set());
-  const {
-    createOneTour,
-    loading: isCreatingTour,
-    error: createTourError,
-  } = useCreateOneTour();
-  const [activities, setActivities] = useState<Map<number, ActivityDTO>>(
-    new Map(),
-  );
-  const [photos, setPhotos] = useState<
-    Map<number, { file: File; dataString: string }>
-  >(new Map());
-  const [activityType, setActivityType] = useState<{
-    type: string;
-    key: number;
-  }>({ type: 'normal', key: new Date().getTime() });
+  const uTm = useTourManagement(origin);
 
-  useEffect(() => {
-    // fetch guides if guides do not exist
-    if (guides.length === 0) {
-      fetchGuides();
-    }
-
-    // fetch tour if tour does not exist
-    if (!currentTour && origin !== 'new') {
-      fetchOneTour(window.location.pathname.split('/').slice(-1)[0]);
-    }
-    
-  }, [fetchGuides, guides, fetchOneTour, currentTour]);
-
-  // Effect to update `tour` when `currentTour` changes
-  useEffect(() => {
-    if (origin === 'edit/view' && currentTour) {
-      // update tour
-      setTour(currentTour);
-
-      // update activities
-      setActivities(currentTour.activities);
-    } else {
-      setTour(emptyTourObject);
-    }
-  }, [currentTour, origin]);
-
-  function handleFileUpload(event: any) {
-    const file = event.target.files[0]; // Get the first uploaded file
-    if (file) {
-      const reader = new FileReader();
-
-      reader.onload = (e: ProgressEvent<FileReader>) => {
-        const dataUrl = e.target?.result; // The Data URL as a string
-        let photo = new Map(photos);
-        photo.set(new Date().getTime(), {
-          file: file,
-          dataString: dataUrl as string,
-        });
-
-        setPhotos(photo);
-        
-      };
-
-      reader.onerror = (e) => {
-        console.error('Error reading file:', e);
-      };
-
-      reader.readAsDataURL(file); // Convert the file to a Data URL
-    } else {
-      
-    }
-  }
-
-  const handleTourInputChange = (
-    e:
-      | React.ChangeEvent<
-          HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-        >
-      | InputNumberValueChangeEvent
-      | any,
-    origin: 'number' | 'text' = 'text',
-  ) => {
-    // Track which fields have been updated (preserving structure)
-    setUpdatedTourFields((prevFields) => new Set(prevFields).add(name));
-    const { name, value } = e.target;
-    setTour((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleNestedChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    field: keyof TourDTO['location'],
-  ) => {
-    const { value } = e.target;
-    setTour((prev) => ({
-      ...prev,
-      location: { ...prev.location, [field]: value },
-    }));
-    // Track which fields have been updated (preserving structure)
-    setUpdatedTourFields((prevFields) =>
-      new Set(prevFields).add(`location.${field}`),
+  let tourInputChangeHandler = (e: any) => {
+    return handleTourInputChange(
+      e,
+      'text',
+      uTm.setUpdatedTourFields,
+      uTm.setTour,
     );
   };
 
-  // Handle change in the input fields
-  const handleInputChange = (e: any, key: number) => {
-    const { name, value } = {
-      name: (e.target ?? e.originalEvent.target).name,
-      value: (e.target ?? e.originalEvent.target).value,
-    };
-    const [mainKey, subKey] = name.split('.'); // Handle nested keys with dot notation
-
-    setActivities((prevActivities) => {
-      const updatedActivities = new Map(prevActivities);
-      const activity = updatedActivities.get(key);
-
-      const newActivity: any = Object.assign({}, activity ?? {});
-      
-      // Check if it's a nested field and update accordingly
-      if (subKey) {
-        let temp: any = {};
-        temp[subKey] = value;
-        newActivity[mainKey] = { ...newActivity[mainKey], ...temp };
-      } else {
-        newActivity[mainKey] = value;
-      }
-      setUpdatedActivitiesFields((prevFields) =>
-        new Set(prevFields).add(`${key}.${name}`),
-      );
-      updatedActivities.set(key, (newActivity ?? {}) as ActivityDTO); // Set updated activity back
-      return updatedActivities;
-    });
-  };
-
-  const generateUpdatedData = (origin: 'tour' | 'activity') => {
-    const updated: Record<string, any> = {}; // Holds the final nested structure
-    const fields =
-      origin === 'tour' ? updatedTourFields : updatedActivitiesFields;
-    const source =
-      origin === 'tour' ? tour : Object.fromEntries(activities.entries());
-    
-
-    fields.forEach((path) => {
-      const keys = path.split('.'); // Split the path into keys
-      let currentSource: any = source; // Traverse source object to get value
-      let currentUpdated = updated; // Traverse updated object to build structure
-
-      keys.forEach((key, index) => {
-        // Fetch the value from the source object
-        if (currentSource && key in currentSource) {
-          console.log(
-            key,
-            currentSource,
-            currentSource && key in currentSource,
-          );
-
-          currentSource = currentSource[key];
-          
-        } else {
-          currentSource = undefined; // Stop if key doesn't exist
-        }
-
-        // Build the updated object structure
-        if (index === keys.length - 1) {
-          // Assign the final value
-          currentUpdated[key] = currentSource;
-        } else {
-          // Create nested object if it doesn't exist
-          if (!currentUpdated[key] || typeof currentUpdated[key] !== 'object') {
-            currentUpdated[key] = {};
-          }
-          currentUpdated = currentUpdated[key]; // Move deeper into `updated`
-        }
-      });
-    });
-
-    return updated; // Return the final nested structure
+  let handleActivityInputChange = (e: any, key: any) => {
+    return handleInputChange(
+      e,
+      key,
+      uTm.setUpdatedActivitiesFields,
+      uTm.setActivities,
+    );
   };
 
   return (
     <div className="container create-form mt-20">
       <h2>Create a New Tour </h2>
-      {((action === 'creating' && !createTourError) ||
-        (action === 'updating' && !updateTourError)) && (
+      {((uTm.action === 'creating' && !uTm.createTourError) ||
+        (uTm.action === 'updating' && !uTm.updateTourError)) && (
         <div
           className="alert alert-success alert-dismissible fade show mt-20"
           role="alert"
         >
-          Successfully {action === 'updating' ? 'updated' : 'created'}{' '}
-          <strong>{tour.name}!</strong>.
+          Successfully {uTm.action === 'updating' ? 'updated' : 'created'}{' '}
+          <strong>{uTm.tour.name}!</strong>.
           <button
             type="button"
             className="btn-close"
             aria-label="Close"
-            onClick={() => setAction('nothing')}
+            onClick={() => uTm.setAction('nothing')}
           ></button>
         </div>
       )}
 
-      {(createTourError || updateTourError) && (
+      {(uTm.createTourError || uTm.updateTourError) && (
         <div
           className="alert alert-danger alert-dismissible fade show mt-20"
           role="alert"
         >
-          {createTourError ?? updateTourError}
+          {uTm.createTourError ?? uTm.updateTourError}
           <button
             type="button"
             className="btn-close"
             aria-label="Close"
-            onClick={() => setAction('nothing')}
+            onClick={() => uTm.setAction('nothing')}
           ></button>
         </div>
       )}
-      {origin !== 'new' && fetchingTourData && (
+      {origin !== 'new' && uTm.fetchingTourData && (
         <div className="circular-loader-container">
           <div className="circular-loader"></div>
         </div>
@@ -282,14 +101,14 @@ export default function CreateTour({
             }}
             className="form-select m-0 w-auto"
             name="guide"
-            onChange={handleTourInputChange}
-            value={tour?.guide}
+            onChange={tourInputChangeHandler}
+            value={uTm.tour?.guide}
             required
           >
             <option value={''} key={'initial'}>
               Assign guide to tour
             </option>
-            {guides.map((guide) => (
+            {uTm.guides.map((guide) => (
               <option key={guide.uid} value={guide.uid}>
                 {guide.firstName} {guide.lastName}
               </option>
@@ -297,105 +116,19 @@ export default function CreateTour({
           </select>
         </div>
         <div
-          onClick={
-            isCreatingTour ||
-            isUpdatingTour ||
-            (updatedTourFields.size === 0 && updatedActivitiesFields.size === 0)
-              ? () => {
-                  
-                }
-              : () => {
-                  const form = document.getElementById(
-                    'create-tour-form',
-                  ) as HTMLFormElement;
-                  const activityForm = document.querySelectorAll(
-                    '.create-activity-form',
-                  ) as NodeListOf<HTMLFormElement>;
-                  let activityFormIsValid = true;
-
-                  // Check if the form is valid
-                  activityForm.forEach((form) => {
-                    if (!form.checkValidity()) {
-                      form.reportValidity();
-                      activityFormIsValid = false;
-                    }
-                  });
-
-                  // Check if the form is valid (using HTML5 checkValidity)
-                  if (form.checkValidity() && activityFormIsValid) {
-                    
-
-                    // check if origin is new
-                    if (origin === 'new') {
-                      // check whether guide was assigned
-                      
-                      if (tour.guide.trim() !== '') {
-                        // checking whether activities is present
-                        if (activities.size === 0) {
-                          alert('At least one tour activity is required');
-                          return;
-                        }
-                        // combine activities and tour
-                        tour.activities = activities;
-                        
-
-                        // create tour
-                        createOneTour(tour);
-                        setAction('creating');
-                        updatedTourFields.clear();
-                        updatedActivitiesFields.clear();
-                        // setTour({ ...emptyTourObject, ...{ name: tour.name } });
-                      } else {
-                        alert('Please select a guide');
-                      }
-                    } else {
-                      let newTour: any = {};
-                      // get generated data
-                      if (updatedTourFields.size !== 0) {
-                        newTour = generateUpdatedData('tour');
-                      }
-
-                      if (updatedActivitiesFields.size !== 0) {
-                        newTour['activities'] = generateUpdatedData('activity');
-                      }
-
-                      // update id
-                      newTour['id'] = currentTour?.id;
-
-                      // update action
-                      setAction('updating');
-
-                      // update data
-                      updateOneTour(newTour as Partial<TourDTO>);
-
-                      // update tour store
-                      updateTour(tour);
-
-                      // update current
-                      setCurrentTour(tour);
-
-                      // clear updated field
-                      updatedTourFields.clear();
-                      updatedActivitiesFields.clear();
-                    }
-                  } else {
-                    // Form is invalid, trigger validation
-                    
-                    form.reportValidity(); // This will show the built-in validation messages
-                  }
-                }
-          }
+          onClick={uTm.saveTourHandler}
           className={
-            isCreatingTour ||
-            isUpdatingTour ||
-            (updatedTourFields.size === 0 && updatedActivitiesFields.size === 0)
+            uTm.isCreatingTour ||
+            uTm.isUpdatingTour ||
+            (uTm.updatedTourFields.size === 0 &&
+              uTm.updatedActivitiesFields.size === 0)
               ? 'disabled-button'
               : '' + ' save-button add-resource'
           }
         >
-          {isCreatingTour
+          {uTm.isCreatingTour
             ? 'Creating...'
-            : isUpdatingTour
+            : uTm.isUpdatingTour
             ? 'Updating...'
             : 'Save'}
         </div>
@@ -411,8 +144,8 @@ export default function CreateTour({
               className="form-control"
               id="name"
               name="name"
-              value={tour.name}
-              onChange={handleTourInputChange}
+              value={uTm.tour.name}
+              onChange={tourInputChangeHandler}
               required
             />
           </div>
@@ -428,8 +161,15 @@ export default function CreateTour({
               className="form-control"
               id="locationName"
               name="location.name"
-              value={tour.location.name}
-              onChange={(e) => handleNestedChange(e, 'name')}
+              value={uTm.tour.location.name}
+              onChange={(e) =>
+                handleNestedChange(
+                  e,
+                  'name',
+                  uTm.setUpdatedTourFields,
+                  uTm.setTour,
+                )
+              }
               required
             />
           </div>
@@ -444,8 +184,15 @@ export default function CreateTour({
             <InputText
               className="form-control"
               id="city"
-              value={tour.location.city}
-              onChange={(e) => handleNestedChange(e, 'city')}
+              value={uTm.tour.location.city}
+              onChange={(e) =>
+                handleNestedChange(
+                  e,
+                  'city',
+                  uTm.setUpdatedTourFields,
+                  uTm.setTour,
+                )
+              }
               required
             />
           </div>
@@ -460,8 +207,15 @@ export default function CreateTour({
             <InputText
               className="form-control"
               id="country"
-              value={tour.location.country}
-              onChange={(e) => handleNestedChange(e, 'country')}
+              value={uTm.tour.location.country}
+              onChange={(e) =>
+                handleNestedChange(
+                  e,
+                  'country',
+                  uTm.setUpdatedTourFields,
+                  uTm.setTour,
+                )
+              }
               required
             />
           </div>
@@ -477,8 +231,8 @@ export default function CreateTour({
               className="form-control"
               id="price"
               name="price"
-              value={tour.price}
-              onValueChange={handleTourInputChange}
+              value={uTm.tour.price}
+              onValueChange={tourInputChangeHandler}
               mode="currency"
               currency="USD"
               required
@@ -496,8 +250,8 @@ export default function CreateTour({
               className="form-control"
               id="durationDays"
               name="durationDays"
-              value={tour.durationDays}
-              onValueChange={handleTourInputChange}
+              value={uTm.tour.durationDays}
+              onValueChange={tourInputChangeHandler}
               required
             />
           </div>
@@ -513,10 +267,10 @@ export default function CreateTour({
               className="form-control"
               id="discount"
               name="discount"
-              value={tour.discount}
+              value={uTm.tour.discount}
               min={0}
               max={100}
-              onValueChange={handleTourInputChange}
+              onValueChange={tourInputChangeHandler}
             />
           </div>
         </div>
@@ -531,8 +285,8 @@ export default function CreateTour({
               className="form-control"
               id="numberOfSeats"
               name="numberOfSeats"
-              value={tour.numberOfSeats}
-              onValueChange={handleTourInputChange}
+              value={uTm.tour.numberOfSeats}
+              onValueChange={tourInputChangeHandler}
               required
             />
           </div>
@@ -549,11 +303,11 @@ export default function CreateTour({
               id="date"
               name="date"
               value={
-                origin === 'new' || updatedTourFields.has('date')
-                  ? (tour.date as Date)
-                  : convertSecondsToDate(tour.date._seconds)
+                origin === 'new' || uTm.updatedTourFields.has('date')
+                  ? (uTm.tour.date as Date)
+                  : convertSecondsToDate(uTm.tour.date._seconds)
               }
-              onChange={handleTourInputChange}
+              onChange={tourInputChangeHandler}
               showTime
               showIcon={true}
               minDate={new Date()}
@@ -570,14 +324,14 @@ export default function CreateTour({
             </label>
             <Checkbox
               inputId="isAvailable"
-              checked={tour.isAvailable}
+              checked={uTm.tour.isAvailable}
               onChange={(e) => {
-                setTour((prev) => ({
+                uTm.setTour((prev) => ({
                   ...prev,
                   isAvailable: e.checked!,
                 }));
                 // Track which fields have been updated (preserving structure)
-                setUpdatedTourFields((prevFields) =>
+                uTm.setUpdatedTourFields((prevFields) =>
                   new Set(prevFields).add('isAvailable'),
                 );
               }}
@@ -595,8 +349,8 @@ export default function CreateTour({
               className="form-control"
               name="description"
               id="description"
-              value={tour.description}
-              onChange={handleTourInputChange}
+              value={uTm.tour.description}
+              onChange={tourInputChangeHandler}
               rows={1}
               onInput={(e) => {
                 let desc = document.getElementById('description');
@@ -630,15 +384,13 @@ export default function CreateTour({
 
             if (!form || isValid) {
               // Form is valid, proceed with submission or any other action
-              
 
-              const activity = new Map(activities);
+              const activity = new Map(uTm.activities);
               let activityObject = emptyActivityObject;
               activityObject.id = new Date().getTime();
               activity.set(activityObject.id, activityObject);
-              
-              setActivities(activity);
-              
+
+              uTm.setActivities(activity);
             }
           }}
           className="add-activity"
@@ -647,32 +399,7 @@ export default function CreateTour({
         </div>
       </div>
       <div className="container">
-        {Array.from(activities.entries()).map(([keyObj, activityObj]) => {
-          const key: number = keyObj;
-          // const key: number = parseInt(keyObj);
-          const activity: ActivityDTO = activityObj as ActivityDTO;
-
-          function getDateValue(
-            origin: 'transportation' | 'accommodation',
-            obj: any,
-            field: string,
-          ): Date | null {
-            
-            let date = new Date();
-
-            if (!obj || !obj[field]) return null;
-
-            if (origin === 'transportation') {
-              // check whether date contains _seconds
-              if (Object.keys(obj[field]).includes('_seconds')) {
-                date = convertSecondsToDate(obj[field]['_seconds']);
-              } else {
-                date = obj[field];
-              }
-            }
-            return date;
-          }
-
+        {Array.from(uTm.activities.entries()).map(([key, activity]) => {
           return (
             <form
               id={`${key}`}
@@ -689,7 +416,7 @@ export default function CreateTour({
                     id="name"
                     name="name"
                     value={activity.name}
-                    onChange={(e) => handleInputChange(e, key)}
+                    onChange={(e) => handleActivityInputChange(e, key)}
                     required
                   />
                 </div>
@@ -705,7 +432,7 @@ export default function CreateTour({
                     id="durationHours"
                     name="durationHours"
                     value={activity.durationHours}
-                    onChange={(e) => handleInputChange(e, key)}
+                    onChange={(e) => handleActivityInputChange(e, key)}
                     required
                   />
                 </div>
@@ -721,7 +448,7 @@ export default function CreateTour({
                     id="locationName"
                     name="location.name"
                     value={activity.location.name}
-                    onChange={(e) => handleInputChange(e, key)}
+                    onChange={(e) => handleActivityInputChange(e, key)}
                     required
                   />
                 </div>
@@ -736,7 +463,7 @@ export default function CreateTour({
                     id="address"
                     name="location.address"
                     value={activity.location.address}
-                    onChange={(e) => handleInputChange(e, key)}
+                    onChange={(e) => handleActivityInputChange(e, key)}
                     required
                   />
                 </div>
@@ -752,7 +479,7 @@ export default function CreateTour({
                     id="city"
                     name="location.city"
                     value={activity.location.city}
-                    onChange={(e) => handleInputChange(e, key)}
+                    onChange={(e) => handleActivityInputChange(e, key)}
                     required
                   />
                 </div>
@@ -768,7 +495,7 @@ export default function CreateTour({
                     id="country"
                     name="location.country"
                     value={activity.location.country}
-                    onChange={(e) => handleInputChange(e, key)}
+                    onChange={(e) => handleActivityInputChange(e, key)}
                     required
                   />
                 </div>
@@ -781,8 +508,7 @@ export default function CreateTour({
                   </label>
                   <select
                     onChange={(e) => {
-                      
-                      let temp = new Map(activities);
+                      let temp = new Map(uTm.activities);
                       // update activity information based on selected type
                       switch (e.target.value) {
                         case 'accommodation':
@@ -803,9 +529,9 @@ export default function CreateTour({
                           break;
                       }
 
-                      setUpdatedActivitiesFields(
+                      uTm.setUpdatedActivitiesFields(
                         new Set(
-                          Array.from(updatedActivitiesFields).filter(
+                          Array.from(uTm.updatedActivitiesFields).filter(
                             (field) => {
                               if (e.target.value === 'normal') {
                                 return (
@@ -819,8 +545,8 @@ export default function CreateTour({
                         ),
                       );
 
-                      setActivities(temp);
-                      setActivityType({ type: e.target.value, key: key });
+                      uTm.setActivities(temp);
+                      uTm.setActivityType({ type: e.target.value, key: key });
                     }}
                     style={{ height: '40px' }}
                     defaultValue={
@@ -842,8 +568,8 @@ export default function CreateTour({
               </div>
 
               {(activity.transportation !== undefined ||
-                (activityType.type === 'transportation' &&
-                  activityType.key === key)) && (
+                (uTm.activityType.type === 'transportation' &&
+                  uTm.activityType.key === key)) && (
                 <>
                   <div className="field col-md-3">
                     <div className="form-group">
@@ -855,7 +581,7 @@ export default function CreateTour({
                         id="transportType"
                         name="transportation.type"
                         value={activity.transportation?.type}
-                        onChange={(e) => handleInputChange(e, key)}
+                        onChange={(e) => handleActivityInputChange(e, key)}
                         required
                       />
                     </div>
@@ -889,7 +615,7 @@ export default function CreateTour({
                           }
 
                           if (!arrivalIsGreat) {
-                            handleInputChange(
+                            handleActivityInputChange(
                               {
                                 target: {
                                   name: 'transportation.arrivalTime',
@@ -900,7 +626,7 @@ export default function CreateTour({
                             );
                           }
 
-                          handleInputChange(e, key);
+                          handleActivityInputChange(e, key);
                         }}
                         showTime
                         showIcon={true}
@@ -924,7 +650,7 @@ export default function CreateTour({
                           activity.transportation,
                           'arrivalTime',
                         )}
-                        onChange={(e) => handleInputChange(e, key)}
+                        onChange={(e) => handleActivityInputChange(e, key)}
                         showTime
                         showIcon={true}
                         minDate={
@@ -942,8 +668,8 @@ export default function CreateTour({
               )}
 
               {(activity.accommodation !== undefined ||
-                (activityType.type == 'accommodation' &&
-                  activityType.key == key)) && (
+                (uTm.activityType.type == 'accommodation' &&
+                  uTm.activityType.key == key)) && (
                 <>
                   <div className="field col-md-3">
                     <div className="form-group">
@@ -955,7 +681,7 @@ export default function CreateTour({
                         id="accommodationType"
                         name="accommodation.type"
                         value={activity.accommodation?.type}
-                        onChange={(e) => handleInputChange(e, key)}
+                        onChange={(e) => handleActivityInputChange(e, key)}
                         required
                       />
                     </div>
@@ -971,7 +697,7 @@ export default function CreateTour({
                         id="accommodationName"
                         name="accommodation.name"
                         value={activity.accommodation?.name}
-                        onChange={(e) => handleInputChange(e, key)}
+                        onChange={(e) => handleActivityInputChange(e, key)}
                         required
                       />
                     </div>
@@ -982,9 +708,9 @@ export default function CreateTour({
               <div className="remove-activity">
                 <Trash2Icon
                   onClick={() => {
-                    let activity = new Map<number, ActivityDTO>(activities);
+                    let activity = new Map<number, ActivityDTO>(uTm.activities);
                     activity.delete(key);
-                    setActivities(activity);
+                    uTm.setActivities(activity);
                   }}
                 />
               </div>
@@ -992,7 +718,7 @@ export default function CreateTour({
           );
         })}
 
-        {Array.from(activities.entries()).length === 0 && (
+        {Array.from(uTm.activities.entries()).length === 0 && (
           <div className="flex justify-content-center">No Activities</div>
         )}
       </div>
@@ -1013,20 +739,22 @@ export default function CreateTour({
           id="image-file"
           hidden
           accept=".jpg,.jpeg,.png"
-          onChange={(event) => handleFileUpload(event)}
+          onChange={(event) =>
+            handleFileUpload(event, uTm.setPhotos, uTm.photos)
+          }
         />
       </div>
       <div className="container">
         <div className="row photos-container">
-          {Array.from(photos.entries()).map(([key, photo]) => (
+          {Array.from(uTm.photos.entries()).map(([key, photo]) => (
             <div key={key} className="col-12 col-sm-6 col-md-4 col-lg-3">
               <div className="image-card mt-3">
                 <div className="remove-activity">
                   <Trash2Icon
                     onClick={() => {
-                      let newPhotos = new Map(photos);
+                      let newPhotos = new Map(uTm.photos);
                       newPhotos.delete(key);
-                      setPhotos(newPhotos);
+                      uTm.setPhotos(newPhotos);
                     }}
                   />
                 </div>
@@ -1034,7 +762,7 @@ export default function CreateTour({
               </div>
             </div>
           ))}
-          {Array.from(activities.entries()).length === 0 && (
+          {Array.from(uTm.activities.entries()).length === 0 && (
             <div className="flex justify-content-center">No Images</div>
           )}
         </div>

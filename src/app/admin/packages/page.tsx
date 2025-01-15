@@ -63,7 +63,7 @@ export default function AdminPackagesPage() {
 
           <div className="col-12 management-container">
             {/* Action buttons */}
-            <ActionButtons context={ContextType.package} />
+            <ActionButtons actions={['create']} context={ContextType.package} />
 
             {/* Data table */}
             <DataTable
@@ -108,13 +108,6 @@ export default function AdminPackagesPage() {
                     modifyElement(
                       <ViewIcon onClick={() => {}} size="18px" />,
                       'View Tour Images',
-                    );
-                }
-                if (template.field === 'tours') {
-                  additionalConfig['body'] = (data: any) =>
-                    modifyElement(
-                      <ListIcon onClick={() => {}} size="18px" />,
-                      'View Package Tours',
                     );
                 }
                 if (template.field === 'actions') {

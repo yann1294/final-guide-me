@@ -1,0 +1,177 @@
+// Import hooks and utilities from various sources
+import useTourStore from "@/stores/tourStore";
+import useUserStore from "@/stores/userStore";
+import { useCreateOneTour, useFetchOneTour, useUpdateOneTour } from "./useTours";
+import { emptyTourObject } from "@/lib/utils/emptyObjects";
+import { useEffect, useState } from "react";
+import { ActivityDTO, TourDTO } from "@/dto/tour.dto";
+import { useFetchGuides } from "./useUsers";
+import { generateUpdatedData } from "@/lib/utils/formInputHandlers";
+
+// Custom hook for managing tours, supporting creation and editing/viewing
+export const useTourManagement = (origin: 'new' | 'edit/view') => {
+
+    // Access and manage tour-related state from the store
+    const { currentTour, setCurrentTour, updateTour } = useTourStore();
+
+    // Fetch guide data and manage user state
+    const { fetchGuides } = useFetchGuides();
+    const { guides } = useUserStore();
+
+    // Fetch and manage specific tour data
+    const { fetchOneTour, loading: fetchingTourData } = useFetchOneTour();
+
+    // Manage tour creation state and errors
+    const { updateOneTour, loading: isUpdatingTour, error: updateTourError } = useUpdateOneTour();
+    const { createOneTour, loading: isCreatingTour, error: createTourError } = useCreateOneTour();
+
+    // Local state for managing the tour object
+    const [tour, setTour] = useState<TourDTO>(emptyTourObject);
+
+    // State for tracking the current action (creating, updating, or idle)
+    const [action, setAction] = useState<'creating' | 'updating' | 'nothing'>('nothing');
+
+    // State for managing activities and photos related to the tour
+    const [activities, setActivities] = useState<Map<number, ActivityDTO>>(new Map());
+    const [photos, setPhotos] = useState<Map<number, { file: File; dataString: string }>>(new Map());
+
+    // State for managing activity type metadata
+    const [activityType, setActivityType] = useState<{ type: string; key: number }>({
+        type: 'normal',
+        key: Date.now(),
+    });
+
+    // Fetch guides and current tour when the component mounts
+    useEffect(() => {
+        if (guides.length === 0) fetchGuides();
+        if (!currentTour && origin !== 'new') fetchOneTour(window.location.pathname.split('/').pop()!);
+    }, [fetchGuides, fetchOneTour, guides, currentTour, origin]);
+
+    // State to track which fields in the tour and activities have been updated
+    const [updatedTourFields, setUpdatedTourFields] = useState<Set<string>>(new Set());
+    const [updatedActivitiesFields, setUpdatedActivitiesFields] = useState<Set<string>>(new Set());
+
+    // Synchronize local state with the current tour for editing/viewing mode
+    useEffect(() => {
+        if (origin === 'edit/view' && currentTour) {
+            setTour(currentTour);
+            setActivities(currentTour.activities);
+        } else {
+            setTour(emptyTourObject);
+        }
+    }, [currentTour, origin]);
+
+    // Function to handle saving the tour (create or update)
+    let saveTourHandler = () => isCreatingTour ||
+        isUpdatingTour ||
+        (updatedTourFields.size === 0 && updatedActivitiesFields.size === 0)
+        ? () => { }
+        : () => {
+
+            // Retrieve the main form and activity forms
+            const form = document.getElementById(
+                'create-tour-form',
+            ) as HTMLFormElement;
+            const activityForm = document.querySelectorAll(
+                '.create-activity-form',
+            ) as NodeListOf<HTMLFormElement>;
+
+            // Validate all activity forms
+            let activityFormIsValid = true;
+            activityForm.forEach((form) => {
+                if (!form.checkValidity()) {
+                    form.reportValidity();
+                    activityFormIsValid = false;
+                }
+            });
+
+            // Validate the main form and proceed if valid
+            if (form.checkValidity() && activityFormIsValid) {
+
+                // Handle new tour creation
+                if (origin === 'new') {
+                    if (tour.guide.trim() !== '') {
+                        if (activities.size === 0) {
+                            alert('At least one tour activity is required');
+                            return;
+                        }
+
+                        // Assign activities to the tour and create it
+                        tour.activities = activities;
+                        createOneTour(tour);
+                        setAction('creating');
+                        updatedTourFields.clear();
+                        updatedActivitiesFields.clear();
+                    } else {
+                        alert('Please select a guide');
+                    }
+                } else {
+
+                    // Handle tour update with modified data
+                    let newTour: any = {};
+                    if (updatedTourFields.size !== 0) {
+                        newTour = generateUpdatedData(
+                            'tour',
+                            updatedTourFields,
+                            updatedActivitiesFields,
+                            tour,
+                            activities,
+                        );
+                    }
+
+                    if (updatedActivitiesFields.size !== 0) {
+                        newTour['activities'] = generateUpdatedData(
+                            'activity',
+                            updatedTourFields,
+                            updatedActivitiesFields,
+                            tour,
+                            activities,
+                        );
+                    }
+
+                    // Assign tour ID and update the tour
+                    newTour['id'] = currentTour?.id;
+                    setAction('updating');
+                    updateOneTour(newTour as Partial<TourDTO>);
+
+                    // Update the global store and local state
+                    updateTour(tour);
+                    setCurrentTour(tour);
+                    updatedTourFields.clear();
+                    updatedActivitiesFields.clear();
+                }
+            } else {
+                // Trigger validation messages if the form is invalid
+                form.reportValidity();
+            }
+        }
+
+    // Return all necessary state and functions for managing tours
+    return {
+        saveTourHandler,
+        tour,
+        updatedTourFields, setUpdatedTourFields,
+        updatedActivitiesFields, setUpdatedActivitiesFields,
+        setTour,
+        activities,
+        setActivities,
+        photos,
+        setPhotos,
+        activityType,
+        updateTour,
+        setActivityType,
+        action,
+        setAction,
+        isCreatingTour,
+        createOneTour,
+        currentTour,
+        setCurrentTour,
+        createTourError,
+        updateOneTour,
+        isUpdatingTour,
+        updateTourError,
+        fetchGuides,
+        guides,
+        fetchingTourData,
+    };
+};
