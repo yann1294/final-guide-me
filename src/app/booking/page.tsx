@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 import { Label } from "reactstrap";
 import { Input } from "reactstrap";
-import { useFetchTours } from "@/hooks/useTours";
+import { useFetchTours } from "@/hooks/tours/useTours";
 import useTourStore from "@/stores/tourStore";
 
 export default function BookTourPage() {

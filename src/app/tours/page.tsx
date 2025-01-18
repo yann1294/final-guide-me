@@ -4,7 +4,7 @@ import React, { useEffect } from 'react';
 import Breadcrumb from '@/components/common/Breadcrumb';
 import useTourStore from '@/stores/tourStore';
 import Filter from '@/components/common/Filter';
-import { useFetchTours } from '@/hooks/useTours';
+import { useFetchTours } from '@/hooks/tours/useTours';
 import SectionHeader from '@/components/common/SectionHeader';
 import TourCard from '@/components/tours/TourCard';
 import Pagination from '@/components/common/Pagination';

@@ -62,89 +62,87 @@ export const useTourManagement = (origin: 'new' | 'edit/view') => {
     }, [currentTour, origin]);
 
     // Function to handle saving the tour (create or update)
-    let saveTourHandler = () => isCreatingTour ||
-        isUpdatingTour ||
-        (updatedTourFields.size === 0 && updatedActivitiesFields.size === 0)
-        ? () => { }
-        : () => {
+    let saveTourHandler = () => {
+        console.log("Test");
 
-            // Retrieve the main form and activity forms
-            const form = document.getElementById(
-                'create-tour-form',
-            ) as HTMLFormElement;
-            const activityForm = document.querySelectorAll(
-                '.create-activity-form',
-            ) as NodeListOf<HTMLFormElement>;
 
-            // Validate all activity forms
-            let activityFormIsValid = true;
-            activityForm.forEach((form) => {
-                if (!form.checkValidity()) {
-                    form.reportValidity();
-                    activityFormIsValid = false;
-                }
-            });
+        // Retrieve the main form and activity forms
+        const form = document.getElementById(
+            'create-tour-form',
+        ) as HTMLFormElement;
+        const activityForm = document.querySelectorAll(
+            '.create-activity-form',
+        ) as NodeListOf<HTMLFormElement>;
 
-            // Validate the main form and proceed if valid
-            if (form.checkValidity() && activityFormIsValid) {
+        // Validate all activity forms
+        let activityFormIsValid = true;
+        activityForm.forEach((form) => {
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                activityFormIsValid = false;
+            }
+        });
 
-                // Handle new tour creation
-                if (origin === 'new') {
-                    if (tour.guide.trim() !== '') {
-                        if (activities.size === 0) {
-                            alert('At least one tour activity is required');
-                            return;
-                        }
+        // Validate the main form and proceed if valid
+        if (form.checkValidity() && activityFormIsValid) {
 
-                        // Assign activities to the tour and create it
-                        tour.activities = activities;
-                        createOneTour(tour);
-                        setAction('creating');
-                        updatedTourFields.clear();
-                        updatedActivitiesFields.clear();
-                    } else {
-                        alert('Please select a guide');
-                    }
-                } else {
-
-                    // Handle tour update with modified data
-                    let newTour: any = {};
-                    if (updatedTourFields.size !== 0) {
-                        newTour = generateUpdatedData(
-                            'tour',
-                            updatedTourFields,
-                            updatedActivitiesFields,
-                            tour,
-                            activities,
-                        );
+            // Handle new tour creation
+            if (origin === 'new') {
+                if (tour.guide.trim() !== '') {
+                    if (activities.size === 0) {
+                        alert('At least one tour activity is required');
+                        return;
                     }
 
-                    if (updatedActivitiesFields.size !== 0) {
-                        newTour['activities'] = generateUpdatedData(
-                            'activity',
-                            updatedTourFields,
-                            updatedActivitiesFields,
-                            tour,
-                            activities,
-                        );
-                    }
-
-                    // Assign tour ID and update the tour
-                    newTour['id'] = currentTour?.id;
-                    setAction('updating');
-                    updateOneTour(newTour as Partial<TourDTO>);
-
-                    // Update the global store and local state
-                    updateTour(tour);
-                    setCurrentTour(tour);
+                    // Assign activities to the tour and create it
+                    tour.activities = activities;
+                    createOneTour(tour);
+                    setAction('creating');
                     updatedTourFields.clear();
                     updatedActivitiesFields.clear();
+                } else {
+                    alert('Please select a guide');
                 }
             } else {
-                // Trigger validation messages if the form is invalid
-                form.reportValidity();
+
+                // Handle tour update with modified data
+                let newTour: any = {};
+                if (updatedTourFields.size !== 0) {
+                    newTour = generateUpdatedData(
+                        'tour',
+                        updatedTourFields,
+                        updatedActivitiesFields,
+                        tour,
+                        activities,
+                    );
+                }
+
+                if (updatedActivitiesFields.size !== 0) {
+                    newTour['activities'] = generateUpdatedData(
+                        'activity',
+                        updatedTourFields,
+                        updatedActivitiesFields,
+                        tour,
+                        activities,
+                    );
+                }
+
+                // Assign tour ID and update the tour
+                newTour['id'] = currentTour?.id;
+                setAction('updating');
+                updateOneTour(newTour as Partial<TourDTO>);
+
+                // Update the global store and local state
+                updateTour(tour);
+                setCurrentTour(tour);
+                updatedTourFields.clear();
+                updatedActivitiesFields.clear();
             }
+        } else {
+            // Trigger validation messages if the form is invalid
+            form.reportValidity();
         }
+    }
 
     // Return all necessary state and functions for managing tours
     return {

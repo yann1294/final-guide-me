@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import Breadcumb from '@/components/common/Breadcrumb';
 import useTourStore from '@/stores/tourStore';
-import { useFetchOneTour } from '@/hooks/useTours';
+import { useFetchOneTour } from '@/hooks/tours/useTours';
 import useAuthStore from '@/stores/authStore';
 import { useCreateStripeOrder } from '@/hooks/useBookings';
 import TourGuide from '@/components/common/TourGuide';

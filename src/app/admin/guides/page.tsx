@@ -9,7 +9,7 @@ import { userGlobalSearchFields, useUserGlobalFilters } from '@/lib/config/globa
 import {
   modifyElement,
 } from '@/components/admin/FilterTemplates';
-import { useFetchTours } from '@/hooks/useTours';
+import { useFetchTours } from '@/hooks/tours/useTours';
 import { ContextType } from '@/lib/utils/contextUtils';
 import { ActionButtons } from '@/components/admin/ActionButtons';
 import {

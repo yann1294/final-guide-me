@@ -1,11 +1,10 @@
-import useSWR from "swr";
 import axios from "axios";
 import { ResponseDTO } from "@/dto/helper.dto";
 import { ActivityDTO, TourDTO } from "@/dto/tour.dto";
 import { useState } from "react";
 import useTourStore from "@/stores/tourStore";
 import useUserStore from "@/stores/userStore";
-import { useFetchOneGuide } from "./useUsers";
+import { useFetchOneGuide } from "../useUsers";
 
 export const useFetchTours = () => {
   const setTours = useTourStore((state) => state.setTours);
@@ -25,7 +24,7 @@ export const useFetchTours = () => {
         throw new Error(response.data.message);
       }
 
-      
+
       // Persist the fetched tours in Zustand store
       setTours(response.data.data as TourDTO[]);
     } catch (err) {
@@ -49,7 +48,7 @@ export const useFetchOneTour = () => {
   const fetchOneTour = async (tourId: string) => {
     setLoading(true);
     setError(null);
-    
+
     try {
       // Replace with the actual endpoint for fetching tours
       const response = await axios.get<ResponseDTO>(`/api/tours/${tourId}`);
@@ -67,7 +66,7 @@ export const useFetchOneTour = () => {
       );
       tour.activities = activities;
       setCurrentTour(tour);
-      
+
       // fetch tour guide if guide does not exist
       if (!guides.get(tour.guide)) {
         await fetchOneGuide(tour.guide);
@@ -85,18 +84,21 @@ export const useFetchOneTour = () => {
 };
 
 export const useCreateOneTour = () => {
-  const { addTour } = useTourStore();
+  const { addTour, setCurrentTour } = useTourStore();
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   const createOneTour = async (tour: TourDTO) => {
     setLoading(true);
     setError(null);
-    
+
     try {
+      console.log("Create One tour: ")
       // convert activities to object
       let data: any = Object.assign({}, tour);
-      data['activities'] = Object.fromEntries(tour.activities.entries());
+      // data['activities'] = Object.fromEntries(tour.activities.entries());
+      data['activities'] = {};
+
       // Replace with the actual endpoint for fetching tours
       const response = await axios.post<ResponseDTO>(`/api/tours`, JSON.stringify(data));
 
@@ -107,8 +109,9 @@ export const useCreateOneTour = () => {
       }
 
       // add tour to tours
-      tour.id = response.data.data as string;
+      tour.id = (response.data.data as string).split("/")[1];
       addTour(tour);
+      setCurrentTour(tour);
       console.log(response.data)
     } catch (err: any) {
       // console.error("Error: ", err);
@@ -129,10 +132,18 @@ export const useUpdateOneTour = () => {
   const updateOneTour = async (tour: Partial<TourDTO>) => {
     setLoading(true);
     setError(null);
-    
+
     try {
+      // convert activities to object
+      let data: any = Object.assign({}, tour);
+
+      // processing activities if it exist
+      if (tour.activities) {
+        data['activities'] = Object.fromEntries(tour.activities.entries());
+      }
+
       // Replace with the actual endpoint for fetching tours
-      const response = await axios.patch<ResponseDTO>(`/api/tours/${tour.id}`, tour);
+      const response = await axios.patch<ResponseDTO>(`/api/tours/${tour.id}`, data);
 
       // Check if the response status is 'success'
       if (response.data.status !== 'success') {

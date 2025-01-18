@@ -90,30 +90,19 @@ export const handleInputChange = (
     });
 };
 
-export const generateUpdatedData = (origin: 'tour' | 'activity', updatedTourFields: Set<string>, updatedActivitiesFields: Set<string>, tour: TourDTO, activities: Map<number, ActivityDTO>) => {
-    const updated: Record<string, any> = {}; // Holds the final nested structure
-    const fields =
-        origin === 'tour' ? updatedTourFields : updatedActivitiesFields;
-    const source =
-        origin === 'tour' ? tour : Object.fromEntries(activities.entries());
+export const generateUpdatedData = (origin: "tour" | "activities", updatedFields: Set<string>, dataSource: TourDTO | Map<number, ActivityDTO>) => {
+    const updated = {}; // Holds the final nested structure
+    const source = origin === 'tour' ? dataSource : Object.fromEntries((dataSource as Map<number, ActivityDTO>).entries());
 
-
-    fields.forEach((path) => {
+    updatedFields.forEach((path) => {
         const keys = path.split('.'); // Split the path into keys
         let currentSource: any = source; // Traverse source object to get value
-        let currentUpdated = updated; // Traverse updated object to build structure
+        let currentUpdated: any = updated; // Traverse updated object to build structure
 
         keys.forEach((key, index) => {
             // Fetch the value from the source object
             if (currentSource && key in currentSource) {
-                console.log(
-                    key,
-                    currentSource,
-                    currentSource && key in currentSource,
-                );
-
                 currentSource = currentSource[key];
-
             } else {
                 currentSource = undefined; // Stop if key doesn't exist
             }

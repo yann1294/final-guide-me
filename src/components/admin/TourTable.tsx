@@ -9,7 +9,7 @@ import { resourceGlobalFilterFields, useResourceGlobalFilters } from '@/lib/conf
 import {
   modifyElement,
 } from '@/components/admin/FilterTemplates';
-import { useFetchTours } from '@/hooks/useTours';
+import { useFetchTours } from '@/hooks/tours/useTours';
 import { CONTEXT, ContextType } from '@/lib/utils/contextUtils';
 import { ActionButtons } from '@/components/admin/ActionButtons';
 import {
