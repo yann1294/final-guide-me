@@ -27,8 +27,8 @@ export default function ConfirmationDialog({
       onHide={onClose}
       footer={() => (
         <Fragment>
-          <Button label="No" outlined />
-          <Button label="Yes" severity="danger" />
+          <Button label="No" outlined onClick={onClose} />
+          <Button label="Yes" severity="danger" onClick={onConfirm} />
         </Fragment>
       )}
     >

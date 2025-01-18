@@ -163,3 +163,38 @@ export const useUpdateOneTour = () => {
 
   return { updateOneTour, loading, error };
 };
+
+export const useDeleteOneTour = () => {
+  const { deleteTour } = useTourStore();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const deleteOneTour = async (tour: Partial<TourDTO>) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      console.log("Delete tour");
+
+      // Replace with the actual endpoint for fetching tours
+      const response = await axios.delete<ResponseDTO>(`/api/tours/${tour.id}`);
+
+      // Check if the response status is 'success'
+      if (response.data.status !== 'success') {
+        console.log(JSON.parse(response.data.message))
+        setError(response.data.message);
+        throw new Error(response.data.message);
+      }
+
+      deleteTour(tour as TourDTO);
+      console.log(response)
+    } catch (err: any) {
+      // console.error("Error: ", err);
+      setError(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { deleteOneTour, loading, error };
+};

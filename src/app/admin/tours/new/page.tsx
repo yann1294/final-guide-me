@@ -120,24 +120,6 @@ export default function CreateTour({
               ? 'disabled-button'
               : '' + ' save-button add-resource'
           }
-          // onClick={
-          //   uTm.isCreatingTour ||
-          //   uTm.isUpdatingTour ||
-          //   (uTm.updatedTourFields.size === 0 &&
-          //     uTm.updatedActivitiesFields.size === 0)
-          //     ? () => {
-          //         console.log('Save tour: Not completed');
-          //       }
-          //     : uTm.saveTourHandler
-          // }
-          // className={
-          //   uTm.isCreatingTour ||
-          //   uTm.isUpdatingTour ||
-          //   (uTm.updatedTourFields.size === 0 &&
-          //     uTm.updatedActivitiesFields.size === 0)
-          //     ? 'disabled-button'
-          //     : '' + ' save-button add-resource'
-          // }
         >
           {uTm.isCreatingTour
             ? 'Creating...'
