@@ -91,6 +91,10 @@ export const useActivityManagement = (origin: "new" | "edit/view") => {
 
   useEffect(() => {
     // Example: Syncing activity state with external data sources if needed
+    if (origin === "edit/view") {
+      // update activities with current tour activities
+      setActivities(new Map(Object.entries(currentTour?.activities || {}).map(([key, value]) => [parseInt(key), value])));
+    }
   }, []);
 
   // Handle change in the input fields

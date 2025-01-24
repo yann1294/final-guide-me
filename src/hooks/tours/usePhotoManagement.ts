@@ -1,5 +1,5 @@
 import useTourStore from "@/stores/tourStore";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useUploadImages } from "../useImages";
 
 /**
@@ -79,6 +79,17 @@ export const usePhotoManagement = (origin: "new" | "edit/view") => {
     // upload images
     uploadImages(formData);
   };
+
+  // update photos from current tour
+  useEffect(() => {
+    if (origin === "edit/view" && currentTour?.images) {
+      const photos = new Map<number, { file: File; dataString: string }>();
+      currentTour.images.forEach((photo, index) => {
+        photos.set(index, { file: new File([], photo), dataString: photo });
+      });
+      setPhotos(photos);
+    }
+  }, []);
 
   return {
     photos,
