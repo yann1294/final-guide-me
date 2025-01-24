@@ -1,4 +1,5 @@
 import { modifyElement, multiSelectRowFilterTemplate, rangeRowFilterTemplate } from "@/components/admin/FilterTemplates";
+import { TourDTO } from "@/dto/tour.dto";
 import { BadgeCheckIcon, BadgeXIcon, CopyIcon, ExternalLinkIcon, ViewIcon } from "lucide-react";
 import { ColumnFilterElementTemplateOptions, ColumnProps } from "primereact/column";
 import { TriStateCheckbox } from "primereact/tristatecheckbox";
@@ -7,7 +8,10 @@ export const tourColumnTemplates = [
     {
       field: 'id',
       header: 'ID',
-      body: () => modifyElement(<CopyIcon size="18px" />, 'Copy tour ID'),
+      body: (data: TourDTO) => modifyElement(<CopyIcon id={`${data.id}`} size="18px" onClick={() => {
+        navigator.clipboard.writeText(data.id as string);
+        alert('Copied tour ID: ' + data.id);
+      } } />, 'Copy tour ID'),
     },
     {
       field: 'name',
@@ -24,7 +28,7 @@ export const tourColumnTemplates = [
       sortable: true,
       // filterField: 'location.country',
       sortField: 'location.country',
-      filterPlaceholder: 'Search by location',
+      filterPlaceholder: 'Search by country',
       style: { minWidth: '18rem' },
       body: (data: any) => `${data.location.city}, ${data.location.country}`,
     },
