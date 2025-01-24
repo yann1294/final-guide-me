@@ -8,6 +8,7 @@ export const useUploadImages = () => {
     const { updateTour, setCurrentTour, currentTour } = useTourStore();
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
+    const [status, setStatus] = useState<"created" | "failed" | "initial">("initial");
   
     const uploadImages = async (formData: FormData) => {
       setLoading(true);
@@ -22,6 +23,7 @@ export const useUploadImages = () => {
         // Check if the response status is 'success'
         if (response.data.status !== 'success') {
           setError(response.data.message);
+          setStatus("failed");
           throw new Error(response.data.message);
         }
   
@@ -31,14 +33,16 @@ export const useUploadImages = () => {
 
         updateTour(tour);
         setCurrentTour(tour);
+        setStatus("created");
         console.log(response.data)
       } catch (err: any) {
         // console.error("Error: ", err);
         setError(err);
+        setStatus("failed");
       } finally {
         setLoading(false);
       }
     };
   
-    return { uploadImages, loading, error };
+    return { uploadImages, loading, error, status };
   };

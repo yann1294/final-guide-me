@@ -14,7 +14,7 @@ export const usePhotoManagement = (origin: "new" | "edit/view") => {
   const { currentTour } = useTourStore();
 
   // upload images
-  const { uploadImages, loading, error } = useUploadImages();
+  const { uploadImages, loading, error, status } = useUploadImages();
 
   /**
    * Add a photo to the collection from an input element.
@@ -86,6 +86,6 @@ export const usePhotoManagement = (origin: "new" | "edit/view") => {
     removePhoto,
     clearPhotos,
     uploadImagesHandler,
-    loading, error,
+    loading, error, status
   };
 };

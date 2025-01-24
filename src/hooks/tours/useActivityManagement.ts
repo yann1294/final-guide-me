@@ -14,7 +14,7 @@ export const useActivityManagement = (origin: "new" | "edit/view") => {
 
   // tour managers
   const { currentTour } = useTourStore();
-  const { updateOneTour, loading, error } = useUpdateOneTour();
+  const { updateOneTour, loading, error, status } = useUpdateOneTour();
 
 
   // State for managing activity type metadata
@@ -200,7 +200,6 @@ export const useActivityManagement = (origin: "new" | "edit/view") => {
     saveActivitiesHandler,
     handleInputChange,
     handleActivityTypeChange,
-    error,
-    loading
+    error, loading, status
   };
 };

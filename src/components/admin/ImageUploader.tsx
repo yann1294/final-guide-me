@@ -32,6 +32,24 @@ export default function ImageUploader({
           </div>
         </div>
       </div>
+      {!uPm.loading && !uPm.error && uPm.status !== "initial" && (
+        <div
+          className="alert alert-success alert-dismissible fade show mt-20 col-12"
+          role="alert"
+        >
+          Successfully {origin === 'new' ? 'created' : 'updated'}{' '}
+          <button
+            type="button"
+            className="btn-close"
+            aria-label="Close"
+          ></button>
+        </div>
+      )}
+      {uPm.loading && (
+        <div className="circular-loader-container">
+          <div className="circular-loader"></div>
+        </div>
+      )}
       <div className="container">
         <input
           type="file"

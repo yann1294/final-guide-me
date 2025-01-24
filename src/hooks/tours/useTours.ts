@@ -125,9 +125,10 @@ export const useCreateOneTour = () => {
 };
 
 export const useUpdateOneTour = () => {
-  const { addTour } = useTourStore();
+  const { updateTour } = useTourStore();
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [status, setStatus] = useState<"updated" | "initial" | "failed">("initial");
 
   const updateOneTour = async (tour: Partial<TourDTO>) => {
     setLoading(true);
@@ -149,19 +150,23 @@ export const useUpdateOneTour = () => {
       if (response.data.status !== 'success') {
         console.log(JSON.parse(response.data.message))
         setError(response.data.message);
+        setStatus("failed");
         throw new Error(response.data.message);
       }
 
-      console.log(response)
+      console.log(response);
+      setStatus("updated");
+      updateTour(tour as TourDTO);
     } catch (err: any) {
       // console.error("Error: ", err);
       setError(err);
+      setStatus("failed");
     } finally {
       setLoading(false);
     }
   };
 
-  return { updateOneTour, loading, error };
+  return { updateOneTour, loading, error, status };
 };
 
 export const useDeleteOneTour = () => {

@@ -35,7 +35,7 @@ export default function CreateActivityComponent({
           </div>
         </div>
       </div>
-      {!uAm.loading && !uAm.error && (
+      {(!uAm.loading && !uAm.error && uAm.status !== "initial") && (
         <div
           className="alert alert-success alert-dismissible fade show mt-20 col-12"
           role="alert"
