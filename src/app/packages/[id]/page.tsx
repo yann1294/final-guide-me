@@ -123,6 +123,7 @@ export default function PackageDetails() {
                 <div className="package-d-sidebar">
                   <div className="row">
                     <BookingSummary
+                      context={ContextType.package}
                       tour={pkg}
                       numberOfPeople={numberOfPeople}
                       setNumberOfPeople={setNumberOfPeople}
@@ -138,7 +139,10 @@ export default function PackageDetails() {
           </div>
         </div>
       )}
-      <RelatedSection packages={packages.slice(0, 3)} context={ContextType.package} />
+      <RelatedSection
+        packages={packages.slice(0, 3)}
+        context={ContextType.package}
+      />
       {loading && (
         <div className="circular-loader-container">
           <div className="circular-loader"></div>

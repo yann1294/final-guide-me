@@ -111,6 +111,7 @@ const TourDetails = () => {
                 <div className="package-d-sidebar">
                   <div className="row">
                     <BookingSummary
+                    
                       context={ContextType.tour}
                       tour={tour}
                       numberOfPeople={numberOfPeople}

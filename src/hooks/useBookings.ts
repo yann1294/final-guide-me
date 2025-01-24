@@ -14,7 +14,7 @@ export const useCreateStripeOrder = () => {
     setLoading(true);
     setError(null);
     
-
+    console.log("Payment", payment)
     try {
       // Replace with the actual endpoint for fetching packages
       const response = await axios.post<ResponseDTO>('/api/payments', payment);

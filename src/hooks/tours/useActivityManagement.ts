@@ -199,6 +199,8 @@ export const useActivityManagement = (origin: "new" | "edit/view") => {
     setUpdatedActivitiesFields,
     saveActivitiesHandler,
     handleInputChange,
-    handleActivityTypeChange
+    handleActivityTypeChange,
+    error,
+    loading
   };
 };

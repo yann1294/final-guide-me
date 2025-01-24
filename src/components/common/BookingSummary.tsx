@@ -73,6 +73,8 @@ const BookingSummary = ({
             <input
               onClick={async () => {
                 await createStripeOrder({
+                  resourceId: tour.id,
+                  resourceType: context.context,
                   gateway: 'stripe',
                   amount:
                     parseFloat((numberOfPeople *

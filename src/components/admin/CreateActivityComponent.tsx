@@ -18,9 +18,15 @@ export default function CreateActivityComponent({
           Tour Activities ({uAm.activities.size.toString().padStart(2, '0')})
         </div>
         <div className="flex disable-hover">
-          <div className={"add-resource " + (uAm.activities.size === 0 ? "disabled-button" : "")}
-          onClick={uAm.saveActivitiesHandler}
-          >Save Activities</div>
+          <div
+            className={
+              'add-resource ' +
+              (uAm.activities.size === 0 ? 'disabled-button' : '')
+            }
+            onClick={uAm.saveActivitiesHandler}
+          >
+            Save Activities
+          </div>
           <div
             onClick={uAm.addActivity}
             className="add-activity add-resource flex"
@@ -29,6 +35,24 @@ export default function CreateActivityComponent({
           </div>
         </div>
       </div>
+      {!uAm.loading && !uAm.error && (
+        <div
+          className="alert alert-success alert-dismissible fade show mt-20 col-12"
+          role="alert"
+        >
+          Successfully {origin === 'new' ? 'created' : 'updated'}{' '}
+          <button
+            type="button"
+            className="btn-close"
+            aria-label="Close"
+          ></button>
+        </div>
+      )}
+      {uAm.loading && (
+        <div className="circular-loader-container">
+          <div className="circular-loader"></div>
+        </div>
+      )}
       <div className="container">
         {Array.from(uAm.activities.entries()).map(([key, activity]) => {
           return (
@@ -138,7 +162,7 @@ export default function CreateActivityComponent({
                     Arrival Type
                   </label>
                   <select
-                    onChange={(e) => uAm.handleActivityTypeChange(e, key) }
+                    onChange={(e) => uAm.handleActivityTypeChange(e, key)}
                     style={{ height: '40px' }}
                     defaultValue={
                       activity.accommodation
@@ -297,9 +321,7 @@ export default function CreateActivityComponent({
               )}
 
               <div className="remove-activity">
-                <Trash2Icon
-                  onClick={() => uAm.removeActivity(key)}
-                />
+                <Trash2Icon onClick={() => uAm.removeActivity(key)} />
               </div>
             </form>
           );
