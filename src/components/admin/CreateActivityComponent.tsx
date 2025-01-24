@@ -21,7 +21,7 @@ export default function CreateActivityComponent({
           <div
             className={
               'add-resource ' +
-              (uAm.activities.size === 0 ? 'disabled-button' : '')
+              (uAm.activities.size === 0 || uAm.updatedActivitiesFields.size === 0 ? 'disabled-button' : '')
             }
             onClick={uAm.saveActivitiesHandler}
           >
