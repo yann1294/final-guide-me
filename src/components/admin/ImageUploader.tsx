@@ -37,7 +37,7 @@ export default function ImageUploader({
           className="alert alert-success alert-dismissible fade show mt-20 col-12"
           role="alert"
         >
-          Successfully {origin === 'new' ? 'created' : 'updated'}{' '}
+          Successfully uploaded
           <button
             type="button"
             className="btn-close"

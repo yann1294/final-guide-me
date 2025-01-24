@@ -13,7 +13,13 @@ export async function POST(req: Request) {
     });
 
     // Parse the response data from the backend
-    const data = await response.json();
+    const data = await response.json() as ResponseDTO;
+
+    // check whether the response status is 'success'
+    if (data.status !== 'success') {
+      throw data;
+    }
+    
     // Return the parsed data in the Next.js response
     console.log("File upload:", data)
     return NextResponse.json(data);
