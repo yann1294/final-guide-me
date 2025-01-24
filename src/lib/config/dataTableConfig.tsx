@@ -37,7 +37,7 @@ export const useDataTableConfig = (
           setGlobalFilterValue={setGlobalFilterValue}
         />
       ),
-      emptyMessage: `No ${context} found.`,
+      emptyMessage: `No ${context.context} found.`,
       resizableColumns: true,
       onFilter: (e: DataTableStateEvent) => setFilters(e.filters),
       sortMode: 'multiple',
