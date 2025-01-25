@@ -13,8 +13,8 @@ import '../../public/assets/css/boxicons.min.css';
 import '../../public/assets/css/style.css';
 import '../../public/assets/css/responsive.css';
 import { useEffect } from 'react';
-import { useFetchPackages } from '@/hooks/usePackages';
 import { useFetchTours } from '@/hooks/tours/useTours';
+import { useFetchPackages } from '@/hooks/packages/usePackages';
 // require('dotenv').config();
 
 const inter = Inter({ subsets: ['latin'] });

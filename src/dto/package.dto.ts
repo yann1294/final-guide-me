@@ -11,7 +11,8 @@ export type PackageDTO = {
   guide: string;
   location: PackageLocationDTO;
   tours: string[];
-  date: Date | { _seconds: number, _nanoseconds: number }
+  date: any
+  // date: Date | { _seconds: number, _nanoseconds: number }
 }
 
 type PackageLocationDTO = {

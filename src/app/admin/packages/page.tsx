@@ -11,7 +11,6 @@ import {
 } from '@/components/admin/FilterTemplates';
 import { ActionButtons } from '@/components/admin/ActionButtons';
 import usePackageStore from '@/stores/packageStore';
-import { useFetchPackages } from '@/hooks/usePackages';
 import { ContextType } from '@/lib/utils/contextUtils';
 import { useEffect, useState } from 'react';
 import {
@@ -26,6 +25,7 @@ import {
 import TourTable from '@/components/admin/TourTable';
 import { useDataTableConfig } from '@/lib/config/dataTableConfig';
 import { packageColumnConfigs } from '@/lib/config/packageColumnConfig';
+import { useFetchPackages } from '@/hooks/packages/usePackages';
 
 export default function AdminPackagesPage() {
   // State and hooks initialization

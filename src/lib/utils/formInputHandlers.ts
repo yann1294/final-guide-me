@@ -1,3 +1,4 @@
+import { PackageDTO } from "@/dto/package.dto";
 import { ActivityDTO, TourDTO } from "@/dto/tour.dto";
 import { InputNumberValueChangeEvent } from "primereact/inputnumber";
 import { Dispatch, SetStateAction } from "react";
@@ -38,20 +39,32 @@ export const handleTourInputChange = (
     setTour((prev) => ({ ...prev, [name]: value }));
 };
 
+export const handlePackageInputChange = (
+    e: any,
+    origin: 'number' | 'text' = 'text',
+    setUpdatedPackageFields: Dispatch<SetStateAction<Set<string>>>,
+    setTour: Dispatch<SetStateAction<PackageDTO>>
+) => {
+    // Track which fields have been updated (preserving structure)
+    setUpdatedPackageFields((prevFields) => new Set(prevFields).add(name));
+    const { name, value } = e.target;
+    setTour((prev) => ({ ...prev, [name]: value }));
+};
+
 export const handleNestedChange = (
     e: React.ChangeEvent<HTMLInputElement>,
-    field: keyof TourDTO['location'],
+    field: keyof any['location'],
     setUpdatedTourFields: Dispatch<SetStateAction<Set<string>>>,
-    setTour: Dispatch<SetStateAction<TourDTO>>
+    setTour: Dispatch<SetStateAction<any>>
 ) => {
     const { value } = e.target;
-    setTour((prev) => ({
+    setTour((prev: any) => ({
         ...prev,
         location: { ...prev.location, [field]: value },
     }));
     // Track which fields have been updated (preserving structure)
     setUpdatedTourFields((prevFields) =>
-        new Set(prevFields).add(`location.${field}`),
+        new Set(prevFields).add(`location.${field as string}`),
     );
 };
 

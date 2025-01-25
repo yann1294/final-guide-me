@@ -10,6 +10,9 @@ interface PackageStore {
   setPackages: (packages: PackageDTO[]) => void;   // Set all packages from an external source (e.g., API)
   setPackageTours: (packageId: string, tour: TourDTO[]) => void;
   setCurrentPackage: (pkg: PackageDTO) => void;     // Set the current tour being viewed
+  updatePackage: (pkg: PackageDTO) => void;         // Update a package
+  deletePackage: (pkg: PackageDTO) => void;           // Delete a package
+  addPackage: (pkg: PackageDTO) => void;           // Add a package
 }
 
 // Define the Zustand store
@@ -33,6 +36,21 @@ const usePackageStore = create<PackageStore>((set) => ({
 
   // Set the current package
   setCurrentPackage: (pkg: PackageDTO) => set({ currentPackage: pkg }),
+  updatePackage: (pkg: PackageDTO) => set((state) => {
+    let newPackages: PackageDTO[] = state.packages.filter((p) => p.id != pkg.id);
+
+    return { packages: [...newPackages, pkg ]}
+  }),
+
+  deletePackage: (pkg: PackageDTO) => set((state) => {
+    let newPackages: PackageDTO[] = state.packages.filter((p) => p.id != pkg.id);
+
+    return { packages: newPackages }
+  }),
+
+  addPackage: (pkg: PackageDTO) => set((state) => {
+    return { packages: [...state.packages, pkg] }
+  })
 }));
 
 export default usePackageStore;

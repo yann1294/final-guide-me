@@ -1,109 +1,136 @@
 'use client';
-import { PackageDTO } from '@/dto/package.dto';
-import { emptyPackageObject } from '@/lib/utils/emptyObjects';
-import { ImagePlusIcon, Trash2Icon } from 'lucide-react';
+import CreateActivityComponent from '@/components/admin/CreateActivityComponent';
+import ImageUploader from '@/components/admin/ImageUploader';
+import { usePackageManagement } from '@/hooks/packages/usePackageManagement';
+import { convertSecondsToDate } from '@/lib/utils/dateUtils';
+import {
+  handleNestedChange,
+  handlePackageInputChange,
+  handleTourInputChange,
+} from '@/lib/utils/formInputHandlers';
 import { Calendar } from 'primereact/calendar';
 import { Checkbox } from 'primereact/checkbox';
-import { Image } from 'primereact/image';
 import { InputNumber } from 'primereact/inputnumber';
 import { InputText } from 'primereact/inputtext';
-import { InputTextarea } from 'primereact/inputtextarea';
-import { SyntheticEvent, useState } from 'react';
 
-export default function CreatePackage() {
-  const [pkg, setPackage] = useState<PackageDTO>(emptyPackageObject);
-  const [photos, setPhotos] = useState<
-    Map<number, { file: File; dataString: string }>
-  >(new Map());
+export default function CreatePackage({
+  origin = 'new', title = "Create a New Package"
+}: {
+  origin: 'new' | 'edit/view';
+  title: string;
+}) {
+  const uPkgM = usePackageManagement(origin);
 
-  function handleFileUpload(event: any) {
-    const file = event.target.files[0]; // Get the first uploaded file
-    if (file) {
-      const reader = new FileReader();
-
-      reader.onload = (e: ProgressEvent<FileReader>) => {
-        const dataUrl = e.target?.result; // The Data URL as a string
-        let photo = new Map(photos);
-        photo.set(new Date().getTime(), {
-          file: file,
-          dataString: dataUrl as string,
-        });
-
-        setPhotos(photo);
-        
-      };
-
-      reader.onerror = (e) => {
-        console.error('Error reading file:', e);
-      };
-
-      reader.readAsDataURL(file); // Convert the file to a Data URL
-    } else {
-      
-    }
-  }
-
-  const handlePackageInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    console.log("Change", e.target.name)
-    const { name, value } = e.target;
-    setPackage((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleNestedChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    field: keyof PackageDTO['location'],
-  ) => {
-    const { value } = e.target;
-    setPackage((prev) => ({
-      ...prev,
-      location: { ...prev.location, [field]: value },
-    }));
-  };
-
-  const handleDateChange = (e: any) => {
-    setPackage((prev) => ({
-      ...prev,
-      date:  new Date(e.target.value),
-    }));
+  let packageInputChangeHandler = (e: any) => {
+    return handlePackageInputChange(
+      e,
+      'text',
+      uPkgM.setUpdatedPackageFields,
+      uPkgM.setPackage,
+    );
   };
 
   return (
     <div className="container create-form mt-20">
-      <h2>Create a New Package</h2>
-      <div className="create-form-section-title mt-20">Package Details</div>
+      <h2>{title}</h2>
+      {((uPkgM.action === 'creating' && !uPkgM.createPackageError) ||
+        (uPkgM.action === 'updating' && !uPkgM.updatePackageError)) && (
+        <div
+          className="alert alert-success alert-dismissible fade show mt-20"
+          role="alert"
+        >
+          Successfully {uPkgM.action === 'updating' ? 'updated' : 'created'}{' '}
+          <strong>{uPkgM.pkg.name}!</strong>.
+          <button
+            type="button"
+            className="btn-close"
+            aria-label="Close"
+            onClick={() => uPkgM.setAction('nothing')}
+          ></button>
+        </div>
+      )}
+
+      {(uPkgM.createPackageError || uPkgM.updatePackageError) && (
+        <div
+          className="alert alert-danger alert-dismissible fade show mt-20"
+          role="alert"
+        >
+          {uPkgM.createPackageError ?? uPkgM.updatePackageError}
+          <button
+            type="button"
+            className="btn-close"
+            aria-label="Close"
+            onClick={() => uPkgM.setAction('nothing')}
+          ></button>
+        </div>
+      )}
+      {origin !== 'new' && uPkgM.loading && (
+        <div className="circular-loader-container">
+          <div className="circular-loader"></div>
+        </div>
+      )}
+
+      <div className="create-form-section-title  mt-20">Package Details</div>
       <div className="action-buttons mb-0 mt-20 justify-content-between align-item-center">
-        <div className="guide-area p-0">
-          <select className="form-select m-0 w-auto" defaultValue={''}>
-            <option value="">Assign guide to package</option>
-            <option value="">Guide 1</option>
+        <div
+          style={{
+            border: '1px solid #ced4da',
+            padding: '0',
+            paddingLeft: '10px',
+            backgroundColor: '#6BC8B4',
+          }}
+          className="guide-area"
+        >
+          <span style={{ color: 'white', fontWeight: 'bold' }}>Guide</span>{' '}
+          <select
+            style={{
+              height: '40px',
+              borderTopLeftRadius: 0,
+              borderBottomLeftRadius: 0,
+            }}
+            className="form-select m-0 w-auto"
+            name="guide"
+            onChange={packageInputChangeHandler}
+            value={uPkgM.pkg?.guide}
+            required
+          >
+            <option value={''} key={'initial'}>
+              Assign guide to package
+            </option>
+            {uPkgM.guides.map((guide) => (
+              <option key={guide.uid} value={guide.uid}>
+                {guide.firstName} {guide.lastName}
+              </option>
+            ))}
           </select>
         </div>
         <div
-          onClick={() => {
-            const form = document.getElementById(
-              'create-package-form',
-            ) as HTMLFormElement;
-
-            // Check if the form is valid (using HTML5 checkValidity)
-            if (form.checkValidity()) {
-              // Form is valid, proceed with submission or any other action
-              
-              console.log(pkg)
-            } else {
-              // Form is invalid, trigger validation
-              
-              form.reportValidity(); // This will show the built-in validation messages
-            }
-          }}
-          className="save-button add-resource"
+        onClick={
+            uPkgM.isCreatingPackage ||
+            uPkgM.isUpdatingPackage ||
+            (uPkgM.updatedPackageFields.size === 0)
+              ? () => {
+                  console.log('Save tour: Not completed');
+                }
+              : uPkgM.savePackageHandler
+          }
+          className={
+            uPkgM.isCreatingPackage ||
+            uPkgM.isUpdatingPackage ||
+            (uPkgM.updatedPackageFields.size === 0)
+              ? 'disabled-button'
+              : '' + ' save-button add-resource'
+          }
         >
-          Save package
+          {uPkgM.isCreatingPackage
+            ? 'Creating...'
+            : uPkgM.isUpdatingPackage
+            ? 'Updating...'
+            : 'Save Package Details'}
         </div>
       </div>
-      <form id="create-package-form" className="row">
-        {/* Tour Name */}
+      <form id="create-tour-form" className="row">
+        {/* Package Name */}
         <div className="field col-md-6">
           <div className="form-group">
             <label htmlFor="name" className="form-label">
@@ -113,8 +140,8 @@ export default function CreatePackage() {
               className="form-control"
               id="name"
               name="name"
-              value={pkg.name}
-              onChange={handlePackageInputChange}
+              value={uPkgM.pkg.name}
+              onChange={packageInputChangeHandler}
               required
             />
           </div>
@@ -129,8 +156,16 @@ export default function CreatePackage() {
             <InputText
               className="form-control"
               id="locationName"
-              value={pkg.location.name}
-              onChange={(e) => handleNestedChange(e, 'name')}
+              name="location.name"
+              value={uPkgM.pkg.location.name}
+              onChange={(e) =>
+                handleNestedChange(
+                  e,
+                  'name',
+                  uPkgM.setUpdatedPackageFields,
+                  uPkgM.setPackage,
+                )
+              }
               required
             />
           </div>
@@ -145,8 +180,15 @@ export default function CreatePackage() {
             <InputText
               className="form-control"
               id="city"
-              value={pkg.location.city}
-              onChange={(e) => handleNestedChange(e, 'city')}
+              value={uPkgM.pkg.location.city}
+              onChange={(e) =>
+                handleNestedChange(
+                  e,
+                  'city',
+                  uPkgM.setUpdatedPackageFields,
+                  uPkgM.setPackage,
+                )
+              }
               required
             />
           </div>
@@ -161,8 +203,15 @@ export default function CreatePackage() {
             <InputText
               className="form-control"
               id="country"
-              value={pkg.location.country}
-              onChange={(e) => handleNestedChange(e, 'country')}
+              value={uPkgM.pkg.location.country}
+              onChange={(e) =>
+                handleNestedChange(
+                  e,
+                  'country',
+                  uPkgM.setUpdatedPackageFields,
+                  uPkgM.setPackage,
+                )
+              }
               required
             />
           </div>
@@ -177,10 +226,9 @@ export default function CreatePackage() {
             <InputNumber
               className="form-control"
               id="price"
-              value={pkg.price}
-              onValueChange={(e: any) =>
-                setPackage((prev) => ({ ...prev, price: e.value }))
-              }
+              name="price"
+              value={uPkgM.pkg.price}
+              onValueChange={packageInputChangeHandler}
               mode="currency"
               currency="USD"
               required
@@ -197,10 +245,9 @@ export default function CreatePackage() {
             <InputNumber
               className="form-control"
               id="durationDays"
-              value={pkg.durationDays}
-              onValueChange={(e: any) =>
-                setPackage((prev) => ({ ...prev, durationDays: e.value }))
-              }
+              name="durationDays"
+              value={uPkgM.pkg.durationDays}
+              onValueChange={packageInputChangeHandler}
               required
             />
           </div>
@@ -215,10 +262,11 @@ export default function CreatePackage() {
             <InputNumber
               className="form-control"
               id="discount"
-              value={pkg.discount}
-              onValueChange={(e: any) =>
-                setPackage((prev) => ({ ...prev, discount: e.value }))
-              }
+              name="discount"
+              value={uPkgM.pkg.discount}
+              min={0}
+              max={100}
+              onValueChange={packageInputChangeHandler}
             />
           </div>
         </div>
@@ -232,11 +280,9 @@ export default function CreatePackage() {
             <InputNumber
               className="form-control"
               id="numberOfSeats"
-              value={pkg.numberOfSeats}
-              onValueChange={(e: any) =>
-                setPackage((prev) => ({ ...prev, numberOfSeats: e.value < 1 ? 1 : e.value }))
-              }
-              defaultValue={1}
+              name="numberOfSeats"
+              value={uPkgM.pkg.numberOfSeats}
+              onValueChange={packageInputChangeHandler}
               required
             />
           </div>
@@ -251,10 +297,16 @@ export default function CreatePackage() {
             <Calendar
               className="form-control date-element"
               id="date"
-              value={pkg.date}
-              onChange={handleDateChange}
+              name="date"
+              value={
+                origin === 'new' || uPkgM.updatedPackageFields.has('date')
+                  ? (uPkgM.pkg.date as Date)
+                  : convertSecondsToDate(uPkgM.pkg.date._seconds)
+              }
+              onChange={packageInputChangeHandler}
               showTime
               showIcon={true}
+              minDate={new Date()}
               required
             />
           </div>
@@ -268,10 +320,17 @@ export default function CreatePackage() {
             </label>
             <Checkbox
               inputId="isAvailable"
-              checked={pkg.isAvailable}
-              onChange={(e) =>
-                setPackage((prev) => ({ ...prev, isAvailable: e.checked! }))
-              }
+              checked={uPkgM.pkg.isAvailable}
+              onChange={(e) => {
+                uPkgM.setPackage((prev) => ({
+                  ...prev,
+                  isAvailable: e.checked!,
+                }));
+                // Track which fields have been updated (preserving structure)
+                uPkgM.setUpdatedPackageFields((prevFields) =>
+                  new Set(prevFields).add('isAvailable'),
+                );
+              }}
             />
           </div>
         </div>
@@ -284,57 +343,28 @@ export default function CreatePackage() {
             </label>
             <textarea
               className="form-control"
-              name='description'
+              name="description"
               id="description"
-              value={pkg.description}
-              onChange={handlePackageInputChange}
-              rows={3}
+              value={uPkgM.pkg.description}
+              onChange={packageInputChangeHandler}
+              rows={1}
+              onInput={(e) => {
+                let desc = document.getElementById('description');
+                if (desc) {
+                  desc.style.height = 'auto';
+                  desc.style.height = desc.scrollHeight + 'px';
+                }
+              }}
               required
             ></textarea>
           </div>
         </div>
       </form>
+      {/* Activities */}
+      {/* <CreateActivityComponent origin={origin} /> */}
 
-      {/* Tour Photos */}
-      <div className="tour-activities-actions mt-40">
-        <div className="create-form-section-title ">Package Photos</div>
-        <div
-          onClick={() => {
-            var file = document.getElementById('image-file');
-            file?.click();
-          }}
-          className="add-activity"
-        >
-          <ImagePlusIcon />
-        </div>
-        <input
-          type="file"
-          id="image-file"
-          hidden
-          accept=".jpg,.jpeg,.png"
-          onChange={(event) => handleFileUpload(event)}
-        />
-      </div>
-      <div className="container">
-        <div className="row photos-container">
-          {Array.from(photos.entries()).map(([key, photo]) => (
-            <div key={key} className="col-12 col-sm-6 col-md-4 col-lg-3">
-              <div className="image-card mt-3">
-                <div className="remove-activity">
-                  <Trash2Icon
-                    onClick={() => {
-                      let newPhotos = new Map(photos);
-                      newPhotos.delete(key);
-                      setPhotos(newPhotos);
-                    }}
-                  />
-                </div>
-                <Image src={photo.dataString ?? ''} preview />
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+      {/* Uploading photos */}
+      {/* <ImageUploader origin={origin} /> */}
     </div>
   );
 }
