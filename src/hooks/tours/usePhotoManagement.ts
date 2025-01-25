@@ -1,17 +1,18 @@
 import useTourStore from "@/stores/tourStore";
 import { useEffect, useState } from "react";
 import { useUploadImages } from "../useImages";
+import usePackageStore from "@/stores/packageStore";
 
 /**
  * Custom hook for managing photos in tours.
  * @returns {Object} State and handlers for managing photos.
  */
-export const usePhotoManagement = (origin: "new" | "edit/view") => {
+export const usePhotoManagement = (origin: "new" | "edit/view", page: "tour" | "package" = "tour") => {
   // State for managing photos related to the tour
   const [photos, setPhotos] = useState<Map<number, { file: File; dataString: string }>>(new Map());
 
-  // tour management
   const { currentTour } = useTourStore();
+  const { currentPackage } = usePackageStore();
 
   // upload images
   const { uploadImages, loading, error, status } = useUploadImages();
@@ -63,8 +64,11 @@ export const usePhotoManagement = (origin: "new" | "edit/view") => {
    */
   const uploadImagesHandler = async (): Promise<void> => {
      // check whether tour details have been saved
-     if (!currentTour?.id) {
+     if (page === "tour" && !currentTour?.id) {
       alert("Tour details must be saved");
+      return;
+    } else if (page === "package" && !currentPackage?.id) {
+      alert("Package details must be saved");
       return;
     }
 
@@ -74,10 +78,10 @@ export const usePhotoManagement = (origin: "new" | "edit/view") => {
     photos.forEach((photo) => {
       formData.append("file", photo.file);
     });
-    formData.append("id", currentTour?.id as string); // Add the tour ID to the form data
+    formData.append("id", (page === "tour" ? currentTour?.id : currentPackage?.id) as string); // Add the tour ID to the form data
 
     // upload images
-    uploadImages(formData);
+    uploadImages(formData, page);
   };
 
   // update photos from current tour

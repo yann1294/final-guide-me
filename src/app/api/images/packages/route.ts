@@ -7,7 +7,7 @@ export async function POST(req: Request) {
     
     console.log(formData)
     // Send a POST request to the backend API to create a tour
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/tours/images`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/packages/images`, {
       method: "POST",
       body: formData
     });

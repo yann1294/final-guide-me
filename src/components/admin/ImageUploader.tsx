@@ -4,16 +4,18 @@ import { Image } from 'primereact/image';
 
 export default function ImageUploader({
   origin = 'new',
+  page = 'tour',
 }: {
   origin: 'new' | 'edit/view';
+  page?: 'tour' | 'package';
 }) {
-  const uPm = usePhotoManagement(origin);
+  const uPm = usePhotoManagement(origin, page);
 
   return (
     <>
       <div className="tour-activities-actions mt-40 action-buttons">
         <div className="create-form-section-title disable-hover">
-          Tour Photos ({uPm.photos.size.toString().padStart(2, '0')})
+          {page === "tour" ? "Tour" : "Package"} Photos ({uPm.photos.size.toString().padStart(2, '0')})
         </div>
         <div className="flex disable-hover">
           <div className={"add-resource "+ (uPm.photos.size === 0 || uPm.loading ? "disabled-button" : "") }

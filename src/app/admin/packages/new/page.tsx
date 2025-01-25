@@ -364,7 +364,7 @@ export default function CreatePackage({
       {/* <CreateActivityComponent origin={origin} /> */}
 
       {/* Uploading photos */}
-      {/* <ImageUploader origin={origin} /> */}
+      <ImageUploader page='package' origin={origin} />
     </div>
   );
 }
