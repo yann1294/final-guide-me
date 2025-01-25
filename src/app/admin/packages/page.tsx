@@ -16,6 +16,8 @@ import { useEffect, useState } from 'react';
 import {
   CopyIcon,
   Edit2Icon,
+  ExternalLinkIcon,
+  EyeIcon,
   LayoutListIcon,
   ListIcon,
   ReceiptTextIcon,
@@ -25,15 +27,21 @@ import {
 import TourTable from '@/components/admin/TourTable';
 import { useDataTableConfig } from '@/lib/config/dataTableConfig';
 import { packageColumnConfigs } from '@/lib/config/packageColumnConfig';
-import { useFetchPackages } from '@/hooks/packages/usePackages';
+import { useDeleteOnePackage, useFetchPackages } from '@/hooks/packages/usePackages';
+import { PackageDTO } from '@/dto/package.dto';
+import Link from 'next/link';
+import ConfirmationDialog from '@/components/admin/ConfirmationDialog';
 
 export default function AdminPackagesPage() {
   // State and hooks initialization
   const { filters, setFilters } = useResourceGlobalFilters(); // Global filter state and setter
   const [globalFilterValue, setGlobalFilterValue] = useState<string>(''); // Local state for global filter value
-  const { packages } = usePackageStore(); // Packages from the store
+  const { packages, setCurrentPackage } = usePackageStore(); // Packages from the store
   const { loading, fetchPackages } = useFetchPackages(); // Loading state and fetch function for packages
   const [ expandedRows, setExpandedRows ] = useState<any | DataTableExpandedRows>(null);
+  const [deleteTourObj, setDeleteTourObj] = useState<PackageDTO | null>(null);
+  const { deleteOnePackage } = useDeleteOnePackage();
+  
   // Fetch packages on mount if not already fetched
   useEffect(() => {
     if (packages.length === 0) {
@@ -89,37 +97,34 @@ export default function AdminPackagesPage() {
                       'Copy package ID',
                     );
                 }
-                if (template.field === 'activities') {
-                  additionalConfig['body'] = (data: any) =>
-                    modifyElement(
-                      <LayoutListIcon onClick={() => {}} size="18px" />,
-                      'View Tour Activities',
-                    );
-                }
-                if (template.field === 'description') {
-                  additionalConfig['body'] = (data: any) =>
-                    modifyElement(
-                      <ReceiptTextIcon onClick={() => {}} size="18px" />,
-                      'View Tour Description',
-                    );
-                }
-                if (template.field === 'images') {
-                  additionalConfig['body'] = (data: any) =>
-                    modifyElement(
-                      <ViewIcon onClick={() => {}} size="18px" />,
-                      'View Tour Images',
-                    );
-                }
                 if (template.field === 'actions') {
                   additionalConfig['body'] = (data: any) => (
-                    <div className="row-action-btns">
-                      <div className="row-edit">
-                        <Edit2Icon onClick={() => {}} size="18px" />
+                      <div className="row-action-btns">
+                        <div className="row-edit">
+                          <Link href={'/admin/packages/' + data.id}>
+                            <Edit2Icon
+                              onClick={() => setCurrentPackage(data as PackageDTO)}
+                              size="18px"
+                            />
+                          </Link>
+                        </div>
+                        <div className="row-view">
+                          <Link target='_blank' href={'/packages/' + data.id}>
+                            <ExternalLinkIcon
+                              size="18px"
+                            />
+                          </Link>
+                        </div>
+                        <div className="row-delete">
+                          <Link href={'#'}>
+                            <Trash2Icon
+                              onClick={() => setDeleteTourObj(data as PackageDTO)}
+                              size="18px"
+                            />
+                          </Link>
+                        </div>
                       </div>
-                      <div className="row-delete">
-                        <Trash2Icon onClick={() => {}} size="18px" />
-                      </div>
-                    </div>
+                    
                   );
                 }
 
@@ -133,6 +138,16 @@ export default function AdminPackagesPage() {
                 );
               })}
             </DataTable>
+            <ConfirmationDialog
+                isOpen={deleteTourObj !== null}
+                onClose={() => setDeleteTourObj(null)}
+                onConfirm={() => {
+                  deleteOnePackage(deleteTourObj as PackageDTO);
+                  setDeleteTourObj(null);
+                }}
+                title="Delete"
+                message={`Do you want to delete ${deleteTourObj?.name}?`}
+              />
           </div>
         </div>
       </div>

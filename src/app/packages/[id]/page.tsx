@@ -12,9 +12,9 @@ import { usePathname } from 'next/navigation';
 import usePackageStore from '@/stores/packageStore';
 import useUserStore from '@/stores/userStore';
 import { ContextType } from '@/lib/utils/contextUtils';
-import { useFetchOnePackage, useFetchPackageTours } from '@/hooks/usePackages';
 import { useFetchOneGuide } from '@/hooks/useUsers';
 import useAuthStore from '@/stores/authStore';
+import { useFetchOnePackage, useFetchPackageTours } from '@/hooks/packages/usePackages';
 
 const usePackageDetails = (pathName: string) => {
   const {

@@ -88,15 +88,6 @@ export const packageColumnConfigs = [
         ),
     },
     {
-      field: 'description',
-      header: 'Description',
-    },
-    {
-      field: 'images',
-      header: 'Images',
-      body: () => modifyElement(<ViewIcon size="18px" />, 'View Tour Images'),
-    },
-    {
       field: 'guide',
       header: 'Guide',
       filter: true,
