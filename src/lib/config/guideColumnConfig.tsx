@@ -9,11 +9,18 @@ import {
 import { TriStateCheckbox } from "primereact/tristatecheckbox";
 import { dateFilterTemplate, dropDownFilterTemplate, modifyElement } from "@/components/admin/FilterTemplates";
 import { convertSecondsToDateString } from "../utils/dateUtils";
+import { Checkbox } from "primereact/checkbox";
 
 export const guideColumnConfigs= [
   {
     field: 'uid',
     header: 'UID',
+  },
+  {
+    field: 'approvalStatus',
+    header: 'Approved',
+    sortable: true,
+    // filter: true,
   },
   {
     field: 'profilePhoto',
@@ -61,43 +68,6 @@ export const guideColumnConfigs= [
     filterPlaceholder: 'Search by email',
   },
   {
-    field: 'accountStatus',
-    header: 'Account Status',
-    sortable: true,
-    filter: true,
-    filterElement: (options: ColumnFilterElementTemplateOptions) => (
-      <TriStateCheckbox
-        value={options.value}
-        onChange={(e) => options.filterApplyCallback(e.value)}
-      />
-    ),
-    showFilterMenu: false,
-    body: (data: any) =>
-      modifyElement(
-        data.accountStatus === 'active' ? (
-          <PowerCircleIcon size="18px" className="text-success" />
-        ) : (
-          <PowerOffIcon size="18px" className="text-danger" />
-        ),
-      ),
-  },
-  {
-    field: 'createdAt._seconds',
-    header: 'Account Created',
-    sortable: true,
-    filter: true,
-    filterElement: dateFilterTemplate,
-    body: (data: any) => convertSecondsToDateString(data.createdAt),
-  },
-  {
-    field: 'updatedAt._seconds',
-    header: 'Last Updated',
-    sortable: true,
-    filter: true,
-    filterElement: dateFilterTemplate,
-    body: (data: any) => convertSecondsToDateString(data.updatedAt),
-  },
-  {
     field: 'identification.file',
     header: 'Identification File',
     body: (data: any) => (
@@ -130,17 +100,33 @@ export const guideColumnConfigs= [
     body: (data: any) => data.spokenLanguages?.join(', ') || 'N/A',
   },
   {
-    field: 'actions',
-    exportable: false,
-    body: (data: any) => (
-      <div className="row-action-btns">
-        <div className="row-edit">
-          <Edit2Icon size="18px" />
-        </div>
-        <div className="row-delete">
-          <Trash2Icon size="18px" />
-        </div>
-      </div>
-    ),
+    field: 'accountStatus',
+    header: 'Account Status',
+    sortable: true,
+    filter: true,
+    body: (data: any) => <Checkbox checked={data.accountStatus === 'active'} />,
   },
+  {
+    field: 'availability',
+    header: 'Availability',
+    sortable: true,
+    filter: true,
+    body: (data: any) => <Checkbox checked={data.availability} />
+  },
+  {
+    field: 'createdAt._seconds',
+    header: 'Account Created',
+    sortable: true,
+    // filter: true,
+    // filterElement: dateFilterTemplate,
+    body: (data: any) => convertSecondsToDateString(Object.keys(data.createdAt).includes('_seconds') ? data.createdAt._seconds : new Date(data.createdAt).getTime() / 1000),
+  },
+  {
+    field: 'updatedAt._seconds',
+    header: 'Last Updated',
+    sortable: true,
+    // filter: true,
+    // filterElement: dateFilterTemplate,
+    body: (data: any) => convertSecondsToDateString(Object.keys(data.updatedAt).includes('_seconds') ? data.updatedAt._seconds : new Date(data.updatedAt).getTime() / 1000),
+  }
 ] as ColumnProps[];

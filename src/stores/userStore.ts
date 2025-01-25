@@ -11,6 +11,8 @@ interface UserStore {
   setTourGuides: (tourGuides: GuideDTO) => void;  // Set guides
   setGuides: (tourGuides: GuideDTO[]) => void;  // Set guides
   setTourists: (tourGuides: TouristDTO[]) => void;  // Set guides
+  updateGuide: (guide: GuideDTO) => void;  // Update a guide
+  updateTourist: (tourist: TouristDTO) => void;  // Update a tourist
 }
 
 const useUserStore = create<UserStore>((set) => ({
@@ -34,7 +36,21 @@ const useUserStore = create<UserStore>((set) => ({
   setTourists: (tourists: TouristDTO[]) =>
     set((state) => {
       return { tourists: [...state.tourists, ...tourists] };
-    })
+    }),
+
+  // Update a guide in the store
+  updateGuide: (guide: GuideDTO) =>
+    set((state) => {
+      const newGuides = new Map(state.tourGuides);
+      newGuides.set(guide.uid as string, guide)
+      return { tourGuides: newGuides  };
+    }),
+
+  // Update a tourist in the store
+  updateTourist: (tourist: TouristDTO) =>
+    set((state) => {
+      return { tourists: state.tourists.map(t => t.uid === tourist.uid ? tourist : t) };
+    }),
 }));
 
 export default useUserStore;

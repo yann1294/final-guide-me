@@ -66,12 +66,15 @@ export const touristColumnConfigs= [
     sortable: true,
     filter: true,
     filterElement: (options: ColumnFilterElementTemplateOptions) => (
-      <TriStateCheckbox
+      <div>
+        <TriStateCheckbox
         value={options.value}
         onChange={(e) => options.filterApplyCallback(e.value)}
-      />
+
+      /> Is Active
+      </div>
     ),
-    showFilterMenu: false,
+    // showFilterMenu: false,
     body: (data: any) =>
       modifyElement(
         data.accountStatus === 'active' ? (
@@ -80,22 +83,6 @@ export const touristColumnConfigs= [
           <PowerOffIcon size="18px" className="text-danger" />
         ),
       ),
-  },
-  {
-    field: 'createdAt._seconds',
-    header: 'Account Created',
-    sortable: true,
-    filter: true,
-    filterElement: dateFilterTemplate,
-    body: (data: any) => convertSecondsToDateString(data.createdAt),
-  },
-  {
-    field: 'updatedAt._seconds',
-    header: 'Last Updated',
-    sortable: true,
-    filter: true,
-    filterElement: dateFilterTemplate,
-    body: (data: any) => convertSecondsToDateString(data.updatedAt),
   },
   {
     field: 'identification.file',
@@ -130,17 +117,19 @@ export const touristColumnConfigs= [
     body: (data: any) => data.spokenLanguages?.join(', ') || 'N/A',
   },
   {
-    field: 'actions',
-    exportable: false,
-    body: (data: any) => (
-      <div className="row-action-btns">
-        <div className="row-edit">
-          <Edit2Icon size="18px" />
-        </div>
-        <div className="row-delete">
-          <Trash2Icon size="18px" />
-        </div>
-      </div>
-    ),
+    field: 'createdAt._seconds',
+    header: 'Account Created',
+    sortable: true,
+    // filter: true,
+    // filterElement: dateFilterTemplate,
+    body: (data: any) => convertSecondsToDateString(Object.keys(data.createdAt).includes('_seconds') ? data.createdAt._seconds : new Date(data.createdAt).getTime() / 1000),
   },
+  {
+    field: 'updatedAt._seconds',
+    header: 'Last Updated',
+    sortable: true,
+    // filter: true,
+    // filterElement: dateFilterTemplate,
+    body: (data: any) => convertSecondsToDateString(Object.keys(data.updatedAt).includes('_seconds') ? data.updatedAt._seconds : new Date(data.updatedAt).getTime() / 1000),
+  }
 ] as ColumnProps[];

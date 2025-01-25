@@ -24,7 +24,6 @@ export const useFetchTours = () => {
         throw new Error(response.data.message);
       }
 
-
       // Persist the fetched tours in Zustand store
       setTours(response.data.data as TourDTO[]);
     } catch (err) {

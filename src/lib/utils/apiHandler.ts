@@ -86,14 +86,12 @@ export async function handleDELETE(url: string) {
 }
 
 // handle patch requests
-export async function handlePATCH(url: string, req: Request) {
+export async function handlePATCH(url: string, req: Request, body: string | null = null) {
     try {
-        let body: any = await req.json();
-
         // Send a POST request to the backend API to create a tour
         const response = await fetch(url, {
             method: "PATCH",
-            body: JSON.stringify(body)
+            body: body != null ? body : JSON.stringify(await req.json())
         });
 
         // Parse the response data from the backend
@@ -101,6 +99,7 @@ export async function handlePATCH(url: string, req: Request) {
         // Return the parsed data in the Next.js response
         return NextResponse.json(data);
     } catch (error) {
+        console.log(error);
         // Return an error response with status 500
         return NextResponse.json({
             status: 'error',

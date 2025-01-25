@@ -645,6 +645,10 @@ hr {
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
 
+.p-image-mask {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
 .p-dropdown-panel .p-focus {
   background-color: #6bc8b4;
   color: white;

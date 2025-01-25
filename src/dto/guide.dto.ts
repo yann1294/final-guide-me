@@ -20,4 +20,5 @@ export type GuideDTO = {
     identification: Identification;
     spokenLanguages: string[];
     availability: boolean;
+    approvalStatus: "approved" | "pending" | "rejected";
 }

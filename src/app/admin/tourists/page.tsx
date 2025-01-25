@@ -64,7 +64,11 @@ export default function AdminTouristsPage() {
                     additionalConfig['body'] = (data: any) =>
                       modifyElement(
                         <CopyIcon
-                          onClick={() => navigator.clipboard.writeText(data.id)}
+                          onClick={() => {
+                            navigator.clipboard.writeText(data.uid);
+                            // display alert with copied uid
+                            alert(`UID Copied: ${data.uid}`);
+                          }}
                           size="18px"
                         />,
                         'Copy UID',

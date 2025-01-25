@@ -49,7 +49,7 @@ export const useUserGlobalFilters = () => {
     phoneNumber: { value: null, matchMode: FilterMatchMode.CONTAINS },
     emailAddress: { value: null, matchMode: FilterMatchMode.CONTAINS },
     accountStatus: { value: null, matchMode: FilterMatchMode.EQUALS },
-    identificationType: { value: null, matchMode: FilterMatchMode.EQUALS },
+    identificationType: { value: null, matchMode: FilterMatchMode.CONTAINS },
     spokenLanguages: { value: null, matchMode: FilterMatchMode.CONTAINS },
   });
   return { filters, setFilters };
