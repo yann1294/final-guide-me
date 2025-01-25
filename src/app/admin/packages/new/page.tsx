@@ -27,7 +27,6 @@ export default function CreatePackage({
   title: string;
 }) {
   const uPkgM = usePackageManagement(origin);
-  const [selectedTours, setSelectedTours] = useState<TourDTO[]>([]);
 
   let packageInputChangeHandler = (e: any) => {
     return handlePackageInputChange(
@@ -371,23 +370,23 @@ export default function CreatePackage({
       {/* Tours */}
       <div className="tour-activities-actions mt-40 action-buttons">
         <div className="create-form-section-title disable-hover">
-          Package tours ({selectedTours.length.toString().padStart(2, '0')})
+          Package tours ({uPkgM.selectedTours.length.toString().padStart(2, '0')})
         </div>
         <div className="flex disable-hover">
           <div
             className={
-              'add-resource ' + (selectedTours.length === 0 ? 'disabled-button' : '')
+              'add-resource ' + (uPkgM.selectedTours.length === 0 ? 'disabled-button' : '')
             }
             onClick={() => {
-              if (selectedTours.length > 0) {
-                uPkgM.saveTours(selectedTours.map((tour) => tour.id) as string[]);
+              if (uPkgM.selectedTours.length > 0) {
+                uPkgM.saveTours(uPkgM.selectedTours.map((tour) => tour.id) as string[]);
               }
             }}
           >
             {false ? 'Saving...' : 'Save Tours'}
           </div>
           <MultiSelect
-            value={selectedTours}
+            value={uPkgM.selectedTours}
             filter
             filterBy="name"
             filterPlaceholder="Search Tours"
@@ -395,8 +394,8 @@ export default function CreatePackage({
             maxSelectedLabels={1}
             onChange={(e) => {
               console.log('Tours: ', e.value);
-              setSelectedTours(e.value);
-              console.log('Selected Tours: ', selectedTours);
+              uPkgM.setSelectedTours(e.value);
+              console.log('Selected Tours: ', uPkgM.selectedTours);
             }}
             // panelHeaderTemplate={() => (<h5 className='p-multiselect-header'>Tours</h5>)}
             options={uPkgM.tours}
@@ -418,11 +417,11 @@ export default function CreatePackage({
       <div className="row photos-container">
         {
           // Display the selected tours
-          selectedTours.map((tour) => (
+          uPkgM.selectedTours.map((tour) => (
             <TourCard key={tour.id} tour={tour} />
           ))
         }
-        {uPkgM.pkg.tours.length === 0 && selectedTours.length === 0 && (
+        {uPkgM.pkg.tours.length === 0 && uPkgM.selectedTours.length === 0 && (
           <div className="flex justify-content-center">No Tours</div>
         )}
       </div>

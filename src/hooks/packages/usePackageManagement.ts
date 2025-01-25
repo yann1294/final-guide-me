@@ -8,7 +8,7 @@ import { useFetchGuides } from "../useUsers";
 import { generateUpdatedData } from "@/lib/utils/formInputHandlers";
 import usePackageStore from "@/stores/packageStore";
 import { PackageDTO } from "@/dto/package.dto";
-import { useCreateOnePackage, useFetchOnePackage, useUpdateOnePackage } from "./usePackages";
+import { useCreateOnePackage, useFetchOnePackage, useFetchPackageTours, useUpdateOnePackage } from "./usePackages";
 
 /**
  * Custom hook for managing tours, supporting creation and editing/viewing.
@@ -17,7 +17,8 @@ import { useCreateOnePackage, useFetchOnePackage, useUpdateOnePackage } from "./
  */
 export const usePackageManagement = (origin: "new" | "edit/view") => {
   // Access and manage tour-related state from the store
-  const { currentPackage, setCurrentPackage, updatePackage } = usePackageStore();
+  const { currentPackage, tours: packageTours } = usePackageStore();
+  const [selectedTours, setSelectedTours] = useState<TourDTO[]>([]);
 
   // Fetch guide data and manage user state
   const { fetchGuides } = useFetchGuides();
@@ -33,6 +34,7 @@ export const usePackageManagement = (origin: "new" | "edit/view") => {
   // Manage tour creation state and errors
   const { updateOnePackage, loading: isUpdatingPackage, error: updatePackageError } = useUpdateOnePackage();
   const { createOnePackage, loading: isCreatingPackage, error: createPackageError } = useCreateOnePackage();
+  const { fetchPackageTours } = useFetchPackageTours();
 
   // Local state for managing the tour object
   const [pkg, setPackage] = useState<PackageDTO>(emptyPackageObject);
@@ -49,6 +51,13 @@ export const usePackageManagement = (origin: "new" | "edit/view") => {
     if (!currentPackage && origin !== "new") fetchOnePackage(window.location.pathname.split("/").pop()!);
   }, [fetchGuides, fetchOnePackage, guides, currentPackage, origin]);
 
+  // update selected tours when package is updated
+  useEffect(() => {
+    if (currentPackage) {
+      setSelectedTours(Object.values(packageTours));
+    }
+  }, [packageTours]);
+  
   // Synchronize local state with the current tour for editing/viewing mode
   useEffect(() => {
     if (origin === "edit/view" && currentPackage) {
@@ -59,6 +68,11 @@ export const usePackageManagement = (origin: "new" | "edit/view") => {
 
     // fetch tours if tours list is empty
     if (tours.length === 0) fetchTours();
+
+    // fetch package tours
+    if (currentPackage) {
+      fetchPackageTours(currentPackage.id as string);
+    }
   }, [currentPackage, origin]);
 
   // update package tours
@@ -107,6 +121,8 @@ export const usePackageManagement = (origin: "new" | "edit/view") => {
     guides,
     loading,
     tours,
-    saveTours
+    saveTours,
+    selectedTours,
+    setSelectedTours
   };
 };

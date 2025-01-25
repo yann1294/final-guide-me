@@ -57,7 +57,6 @@ export const useFetchPackageTours = () => {
         throw new Error(response.data.message);
       }
 
-      
       // Persist the fetched packages in Zustand store
       setPackageTours(packageId, response.data.data as TourDTO[]);
     } catch (err) {
