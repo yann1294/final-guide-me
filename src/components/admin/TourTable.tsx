@@ -15,6 +15,7 @@ import { CONTEXT, ContextType } from '@/lib/utils/contextUtils';
 import { ActionButtons } from '@/components/admin/ActionButtons';
 import {
   Edit2Icon,
+  ExternalLinkIcon,
   EyeIcon,
   LayoutListIcon,
   ListIcon,
@@ -104,8 +105,8 @@ export default function TourTable({
                   </Link>
                 </div>
                 <div className="row-view">
-                  <Link href={'/admin/tours/' + data.id}>
-                    <EyeIcon
+                  <Link target='_blank' href={'/tours/' + data.id}>
+                    <ExternalLinkIcon
                       onClick={() => setCurrentTour(data as TourDTO)}
                       size="18px"
                     />
