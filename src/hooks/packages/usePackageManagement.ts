@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import useTourStore from "@/stores/tourStore";
 import useUserStore from "@/stores/userStore";
-import { useCreateOneTour, useFetchOneTour, useUpdateOneTour } from "../tours/useTours";
+import { useCreateOneTour, useFetchOneTour, useFetchTours, useUpdateOneTour } from "../tours/useTours";
 import { emptyPackageObject } from "@/lib/utils/emptyObjects";
 import { TourDTO } from "@/dto/tour.dto";
 import { useFetchGuides } from "../useUsers";
@@ -22,6 +22,10 @@ export const usePackageManagement = (origin: "new" | "edit/view") => {
   // Fetch guide data and manage user state
   const { fetchGuides } = useFetchGuides();
   const { guides } = useUserStore();
+
+  // fetch tour data
+  const { fetchTours } = useFetchTours();
+  const { tours } = useTourStore();
 
   // Fetch and manage specific tour data
   const  { fetchOnePackage, loading } = useFetchOnePackage();
@@ -52,7 +56,22 @@ export const usePackageManagement = (origin: "new" | "edit/view") => {
     } else {
       setPackage(currentPackage ?? emptyPackageObject);
     }
+
+    // fetch tours if tours list is empty
+    if (tours.length === 0) fetchTours();
   }, [currentPackage, origin]);
+
+  // update package tours
+  const saveTours = async (tours: string[]) => {
+    // check whether current package is available
+    if (currentPackage) {
+      // update the package tours
+      updateOnePackage({ id: currentPackage.id, tours: tours } as Partial<PackageDTO>);
+    } else {
+      // alert user that package is not available
+      alert("Please save the package first");
+    }
+  }
 
   // Function to handle saving the tour (create or update)
   const savePackageHandler = () => {
@@ -87,5 +106,7 @@ export const usePackageManagement = (origin: "new" | "edit/view") => {
     fetchGuides,
     guides,
     loading,
+    tours,
+    saveTours
   };
 };

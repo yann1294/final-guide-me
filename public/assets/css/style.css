@@ -637,6 +637,7 @@ hr {
 
 .p-dropdown-panel,
 .p-column-filter-overlay,
+.p-multiselect-panel,
 .p-datepicker {
   background: #ffffff;
   color: #4b5563;
@@ -653,6 +654,26 @@ hr {
   background-color: #6bc8b4;
   color: white;
   border-radius: 6px;
+}
+
+.p-multiselect-item {
+  padding: 10px;
+}
+
+.tour-item {
+  margin-left: 10px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+}
+
+.p-multiselect-header {
+  padding: 10px;
+}
+
+.p-multiselect-header svg, .p-multiselect-header .p-multiselect-select-all {
+  display: none;
 }
 
 .p-dropdown-items {

@@ -155,7 +155,7 @@ export const useCreateOnePackage = () => {
 };
 
 export const useUpdateOnePackage = () => {
-  const { updatePackage } = usePackageStore();
+  const { updatePackage, currentPackage, setCurrentPackage } = usePackageStore();
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [status, setStatus] = useState<"updated" | "initial" | "failed">("initial");
@@ -170,7 +170,7 @@ export const useUpdateOnePackage = () => {
 
       // processing activities if it exist
       if (pkg.tours) {
-        data['tours'] = Object.fromEntries(pkg.tours.entries());
+        data['tours'] = pkg.tours;
       }
 
       // Replace with the actual endpoint for fetching tours
@@ -186,7 +186,8 @@ export const useUpdateOnePackage = () => {
 
       console.log(response);
       setStatus("updated");
-      updatePackage(pkg as PackageDTO);
+      updatePackage({...currentPackage, ...pkg} as PackageDTO);
+      setCurrentPackage({...currentPackage, ...pkg} as PackageDTO);
     } catch (err: any) {
       // console.error("Error: ", err);
       setError(err);

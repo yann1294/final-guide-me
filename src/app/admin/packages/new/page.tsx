@@ -1,6 +1,8 @@
 'use client';
 import CreateActivityComponent from '@/components/admin/CreateActivityComponent';
 import ImageUploader from '@/components/admin/ImageUploader';
+import TourCard from '@/components/tours/TourCard';
+import { TourDTO } from '@/dto/tour.dto';
 import { usePackageManagement } from '@/hooks/packages/usePackageManagement';
 import { convertSecondsToDate } from '@/lib/utils/dateUtils';
 import {
@@ -8,18 +10,24 @@ import {
   handlePackageInputChange,
   handleTourInputChange,
 } from '@/lib/utils/formInputHandlers';
+import { EyeIcon } from 'lucide-react';
 import { Calendar } from 'primereact/calendar';
 import { Checkbox } from 'primereact/checkbox';
+import { Dropdown } from 'primereact/dropdown';
 import { InputNumber } from 'primereact/inputnumber';
 import { InputText } from 'primereact/inputtext';
+import { MultiSelect } from 'primereact/multiselect';
+import { useState } from 'react';
 
 export default function CreatePackage({
-  origin = 'new', title = "Create a New Package"
+  origin = 'new',
+  title = 'Create a New Package',
 }: {
   origin: 'new' | 'edit/view';
   title: string;
 }) {
   const uPkgM = usePackageManagement(origin);
+  const [selectedTours, setSelectedTours] = useState<TourDTO[]>([]);
 
   let packageInputChangeHandler = (e: any) => {
     return handlePackageInputChange(
@@ -105,10 +113,10 @@ export default function CreatePackage({
           </select>
         </div>
         <div
-        onClick={
+          onClick={
             uPkgM.isCreatingPackage ||
             uPkgM.isUpdatingPackage ||
-            (uPkgM.updatedPackageFields.size === 0)
+            uPkgM.updatedPackageFields.size === 0
               ? () => {
                   console.log('Save tour: Not completed');
                 }
@@ -117,7 +125,7 @@ export default function CreatePackage({
           className={
             uPkgM.isCreatingPackage ||
             uPkgM.isUpdatingPackage ||
-            (uPkgM.updatedPackageFields.size === 0)
+            uPkgM.updatedPackageFields.size === 0
               ? 'disabled-button'
               : '' + ' save-button add-resource'
           }
@@ -360,11 +368,66 @@ export default function CreatePackage({
           </div>
         </div>
       </form>
-      {/* Activities */}
-      {/* <CreateActivityComponent origin={origin} /> */}
-
+      {/* Tours */}
+      <div className="tour-activities-actions mt-40 action-buttons">
+        <div className="create-form-section-title disable-hover">
+          Package tours ({selectedTours.length.toString().padStart(2, '0')})
+        </div>
+        <div className="flex disable-hover">
+          <div
+            className={
+              'add-resource ' + (selectedTours.length === 0 ? 'disabled-button' : '')
+            }
+            onClick={() => {
+              if (selectedTours.length > 0) {
+                uPkgM.saveTours(selectedTours.map((tour) => tour.id) as string[]);
+              }
+            }}
+          >
+            {false ? 'Saving...' : 'Save Tours'}
+          </div>
+          <MultiSelect
+            value={selectedTours}
+            filter
+            filterBy="name"
+            filterPlaceholder="Search Tours"
+            selectAll={false}
+            maxSelectedLabels={1}
+            onChange={(e) => {
+              console.log('Tours: ', e.value);
+              setSelectedTours(e.value);
+              console.log('Selected Tours: ', selectedTours);
+            }}
+            // panelHeaderTemplate={() => (<h5 className='p-multiselect-header'>Tours</h5>)}
+            options={uPkgM.tours}
+            itemTemplate={(option) => (
+              <div className="tour-item">
+                <div>{option.name}</div>
+                {/* <a href="#" className="view-tour">
+                  <EyeIcon size="20px" />
+                </a> */}
+              </div>
+            )}
+            optionLabel="name"
+            placeholder="Select Tours"
+            className="add-resource"
+            style={{ minWidth: '14rem' }}
+          />
+        </div>
+      </div>
+      <div className="row photos-container">
+        {
+          // Display the selected tours
+          selectedTours.map((tour) => (
+            <TourCard key={tour.id} tour={tour} />
+          ))
+        }
+        {uPkgM.pkg.tours.length === 0 && selectedTours.length === 0 && (
+          <div className="flex justify-content-center">No Tours</div>
+        )}
+      </div>
       {/* Uploading photos */}
-      <ImageUploader page='package' origin={origin} />
+      <ImageUploader page="package" origin={origin} />
     </div>
   );
 }
