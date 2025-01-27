@@ -5,10 +5,10 @@ import React, { useEffect } from 'react';
 import Filter from '@/components/common/Filter';
 import Breadcumb from '@/components/common/Breadcrumb';
 import usePackageStore from '@/stores/packageStore';
-import { useFetchPackages, useFetchPackageTours } from '@/hooks/usePackages';
 import PackageCard from '@/components/packages/PackageCard';
 import SectionHeader from '@/components/common/SectionHeader';
 import Pagination from '@/components/common/Pagination';
+import { useFetchPackages, useFetchPackageTours } from '@/hooks/packages/usePackages';
 
 const Packages: React.FC = () => {
   // Accessing packages and tours data from the store
