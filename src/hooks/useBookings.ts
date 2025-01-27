@@ -30,7 +30,8 @@ export const useCreateStripeOrder = () => {
       if (response.data.data) {
         window.location.assign((response.data.data as { url: string }).url);
       }
-      setPayment(response.data.data as PaymentDTO);
+      console.log
+      setPayment(payment);
     } catch (err) {
       console.error("Error: ", err);
       setError(err instanceof Error ? err.message : 'Failed to fetch tours');
@@ -105,4 +106,39 @@ export const useFetchOneBooking = (id: string) => {
   };
 
   return { fetchOneBooking, loading, error };
+};
+
+// create booking
+export const useCreateBooking = (booking: BookingDTO) => {
+  const {setCurrentBooking, setBookings, bookings} = useBookingStore();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const createBooking = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      // Replace with the actual endpoint for fetching bookings
+      const response = await axios.get<ResponseDTO>(`/api/bookings`);
+      
+      // Check if the response status is 'success'
+      if (response.data.status !== 'success') {
+        console.error(response.data);
+        throw new Error(response.data.message);
+      }
+
+      // Persist the fetched booking in Zustand store
+      setCurrentBooking(booking);
+
+      // add to booking
+      setBookings([...bookings, booking]);
+    } catch (err) {
+      console.error(err);
+      setError(err instanceof Error ? err.message : 'Failed to fetch booking');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { createBooking, loading, error };
 };

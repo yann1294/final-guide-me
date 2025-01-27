@@ -12,6 +12,7 @@ const BookingSummary = ({
   createStripeOrder,
   user,
   context,
+  loading
 }: any) => {
   return (
     <div className="col-lg-12 col-md-6">
@@ -86,7 +87,8 @@ const BookingSummary = ({
                 } as PaymentDTO);
               }}
               type="submit"
-              value="Pay with stripe"
+              value={loading ? "Processing..." : "Pay with stripe"}
+              className={loading ? "disabled-button" : ""}
             />
           </div>
           <div className="col-lg-12">

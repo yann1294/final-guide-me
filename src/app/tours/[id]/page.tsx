@@ -118,6 +118,7 @@ const TourDetails = () => {
                       setNumberOfPeople={setNumberOfPeople}
                       tax={tax}
                       createStripeOrder={createStripeOrder}
+                      loading={isCreatingOrder}
                       user={user}
                     />
                     <TourGuide guide={guides.get(tour.guide)} />
