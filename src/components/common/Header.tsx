@@ -179,19 +179,19 @@ export default function Header() {
                       <ul>
                       <li className="account-el">
                           <i className="bx bx-user-pin" />
-                          <Link href="#">
+                          <Link href="/login/tourist">
                             Sign in as tourist
                           </Link>
                         </li>
                         <li className="account-el">
                           <i className="bx bx-user-pin" />
-                          <Link href="#">
+                          <Link href="/login/guide">
                             Sign in as guide
                           </Link>
                         </li>
                         <li className="account-el">
                           <i className="bx bxs-user-account" />
-                          <Link href="#">
+                          <Link href="/profile">
                             My Profile
                           </Link>
                         </li>

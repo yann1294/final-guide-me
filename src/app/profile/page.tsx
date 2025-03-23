@@ -6,7 +6,7 @@ import Breadcrumb from "@/components/common/Breadcrumb";
 import ProfileHeader from "@/components/profile/ProfileHeader";
 import TravelPreferences from "@/components/profile/TravelPreferences";
 import UpcomingTrips from "@/components/profile/UpcomingTrips";
-import PhotoGallery from "@/components/profile/PhotoGallery";
+// import PhotoGallery from "@/components/profile/PhotoGallery";
 import { Button } from "@/components/ui/button";
 import { MoonIcon, SunIcon } from "lucide-react";
 import ProfileInfo from "@/components/profile/ProfileInfo";
@@ -44,7 +44,7 @@ const ProfilePage = () => {
           <div className="space-y-8">
             <VisitedPlaces />
             <UpcomingTrips />
-            <PhotoGallery />
+            {/* <PhotoGallery /> */}
           </div>
         </div>
       </div>
