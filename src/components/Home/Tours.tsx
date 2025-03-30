@@ -1,102 +1,122 @@
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import React from "react";
-import useGlobalStore from "@/store/globalStore";
-import { useFetchTours } from "@/hooks/useFetchData";
-
-const Tours = () => {
-  const router = useRouter();
-  const { tours } = useGlobalStore();
-  const { isLoading, isError } = useFetchTours(); // Fetch tours and populate the global store
-  const MAX_TOURS = 6; // Limit the number of tours displayed
-
-  const handleClick = (id: string) => {
-    router.push(`/tours/${id}`);
-  };
-
-  if (isLoading) {
-    return (
-      <div className="package-area pt-12">
-        <div className="container">
-          <p className="text-center text-gray-500">Loading tours...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (isError) {
-    return (
-      <div className="package-area pt-12">
-        <div className="container">
-          <p className="text-center text-red-500">Failed to load tours.</p>
-        </div>
-      </div>
-    );
-  }
+import Link from 'next/link';
+import React from 'react';
+import packageData from '../../data/package_grid.json';
+import useTourStore from '@/stores/tourStore';
+import { convertSecondsToDateString } from '@/lib/utils/dateUtils';
+export default function Tour({ context = 'home' }) {
+  const { tours, setCurrentTour } = useTourStore();
 
   return (
-    <div className="package-area pt-12">
+    <div
+      className="package-area"
+      style={{ paddingTop: context === 'home' ? '120px' : '50px' }}
+    >
       <div className="container">
-        {/* Section Header */}
-        <div className="section-head text-center mb-10">
-          <h5 className="text-lg font-medium text-gray-600">
-            Choose Your Tour
-          </h5>
-          <h2 className="text-2xl font-bold text-gray-800 pb-8">
-            Select The Place You Want To Visit During Your Travel
-          </h2>
-        </div>
-
-        {/* Tours Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {tours?.slice(0, MAX_TOURS).map((tour) => (
-            <div
-              key={tour.id}
-              className="package-card bg-white shadow-lg rounded-lg overflow-hidden cursor-pointer hover:shadow-xl transition-shadow"
-              onClick={() => handleClick(tour.id)}
-            >
-              {/* Tour Image */}
-              <div className="package-thumb">
-                <Image
-                  src={
-                    tour.images?.[0] ||
-                    "https://images.unsplash.com/photo-1495562569060-2eec283d3391?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&dl=johan-mouchet-Z95viY3WaZs-unsplash.jpg"
-                  }
-                  alt={tour.name}
-                  className="w-full h-48 object-cover"
-                  width={400}
-                  height={300}
-                />
-              </div>
-
-              {/* Tour Details */}
-              <div className="p-4">
-                <h3 className="pakage-overlay text-lg font-semibold mb-2">
-                  <strong>{tour.name}</strong>
-                </h3>
-                <p className="text-gray-600 text-sm mb-4">
-                  {/* Handle undefined description */}
-                  {tour.description
-                    ? tour.description.length > 80
-                      ? `${tour.description.substring(0, 80)}...`
-                      : tour.description
-                    : "No description available."}
-                </p>
-                <div className="flex justify-between items-center">
-                  <span className="text-lg font-bold text-orange-500">
-                    ${tour.price}
-                  </span>
-                  <span className="text-sm text-green-500 font-bold">
-                    {tour.durationDays} days
-                  </span>
-                </div>
+        <div className="row">
+          {context === 'home' && (
+            <div className="col-lg-12 col-md-12 col-sm-12">
+              <div className="section-head pb-45">
+                <h5>Choose Your Tour</h5>
+                <h2>Select Your best Tour For Your Travel</h2>
               </div>
             </div>
-          ))}
+          )}
+          {context.includes('details') && (
+            <div className="text-start" style={{ paddingBottom: '20px' }}>
+              <h3>
+                <b>Other {context.split('-')[0]}s</b>
+              </h3>
+            </div>
+          )}
+        </div>
+        <div className="row g-4">
+          {tours.slice(0, 6).map((tour) => {
+            return (
+              <div key={tour.id} className="col-lg-4 col-md-6 col-sm-6">
+                <Link
+                  onClick={() => setCurrentTour(tour)}
+                  href={`/tours/${tour.id}`}
+                >
+                  <div className="package-card">
+                    <div className="package-thumb">
+                      <img
+                        src={tour.images ? tour.images[0] : ''}
+                        alt=""
+                        className="img-fluid"
+                      />
+                    </div>
+                    <div className="package-details">
+                      <div className="package-info">
+                        <h5>
+                          {/* price when there's a discount */}
+                          {tour.discount !== 0 && (
+                            <>
+                              <span className="text-danger crossed-line">
+                                ${tour.price}
+                              </span>
+                              &nbsp;&nbsp;
+                              <span>
+                                $
+                                {tour.price -
+                                  tour.price * (tour.discount / 100)}
+                              </span>
+                              /Per Person
+                            </>
+                          )}
+
+                          {/* price when there's no discount */}
+                          {tour.discount === 0 && (
+                            <>
+                              <span>${tour.price}</span>/Per Person
+                            </>
+                          )}
+                        </h5>
+                        <div className="duration text-black">
+                          {tour.durationDays}{' '}
+                          {tour.durationDays === 1 ? 'day' : 'days'}
+                        </div>
+                      </div>
+                      <div className="resource-name text-black">
+                        {tour.name}
+                      </div>
+                      <div className="resource-location">
+                        <i className="flaticon-arrival" />
+                        <span
+                          style={{ fontSize: 'small' }}
+                        >
+                          &nbsp;{tour.location.name}, {tour.location.city},{' '}
+                          {tour.location.country}
+                        </span>
+                      </div>
+                      <div className="card-foot d-flex justify-content-between">
+                        {/* tour availability */}
+                        {tour.isAvailable && (
+                          <div className="card-chip package-availability">
+                            Available
+                          </div>
+                        )}
+
+                        {!tour.isAvailable && (
+                          <div className="card-chip package-availability card-chip-not-available">
+                            Available
+                          </div>
+                        )}
+                        <div className="card-chip number-of-seats">
+                          {tour.numberOfSeats}{' '}
+                          {tour.numberOfSeats === 1 ? 'seat' : 'seats'}
+                        </div>
+                        <div className="card-chip date">
+                          {convertSecondsToDateString(tour.date._seconds)}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>
   );
-};
-
-export default Tours;
+}

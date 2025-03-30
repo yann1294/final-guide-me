@@ -1,12 +1,6 @@
-import React from 'react';
-import Link from 'next/link';
-
-interface BreadcrumbProps {
-  pageTitle: string;
-  pageName: string;
-}
-
-const Breadcrumb: React.FC<BreadcrumbProps> = ({ pageTitle, pageName }) => {
+import React from "react";
+import Link from "next/link";
+export default function Breadcumb({ pageTitle, pageName }:any) {
   return (
     <div className="breadcrumb-area">
       <div className="container">
@@ -29,6 +23,4 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({ pageTitle, pageName }) => {
       </div>
     </div>
   );
-};
-
-export default Breadcrumb;
+}

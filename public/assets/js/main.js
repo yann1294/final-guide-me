@@ -252,8 +252,8 @@
     
     });
   
-     // destinations-1 slider
-     $('.destinations-1').owlCarousel({
+     // packages-1 slider
+     $('.packages-1').owlCarousel({
          stagePadding: 1,
           items: 3,
           loop: true,
@@ -282,7 +282,7 @@
           }
     });
 
-    $('.destinations-2').owlCarousel({
+    $('.packages-2').owlCarousel({
         stagePadding: 1,
           items: 3,
           loop: true,

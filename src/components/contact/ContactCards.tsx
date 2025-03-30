@@ -63,18 +63,6 @@ const ContactCards: React.FC = () => {
           </div>
         </div>
       </div>
-      
-      {/* Call to Action Section */}
-      <div className="container mt-8">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-[#ed9734]">Become a Guide with Us</h2>
-          <p className="mt-2 text-gray-200 text-lg">Join our team and start sharing your knowledge with travelers!</p>
-          <button className="bg-[#6BC8B4] hover:bg-[#ed9734] text-white font-bold py-2 px-4 rounded mt-4" onClick={()=>{router.push('/guideSignUp')}}>
-            Register Now
-          </button>
-        </div>
-      </div>
-      <GuideArea/>
     </div>
   );
 };

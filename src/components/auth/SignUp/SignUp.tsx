@@ -5,11 +5,12 @@ import appwriteService from "@/appwrite/config"
 import useAuth from "@/context/useAuth"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import React, { useState, FormEvent } from "react"
+import React, { useState, FormEvent, FC } from "react"
 import Image from "next/image"
 import Logo from '../../../../public/assets/images/logo2.png';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGoogle, faFacebook } from "@fortawesome/free-brands-svg-icons"
+import { Role } from "@/dto/helper.dto"
 
 // Hardcoded list of countries
 const countries = [
@@ -21,7 +22,7 @@ const countries = [
 ];
 
 
-const SignUp = () => {
+const SignUp: FC<Role> = () => {
     const [formData, setFormData] = useState({
         email: "",
         password: "",
@@ -78,7 +79,7 @@ const SignUp = () => {
 
     return (
         <div className="flex items-center justify-center">
-            <div className={`mx-auto w-full max-w-lg bg-gray-200/50 rounded-xl p-10`}>
+            <div className={`mx-auto w-full max-w-lg /50 rounded-xl p-10`}>
                 <div className="mb-2 flex justify-center">
                     <span className="inline-block w-full max-w-[60px]">
                         <Image src={Logo} alt="logo" width={800} height={800} />
@@ -164,6 +165,7 @@ const SignUp = () => {
                             </label>
                             <div className="mt-2">
                                 <select
+                                defaultValue={formData.country}
                                     className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1"
                                     value={formData.country}
                                     onChange={handleCountryChange}

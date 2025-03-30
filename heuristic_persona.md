@@ -28,7 +28,7 @@
 ## 6. Recognition Rather Than Recall
 
 - **Good**: Displays recently viewed guides and saved searches for easy access.
-- **Improvement Needed**: Implement auto-suggest feature in the search bar based on popular destinations or user's search history.
+- **Improvement Needed**: Implement auto-suggest feature in the search bar based on popular packages or user's search history.
 
 ## 7. Flexibility and Efficiency of Use
 

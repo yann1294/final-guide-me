@@ -57,7 +57,7 @@ const ProfileCard = () => {
                     <div className="w-full flex justify-center">
                         <Link
                             href={"/Logout"}
-                            className="bg-gray-200/70 rounded-xl px-6 py-3 inline-block hover:bg-gray-100 duration-150"
+                            className="/70 rounded-xl px-6 py-3 inline-block hover:bg-gray-100 duration-150"
                         >
                             Logout
                         </Link>

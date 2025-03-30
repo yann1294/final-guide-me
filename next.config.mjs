@@ -1,8 +1,30 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    images: {
-        domains: ['via.placeholder.com','demos.creative-tim.com','images.unsplash.com',"letsenhance.io","example.com"], // Add 'via.placeholder.com' to the list of allowed domains
+  reactStrictMode: false,
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'via.placeholder.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'demos.creative-tim.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'letsenhance.io',
+      },
+      {
+        protocol: 'https',
+        hostname: 'example.com',
+      },
+    ],
+  },
 };
 
 export default nextConfig;

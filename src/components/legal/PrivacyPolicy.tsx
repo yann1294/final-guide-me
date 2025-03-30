@@ -103,7 +103,7 @@ Providing your personal data to us is voluntary. However, we may not be able to 
     Research
     </h1>
     <p className='mb-4'>
-    We conduct research and analyze your information, including feedback and comments, to help us improve our products and services and to enhance your customer experience, including customizing online content, and to improve your booking and website experience.  We also look for trends and future destinations and itinerary opportunities.
+    We conduct research and analyze your information, including feedback and comments, to help us improve our products and services and to enhance your customer experience, including customizing online content, and to improve your booking and website experience.  We also look for trends and future packages and itinerary opportunities.
 We may use your de-identified data for internal reporting (i.e. if a partnership was successful), creating new marketing strategies and to identify trends.
 We may contact you to seek your interest in taking part in research projects, surveys and interviews. These interactions are designed to help us gain insight and understand certain things such as how to improve the services we provide, help us to understand our customers’ needs and expectations, what media they consume, what their concerns are, why do they travel, etc. Your information and details from our research activities may be stored or kept on file for future reference if relevant and will be de-identified where possible.
     </p>
