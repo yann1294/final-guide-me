@@ -36,7 +36,7 @@ export default function RootLayout({
     import('../../public/assets/js/bootstrap.bundle.min');
     fetchTours();
     fetchPackages();
-  }, []);
+  }, [fetchPackages, fetchTours]);
 
   return (
     <html lang="en">
