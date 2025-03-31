@@ -1,173 +1,241 @@
-"use client"
-import React, { useEffect, useReducer, useState } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { useRouter,usePathname } from 'next/navigation'; // Importing useRouter from 'next/navigation'
-import Logo from '../../../public/assets/images/logo2.png';
+import Link from "next/link";
+import { useRouter } from "next/router";
+import React, { useEffect, useReducer, useState } from "react";
+import { State } from "swr";
 
-interface State {
-  activeMenu: string;
-  props: string;
-  showUserDropdown: boolean; 
-}
-
-const initialState: State = { activeMenu: '', props: '', showUserDropdown: false };
-
-function reducer(state: State, action: { type: string }): State {
-  switch (action.type) {
-    case 'home':
-      return { ...state, activeMenu: 'home' };
-    case 'about':
-      return { ...state, activeMenu: 'about' };
-    case 'destinations':
-      return { ...state, activeMenu: 'destinations' };
-    case 'tours':
-      return { ...state, activeMenu: 'tours' };
-    case 'contact':
-      return { ...state, activeMenu: 'contact' };
-    case 'toggleUserDropdown': // New action type to toggle user dropdown
-      return { ...state, showUserDropdown: !state.showUserDropdown };
-    default:
-      return state;
+export default function Header() {
+  interface State {
+    activeMenu: string, props?: string
   }
-}
-
-const Header: React.FC = () => {
- // Using useRouter from 'next/navigation'
-
-  const [active, setActive] = useState(false);
-  const [sidebar, setSidebar] = useState(false);
-  const [state, dispatch] = useReducer(reducer, initialState);
-
-  useEffect(() => {
-    const isSticky = () => {
-      const header = document.querySelector('.header-area');
-      const scrollTop = window.scrollY;
-      if (header) {
-        scrollTop >= 20 ? header.classList.add('sticky') : header.classList.remove('sticky');
-      }
-    };
-
-    window.addEventListener('scroll', isSticky);
-    return () => {
-      window.removeEventListener('scroll', isSticky);
-    };
-  }, []);
+  const [active, setActive ] = useState<boolean | number>(false);
+  const [sidebar, setSidebar ] = useState<boolean | number>(false);
+  const [profile, setProfile ] = useState<boolean | number>(false);
 
   const handleSearchFullScreen = () => {
-    setActive(prevActive => !prevActive);
+    if (active === false || active === 0) {
+      setActive(1);
+      
+    } else {
+      setActive(false);
+    }
   };
-
+  const handleProfile = () => {
+    if (profile === false || profile === 0) {
+      setProfile(1);
+      
+    } else {
+      setProfile(false);
+    }
+  };
   const handleSidebar = () => {
-    setSidebar(prevSidebar => !prevSidebar);
+    if (sidebar === false || sidebar === 0) {
+      setSidebar(1);
+      
+    } else {
+      setSidebar(false);
+    }
   };
+  const initialState = { activeMenu: "", props: "" };
+  const [state, dispatch] = useReducer(reducer, initialState);
+  function reducer(state: State, action: { type: string }): State {
+    switch (action.type) {
+      case "homeOne":
+        return { activeMenu: "homeOne" };
+      case "Package":
+        return { activeMenu: "Package" };
+      case "pages":
+        return { activeMenu: "pages" };
+      default:
+        return { activeMenu: "" };
+    }
+  }
 
-  const toggleUserDropdown = () => { // Function to toggle user dropdown
-    dispatch({ type: 'toggleUserDropdown' });
+  /*----------- Method that will fix header after a specific scrollable -----------*/
+  const isSticky = (e: any) => {
+    const header = document.querySelector(".header-area");
+    const scrollTop = window.scrollY;
+    if (header) {
+      scrollTop >= 20
+        ? header.classList.add('sticky')
+        : header.classList.remove('sticky');
+    }
   };
-
-  const currentRoute = usePathname(); // Using usePathname() method
+  useEffect(() => {
+    window.addEventListener("scroll", isSticky);
+    return () => {
+      window.removeEventListener("scroll", isSticky);
+    };
+  });
 
   return (
     <header>
-      <div className="header-area">
+      <div
+        className={"header-area"}
+      >
         <div className="container">
           <div className="row">
             <div className="col-lg-2 col-md-12 col-sm-12 col-xs-12">
               <div className="navbar-wrap">
                 <div className="logo d-flex justify-content-between">
                   <Link href="/">
-                    <Image src={Logo} alt="logo" width={100} height={100} />
+                    <div className="navbar-brand">
+                      <img style={{ objectFit: "contain", height: "94px"}} src="/assets/images/logo.png" alt="logo" />
+                    </div>
                   </Link>
                 </div>
                 <div className="navbar-icons">
+                  <div className="searchbar-open" onClick={handleSearchFullScreen}>
+                    <i className="flaticon-magnifier" />
+                  </div>
+                  <div className="user-dropdown-icon">
+                    <i className="flaticon-user" onClick={handleProfile} />
+                    <div className={profile === 1? "account-dropdown activeCard":"account-dropdown"}>
+                      <ul>
+                        <li className="account-el">
+                          <i className="bx bx-user-pin" />
+                          <Link href="#">
+                            Sign in
+                          </Link>
+                        </li>
+                        <li className="account-el">
+                          <i className="bx bxs-user-account" />
+                          <Link href="#">
+                            My Account
+                          </Link>
+                        </li>
+                        <li className="account-el">
+                          <i className="bx bx-extension" />
+                          <Link href="#">
+                            Settings
+                          </Link>
+                        </li>
+                        <li className="account-el">
+                          <i className="bx bx-log-in-circle" />
+                          <Link href="#">
+                            Log out
+                          </Link>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
                   <div className="mobile-menu d-flex ">
                     <div className="top-search-bar m-0 d-block d-xl-none"></div>
-                    <a
+                    {/* <a
                       href="#"
                       onClick={handleSidebar}
-                      className={`hamburger d-block d-xl-none ${sidebar ? 'h-active' : ''}`}
+                      className={
+                        sidebar === 1
+                          ? "hamburger d-block d-xl-none h-active"
+                          : "hamburger d-block d-xl-none"
+                      }
                     >
-                      <span className="h-top" />
+                      <span className="h-top"  />
                       <span className="h-middle" />
                       <span className="h-bottom" />
-                    </a>
+                    </a> */}
                   </div>
                 </div>
               </div>
             </div>
             <div className="col-lg-10 col-md-10 col-sm-10 col-xs-10">
-              <nav className={sidebar ? 'main-nav slidenav' : 'main-nav '}>
-                <div className="navber-logo-sm">
-                  <Image src={Logo} alt="logo 2" className="img-fluid" width={200} height={200} />
-                </div>
+              <nav className={sidebar === 1 ? "main-nav slidenav" : "main-nav"}>
                 <ul>
-                  <li>
-                    <Link className={currentRoute === '/' ? 'active' : ''} href="/">
+                  <li className="">
+                    <Link href="/" >
                       Home
                     </Link>
                   </li>
                   <li>
-                    <Link className={currentRoute === '/about' ? 'active' : ''} href="/about">
-                      About us
+                    <Link href="/packages">
+                      Packages
                     </Link>
                   </li>
-                  <li>
-                    <Link
-                      className={currentRoute === '/destinations' ? 'active' : ''}
-                      href="/destinations"
-                    >
-                      Destinations
-                    </Link>
-                  </li>
-                  <li>
-                    <Link className={currentRoute === '/tours' ? 'active' : ''} href="/tours">
+                  <li className="">
+                    <Link href="/tours">
                       Tours
                     </Link>
                   </li>
                   <li>
-                    <Link className={currentRoute === '/contact' ? 'active' : ''} href="/contact">
+                    <Link href="/about">
+                      About us
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/contact">
                       Contact Us
                     </Link>
                   </li>
                 </ul>
                 <div className="navbar-icons-2">
-                  <div className="user-dropdown-icon" onClick={toggleUserDropdown}>
+                  <div
+                    className="searchbar-open"
+                    onClick={handleSearchFullScreen}
+                  >
+                    <i className="flaticon-magnifier" />
+                  </div>
+                  <div className="user-dropdown-icon" onClick={handleProfile}>
                     <i className="flaticon-user" />
-                    {state.showUserDropdown && ( // Show user dropdown only if showUserDropdown is true
-                    <div className="account-dropdown activeCard">
+                    <div className={profile === 1? "account-dropdown activeCard":"account-dropdown"}>
                       <ul>
                       <li className="account-el">
-                              <i className="bx bx-user-pin" />
-                              <Link href="/login">Sign in</Link>
-                            </li>
-                            <li className="account-el">
-                              <i className="bx bxs-user-account" />
-                              <Link href="/guideSignUp">Guide</Link>
-                            </li>
+                          <i className="bx bx-user-pin" />
+                          <Link href="/login/tourist">
+                            Sign in as tourist
+                          </Link>
+                        </li>
+                        <li className="account-el">
+                          <i className="bx bx-user-pin" />
+                          <Link href="/login/guide">
+                            Sign in as guide
+                          </Link>
+                        </li>
+                        <li className="account-el">
+                          <i className="bx bxs-user-account" />
+                          <Link href="/profile">
+                            My Profile
+                          </Link>
+                        </li>
+                        <li className="account-el">
+                          <i className="bx bx-extension" />
+                          <Link href="#">
+                            Settings
+                          </Link>
+                        </li>
+                        <li className="account-el">
+                          <i className="bx bx-log-in-circle" />
+                          <Link href="#">
+                            Log out
+                          </Link>
+                        </li>
                       </ul>
                     </div>
-                    )}
-                    </div>
-                </div>
-                <div className="sidebar-contact">
-                  <ul>
-                    <li className="sidebar-single-contact">
-                      <i className="bx bxs-phone" /> <a href="tel:+17632275032">+1 763-227-5032</a>
-                    </li>
-                    <li className="sidebar-single-contact">
-                      <i className="bx bxs-envelope" />
-                      <a href="mailto:staff@guidemeapp.net">staff@guidemeapp.net</a>
-                    </li>
-                  </ul>
+                  </div>
                 </div>
               </nav>
             </div>
           </div>
         </div>
+        <form>
+          <div
+            className={
+              active ===1
+                ? "main-searchbar activeSearch"
+                : "main-searchbar"
+            }
+          >
+            <div
+              className="searchbar-close"
+              onClick={handleSearchFullScreen}
+            >
+              <i className="bx bx-x" />
+            </div>
+            <input type="text" placeholder="Search Here......" />
+            <div className="searchbar-icon">
+              <i className="bx bx-search" />
+            </div>
+          </div>
+        </form>
       </div>
     </header>
   );
-};
-
-export default Header;
+}

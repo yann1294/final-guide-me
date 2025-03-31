@@ -1,0 +1,148 @@
+[
+    {
+        "id":1,
+        "image":"/assets/images/destination/d-4.png",
+        "title":"Paris Hill Tour",
+        "rating":"1.5",
+        "price":"150"
+    },
+    {
+        "id":2,
+        "image":"/assets/images/destination/d-5.png",
+        "title":"Lake Garda, Spain",
+        "rating":"1.5",
+        "price":"180"
+    },
+    {
+        "id":3,
+        "image":"/assets/images/destination/d-7.png",
+        "title":"Amalfi Costa, Italy",
+        "rating":"1.5",
+        "price":"450"
+    },
+    {
+        "id":4,
+        "image":"/assets/images/destination/d-6.png",
+        "title":"Mount Dtna, Spain",
+        "rating":"1.8k",
+        "price":"159"
+    },
+    {
+        "id":5,
+        "image":"/assets/images/destination/d-7.png",
+        "title":"Amalfi Costa, Italy",
+        "rating":"1.8k",
+        "price":"110"
+    },
+    {
+        "id":6,
+        "image":"/assets/images/destination/d-10.png",
+        "title":"Mount Dtna, Italyr",
+        "rating":"05",
+        "price":"800"
+    },
+    {
+        "id":7,
+        "image":"/assets/images/destination/d-8.png",
+        "title":"Fench Rivira, Italy",
+        "rating":"0.5k",
+        "price":"550"
+    },
+    {
+        "id":8,
+        "image":"/assets/images/destination/d-9.png",
+        "title":"Amalfi Costa, Italy",
+        "rating":"1k",
+        "price":"320"
+    },
+    {
+        "id":9,
+        "image":"/assets/images/destination/d-11.png",
+        "title":"Amalfi Costa, Italy",
+        "rating":"1.5",
+        "price":"133"
+    },
+    {
+        "id":10,
+        "image":"/assets/images/destination/d-5.png",
+        "title":"Maritime Heritage",
+        "rating":"45",
+        "price":"71"
+    },
+    {
+        "id":11,
+        "image":"/assets/images/destination/d-9.png",
+        "title":"Souks of Deira",
+        "rating":"1.6k",
+        "price":"999"
+    },
+    {
+        "id":12,
+        "image":"/assets/images/destination/d-4.png",
+        "title":"Jumeirah Mosque",
+        "rating":"1.3k",
+        "price":"100"
+    },
+    {
+        "id":13,
+        "image":"/assets/images/destination/d-9.png",
+        "title":"Amalfi Costa, Italy",
+        "rating":"03",
+        "price":"888"
+    },
+    {
+        "id":14,
+        "image":"/assets/images/destination/d-8.png",
+        "title":"Fench Rivira, Italy",
+        "rating":"88",
+        "price":"970"
+    },
+    {
+        "id":15,
+        "image":"/assets/images/destination/d-7.png",
+        "title":"Amalfi Costa, Italy",
+        "rating":"12",
+        "price":"90"
+    },
+    {
+        "id":16,
+        "image":"/assets/images/destination/d-10.png",
+        "title":"Mount Dtna, Italyr",
+        "rating":"1.1k",
+        "price":"830"
+    },
+    {
+        "id":17,
+        "image":"/assets/images/destination/d-4.png",
+        "title":"Paris Hill Tour",
+        "rating":"01k",
+        "price":"321"
+    },
+    {
+        "id":18,
+        "image":"/assets/images/destination/d-4.png",
+        "title":"Paris Hill Tour",
+        "rating":"13",
+        "price":"976"
+    },
+    {
+        "id":19,
+        "image":"/assets/images/destination/d-5.png",
+        "title":"Lake Garda, Spain",
+        "rating":"1.6k",
+        "price":"598"
+    },
+    {
+        "id":20,
+        "image":"/assets/images/destination/d-6.png",
+        "title":"Mount Dtna, Spain",
+        "rating":"1.2k",
+        "price":"173"
+    },
+    {
+        "id":21,
+        "image":"/assets/images/destination/d-7.png",
+        "title":"Amalfi Costa, Italy",
+        "rating":"1.5"
+    }
+]

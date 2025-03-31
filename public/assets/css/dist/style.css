@@ -1631,12 +1631,12 @@ header {
       Package area end
 ==============================*/
 /* =============================
-    Destinations area start
+    Packages area start
 ==============================*/
-.destinations-area .row.owl-carousel.destinations-2.owl-loaded.owl-drag .owl-nav button {
+.packages-area .row.owl-carousel.packages-2.owl-loaded.owl-drag .owl-nav button {
   position: absolute;
 }
-.destinations-area .row.owl-carousel.destinations-2.owl-loaded.owl-drag .owl-nav button i {
+.packages-area .row.owl-carousel.packages-2.owl-loaded.owl-drag .owl-nav button i {
   text-align: center;
   color: #fff;
   height: 33px;
@@ -1646,19 +1646,19 @@ header {
   border-radius: 50%;
   font-size: 28px;
 }
-.destinations-area .row.owl-carousel.destinations-2.owl-loaded.owl-drag .owl-nav button.owl-prev {
+.packages-area .row.owl-carousel.packages-2.owl-loaded.owl-drag .owl-nav button.owl-prev {
   top: 18%;
   right: -19%;
 }
-.destinations-area .row.owl-carousel.destinations-2.owl-loaded.owl-drag .owl-nav button.owl-next {
+.packages-area .row.owl-carousel.packages-2.owl-loaded.owl-drag .owl-nav button.owl-next {
   top: 18%;
   right: -28%;
 }
 
-.destinations-area .row.owl-carousel.destinations-1.owl-loaded.owl-drag .owl-nav button {
+.packages-area .row.owl-carousel.packages-1.owl-loaded.owl-drag .owl-nav button {
   position: absolute;
 }
-.destinations-area .row.owl-carousel.destinations-1.owl-loaded.owl-drag .owl-nav button i {
+.packages-area .row.owl-carousel.packages-1.owl-loaded.owl-drag .owl-nav button i {
   font-size: 28px;
   line-height: 33px;
   text-align: center;
@@ -1668,11 +1668,11 @@ header {
   border-radius: 50%;
   color: #fff;
 }
-.destinations-area .row.owl-carousel.destinations-1.owl-loaded.owl-drag .owl-nav button.owl-prev {
+.packages-area .row.owl-carousel.packages-1.owl-loaded.owl-drag .owl-nav button.owl-prev {
   top: 18%;
   left: -25%;
 }
-.destinations-area .row.owl-carousel.destinations-1.owl-loaded.owl-drag .owl-nav button.owl-next {
+.packages-area .row.owl-carousel.packages-1.owl-loaded.owl-drag .owl-nav button.owl-next {
   top: 18%;
   left: -16%;
 }
@@ -1703,7 +1703,7 @@ header {
 }
 
 /* =============================
-    Destinations area start
+    Packages area start
 ==============================*/
 /* =============================
     achievement area start

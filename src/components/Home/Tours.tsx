@@ -1,114 +1,122 @@
-import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-
-// Define types
-interface Tour {
-  id: number;
-  attributes: {
-    price: number;
-    title: string;
-    image?: {
-      data?: {
-        attributes?: {
-          url: string;
-        };
-      };
-    };
-  };
-}
-
-const Tours = () => {
-  const router = useRouter();
-  const [data, setData] = useState<Tour[]>([]);
-
-  useEffect(() => {
-    // Dummy data for API call
-    const dummyData: Tour[] = [
-      {
-        id: 1,
-        attributes: {
-          price: 100,
-          title: "Tour 1",
-          image: {
-            data: {
-              attributes: {
-                url: "/bassamBeach.jpg"
-              }
-            }
-          }
-        }
-      },
-      {
-        id: 2,
-        attributes: {
-          price: 150,
-          title: "Tour 2",
-          image: {
-            data: {
-              attributes: {
-                url: "/bassamBeach.jpg"
-              }
-            }
-          }
-        }
-      },
-      // Add more dummy data as needed
-    ];
-
-    setData(dummyData);
-  }, []);
-
-  const handleClick = (id: number) => {
-    router.push(`/tours/${id}`);
-  };
+import React from 'react';
+import packageData from '../../data/package_grid.json';
+import useTourStore from '@/stores/tourStore';
+import { convertSecondsToDateString } from '@/lib/utils/dateUtils';
+export default function Tour({ context = 'home' }) {
+  const { tours, setCurrentTour } = useTourStore();
 
   return (
-    <div className="package-area pt-120">
-    <div className="container">
-      <div className="row">
-        <div className="col-lg-12 col-md-12 col-sm-12">
-          <div className="section-head pb-45">
-            <h5>Choose Your Tour</h5>
-            <h2>Select The Place You Want To Visit During Your Travel</h2>
-          </div>
-        </div>
-      </div>
-      <div className="row g-4">
-        {data.map((tour) => (
-          <div key={tour.id} className="col-lg-4 col-md-6 col-sm-6">
-            <div className="package-card" onClick={() => handleClick(tour.id)}>
-              <div className="package-thumb">
-                {tour.attributes.image && (
-                  <Image
-                    src={tour.attributes.image?.data?.attributes?.url || ""}
-                    alt={tour.attributes.title}
-                    className="img-fluid"
-                    width={200}
-                    height={200}
-                  />
-                )}
-              </div>
-              <div className="package-details">
-                <div className="package-info">
-                  <h5>
-                    <span>${tour.attributes.price}</span>/Per Person
-                  </h5>
-                </div>
-                <h3>
-                  <i className="flaticon-arrival" />
-                  <Link href={`/tours/${tour.id}`}>{tour.attributes.title}</Link>
-                </h3>
+    <div
+      className="package-area"
+      style={{ paddingTop: context === 'home' ? '120px' : '50px' }}
+    >
+      <div className="container">
+        <div className="row">
+          {context === 'home' && (
+            <div className="col-lg-12 col-md-12 col-sm-12">
+              <div className="section-head pb-45">
+                <h5>Choose Your Tour</h5>
+                <h2>Select Your best Tour For Your Travel</h2>
               </div>
             </div>
-          </div>
-        ))}
+          )}
+          {context.includes('details') && (
+            <div className="text-start" style={{ paddingBottom: '20px' }}>
+              <h3>
+                <b>Other {context.split('-')[0]}s</b>
+              </h3>
+            </div>
+          )}
+        </div>
+        <div className="row g-4">
+          {tours.slice(0, 6).map((tour) => {
+            return (
+              <div key={tour.id} className="col-lg-4 col-md-6 col-sm-6">
+                <Link
+                  onClick={() => setCurrentTour(tour)}
+                  href={`/tours/${tour.id}`}
+                >
+                  <div className="package-card">
+                    <div className="package-thumb">
+                      <img
+                        src={tour.images ? tour.images[0] : ''}
+                        alt=""
+                        className="img-fluid"
+                      />
+                    </div>
+                    <div className="package-details">
+                      <div className="package-info">
+                        <h5>
+                          {/* price when there's a discount */}
+                          {tour.discount !== 0 && (
+                            <>
+                              <span className="text-danger crossed-line">
+                                ${tour.price}
+                              </span>
+                              &nbsp;&nbsp;
+                              <span>
+                                $
+                                {tour.price -
+                                  tour.price * (tour.discount / 100)}
+                              </span>
+                              /Per Person
+                            </>
+                          )}
+
+                          {/* price when there's no discount */}
+                          {tour.discount === 0 && (
+                            <>
+                              <span>${tour.price}</span>/Per Person
+                            </>
+                          )}
+                        </h5>
+                        <div className="duration text-black">
+                          {tour.durationDays}{' '}
+                          {tour.durationDays === 1 ? 'day' : 'days'}
+                        </div>
+                      </div>
+                      <div className="resource-name text-black">
+                        {tour.name}
+                      </div>
+                      <div className="resource-location">
+                        <i className="flaticon-arrival" />
+                        <span
+                          style={{ fontSize: 'small' }}
+                        >
+                          &nbsp;{tour.location.name}, {tour.location.city},{' '}
+                          {tour.location.country}
+                        </span>
+                      </div>
+                      <div className="card-foot d-flex justify-content-between">
+                        {/* tour availability */}
+                        {tour.isAvailable && (
+                          <div className="card-chip package-availability">
+                            Available
+                          </div>
+                        )}
+
+                        {!tour.isAvailable && (
+                          <div className="card-chip package-availability card-chip-not-available">
+                            Available
+                          </div>
+                        )}
+                        <div className="card-chip number-of-seats">
+                          {tour.numberOfSeats}{' '}
+                          {tour.numberOfSeats === 1 ? 'seat' : 'seats'}
+                        </div>
+                        <div className="card-chip date">
+                          {convertSecondsToDateString(tour.date._seconds)}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
-  </div>
   );
-};
-
-export default Tours;
+}
