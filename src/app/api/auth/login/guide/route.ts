@@ -27,7 +27,7 @@ export async function POST(req: Request) {
         "German"
       ],
       "availability": true
-    } as GuideDTO
+    } as unknown as GuideDTO
 
     const response: ResponseDTO = {
       status: 'success',
