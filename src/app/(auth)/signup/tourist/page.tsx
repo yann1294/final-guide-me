@@ -3,7 +3,7 @@
 import useAuth from "@/context/useAuth"
 import { useRouter } from "next/navigation"
 import React from "react"
-import SignUp from "@/components/auth/signup/SignUp"
+import SignUp from "@/components/auth/SignUp/SignUp"
 
 const SignupPage: React.FC = () => {
 
