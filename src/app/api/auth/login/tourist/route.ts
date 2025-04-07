@@ -21,7 +21,7 @@ export async function POST(req: Request) {
         file: 'https://firebasestorage.googleapis.com/v0/b/gmback-206ae.appspot.com/o/identification_photos%2FQCqiRmZZrncdQaav5dHU?alt=media&token=d9312d01-0f16-4c8d-b9c5-3102dfd82387'
       },
       spokenLanguages: ['English', 'Spanish']
-    } as TouristDTO;
+    } as unknown as TouristDTO;
 
     const response: ResponseDTO = {
       status: 'success',

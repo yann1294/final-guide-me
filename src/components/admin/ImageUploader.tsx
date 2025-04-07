@@ -67,7 +67,7 @@ export default function ImageUploader({
                 <div className="remove-activity">
                   <Trash2Icon onClick={() => uPm.removePhoto(key)} />
                 </div>
-                <Image src={photo.dataString ?? ''} preview />
+                <Image src={photo.dataString ?? ''} preview alt='upload' />
               </div>
             </div>
           ))}

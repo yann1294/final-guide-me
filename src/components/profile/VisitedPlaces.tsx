@@ -12,7 +12,7 @@ const VisitedPlaces = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Places I've Visited</CardTitle>
+        <CardTitle>Places I&rsquo;ve Visited</CardTitle>
       </CardHeader>
       <CardContent>
         <ul className="space-y-2">

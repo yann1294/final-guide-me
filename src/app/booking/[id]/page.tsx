@@ -1,3 +1,8 @@
+// src/app/booking/[id]/page.tsx
+export default function Placeholder() {
+    return null;
+  }
+  
 // "use client";
 
 // import { useParams, useRouter } from "next/navigation";

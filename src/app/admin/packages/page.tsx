@@ -47,7 +47,7 @@ export default function AdminPackagesPage() {
     if (packages.length === 0) {
       fetchPackages();
     }
-  }, [fetchPackages]);
+  }, [fetchPackages, packages.length]);
 
   // Get DataTable configuration
   const dataTableConfig = useDataTableConfig(

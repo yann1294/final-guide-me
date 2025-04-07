@@ -55,7 +55,7 @@ export default function AdminTouristsPage() {
     if (guides.length === 0) {
       fetchGuides();
     }
-  }, [fetchGuides]);
+  }, [fetchGuides, guides.length]);
 
   // Get DataTable configuration
   const dataTableConfig = useDataTableConfig(

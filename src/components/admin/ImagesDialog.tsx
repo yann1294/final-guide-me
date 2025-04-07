@@ -39,7 +39,7 @@ export default function ImagesDialog({
       <div className="container">
         <div className="row">
           {images?.map((image) => (
-            <div className="col-12 col-sm-6 col-md-4 col-lg-3">
+            <div key={image} className="col-12 col-sm-6 col-md-4 col-lg-3">
               <div className="image-container">
                 <div className="delete-image">
                   <Trash2Icon size="18px" />

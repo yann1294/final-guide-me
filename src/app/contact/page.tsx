@@ -1,7 +1,6 @@
 import GuideArea from '@/components/about/GuideArea';
 import Breadcrumb from '@/components/common/Breadcrumb';
 import ContactCards from '@/components/contact/ContactCards';
-import FaqSection from '@/components/faq/FaqSection';
 import React from 'react';
 
 const ContactPage: React.FC = () => {

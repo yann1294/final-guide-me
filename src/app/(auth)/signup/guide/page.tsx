@@ -1,5 +1,5 @@
 "use client"
-import SignUp from "@/components/auth/signup/SignUp"
+import SignUp from "@/components/auth/SignUp/SignUp"
 //@ts-ignore
 import useAuth from "@/context/useAuth"
 import { useRouter } from "next/navigation"

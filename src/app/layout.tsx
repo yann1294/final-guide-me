@@ -15,6 +15,7 @@ import '../../public/assets/css/responsive.css';
 import { useEffect } from 'react';
 import { useFetchTours } from '@/hooks/tours/useTours';
 import { useFetchPackages } from '@/hooks/packages/usePackages';
+import Script from 'next/script';
 // require('dotenv').config();
 
 const inter = Inter({ subsets: ['latin'] });
@@ -36,7 +37,7 @@ export default function RootLayout({
     import('../../public/assets/js/bootstrap.bundle.min');
     fetchTours();
     fetchPackages();
-  }, []);
+  }, [fetchPackages, fetchTours]);
 
   return (
     <html lang="en">
@@ -48,8 +49,10 @@ export default function RootLayout({
           <div className="spacer" style={{height: "50px"}}></div>
           <Footer />
         </div>
-        <script src="/js/wow.min.js"></script>
-        <script>new WOW().init();</script>
+        <Script src="/js/wow.min.js" strategy="afterInteractive" />
+  <Script id="wow-init" strategy="afterInteractive">
+    {`new WOW().init();`}
+  </Script>
       </body>
     </html>
   );

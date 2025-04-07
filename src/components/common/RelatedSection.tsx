@@ -23,9 +23,9 @@ const RelatedSection = ({
       <SectionHeader topText='' mainText={"Related " + (context === ContextType.tour ? "Tours" : "Packages")} />
       <div className="row g-4">
         {context === ContextType.package &&
-          packages?.map((pkg) => <PackageCard pkg={pkg} />)}
+          packages?.map((pkg) => <PackageCard key={pkg.id} pkg={pkg} />)}
         {context === ContextType.tour &&
-          tours?.map((tour) => <TourCard tour={tour} />)}
+          tours?.map((tour) => <TourCard key={tour.id} tour={tour} />)}
       </div>
     </div>
   );
