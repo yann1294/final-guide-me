@@ -5,7 +5,8 @@ import Logo2 from "../../../public/assets/images/d-92.png";
 import Payment2 from "../../../public/assets/images/payment/payment-card-2.png";
 import Payment1 from "../../../public/assets/images/payment/payment-card-1.png";
 import Payment4 from "../../../public/assets/images/payment/payment-card-4.png";
-
+import appstoreBadge from "../../../public/assets/images/appstoreBadge.svg";
+import gplayBadge from "../../../public/assets/images/gplayBadge.svg";
 const Footer: React.FC = () => {
   return (
     <footer className="bg-gray-900 text-white py-10">
@@ -61,10 +62,10 @@ const Footer: React.FC = () => {
                 <div className="flex items-center space-x-3">
                   <i className="bx bx-mail-send text-2xl"></i>
                   <a
-                    href="mailto:staff@guidemeapp.net"
+                    href="mailto:contact@guidemeinfos.com"
                     className="hover:text-orange-500"
                   >
-                    staff@guidemeapp.net
+                    contact@guidemeinfos.com
                   </a>
                 </div>
               </div>
@@ -104,11 +105,34 @@ const Footer: React.FC = () => {
 
             {/* Payment Methods */}
             <div className="w-full lg:w-1/3">
-              <h5 className="text-lg font-semibold mb-4">We Accept</h5>
+              <h5 className="text-lg font-semibold mb-4">Download Our App</h5>
               <div className="flex space-x-3">
-                <Image src={Payment2} alt="Payment Card" className="w-16" />
-                <Image src={Payment1} alt="Payment Card" className="w-16" />
-                <Image src={Payment4} alt="Payment Card" className="w-16" />
+                <Link
+                  href="https://play.google.com/store/apps/details?id=com.beogotic.guideme&pli=1"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Image
+                    src={gplayBadge}
+                    alt="Google Play Store"
+                    width={130}
+                    height={40}
+                    className="cursor-pointer"
+                  />
+                </Link>
+                <Link
+                  href="https://apps.apple.com/us/app/guideme/id6480135906"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Image
+                    src={appstoreBadge}
+                    alt="Apple Store"
+                    width={130}
+                    height={40}
+                    className="cursor-pointer"
+                  />
+                </Link>
               </div>
             </div>
           </div>
@@ -123,7 +147,7 @@ const Footer: React.FC = () => {
             </a>{" "}
             | Built By{" "}
             <Link
-              href="https://unlimitedwebworks.com"
+              href="https://guidemeinfos.com"
               className="hover:text-orange-500"
             >
               Unlimitedwebworks
