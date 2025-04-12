@@ -6,9 +6,11 @@ import { TouristDTO } from '@/dto/tourist.dto';
 import { ResponseDTO, Role } from '@/dto/helper.dto';
 import { GuideDTO } from '@/dto/guide.dto';
 import { AdminDTO } from '@/dto/admin.dto';
+import { useFetchOneTourist } from './useUsers';
 
 export const useAuth = () => {
   const { user, token, isAuthenticated, login, logout, setUser, setToken } = useAuthStore();
+  const { fetchOneTourist } = useFetchOneTourist();
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 

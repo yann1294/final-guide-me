@@ -4,36 +4,27 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
-    // Dummy data for successful login
-    const dummyTourist: TouristDTO = {
-      uid: 'QCqiRmZZrncdQaav5dHU',
-      firstName: 'John',
-      lastName: 'Doe',
-      phoneNumber: '+1234567890',
-      emailAddress: 'johndoe@example.com',
-      profilePhoto: 'https://firebasestorage.googleapis.com/v0/b/gmback-206ae.appspot.com/o/profile_photos%2FQCqiRmZZrncdQaav5dHU?alt=media&token=f83fef0d-893f-40c9-8978-fcb962898601',
-      role: { name: 'tourist' },
-      accountStatus: 'active',
-      createdAt: '2024-01-01T00:00:00Z',
-      updatedAt: '2024-01-01T00:00:00Z',
-      identification: {
-        type: 'passport',
-        file: 'https://firebasestorage.googleapis.com/v0/b/gmback-206ae.appspot.com/o/identification_photos%2FQCqiRmZZrncdQaav5dHU?alt=media&token=d9312d01-0f16-4c8d-b9c5-3102dfd82387'
+    // Sign in the user
+    const { email, password } = await req.json();
+
+    // Sign in to server
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/local/tourist/signin`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
       },
-      spokenLanguages: ['English', 'Spanish']
-    } as unknown as TouristDTO;
+      body: JSON.stringify({ email, password }),
+    });
 
-    const response: ResponseDTO = {
-      status: 'success',
-      code: 200,
-      message: 'Successfully fetched document.',
-      data: dummyTourist,
-    };
+    // If the response from the backend is not OK, throw an error
+    if (!response.ok) {
+      throw new Error("Failed to sign in");
+    }
 
-    // Delay for 2 seconds
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    return NextResponse.json(response);
+    const data = await response.json();
+
+    return NextResponse.json(data);
     
   } catch (error) {
     console.error(error);
