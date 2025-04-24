@@ -1,58 +1,81 @@
 // hooks/useAuth.ts
-import { useState } from 'react';
-import useAuthStore from '@/stores/authStore';
-import axios from 'axios';
-import { TouristDTO } from '@/dto/tourist.dto';
-import { ResponseDTO, Role } from '@/dto/helper.dto';
-import { GuideDTO } from '@/dto/guide.dto';
-import { AdminDTO } from '@/dto/admin.dto';
+import { useState } from "react";
+import useAuthStore from "@/stores/authStore";
+import { TouristDTO } from "@/dto/tourist.dto";
+import { Role } from "@/dto/helper.dto";
+import { GuideDTO } from "@/dto/guide.dto";
+import { AdminDTO } from "@/dto/admin.dto";
+import api from "@/lib/api";
+import { LocalSigninResponse, PartialUser } from "@/dto/login.dto";
+import { LocalSignupResponse } from "@/dto/signup.dto";
 
 export const useAuth = () => {
-  const { user, token, isAuthenticated, login, logout, setUser, setToken } = useAuthStore();
+  const {
+    user,
+    accessToken,
+    refreshToken,
+    isAuthenticated,
+    login,
+    logout,
+    setUser,
+    setTokens,
+  } = useAuthStore();
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   // Login function
-  const authenticate = async (email: string, password: string, role: Role) => {
+  const signin = async (email: string, password: string) => {
     setLoading(true);
     setError(null);
 
     try {
       // Make API call for login
-      const response = await axios.post<ResponseDTO>(
-        `/api/auth/login/${role.name}`,
-        { email, password }
-      );
+      const response = await api.post<LocalSigninResponse>(`/api/auth/signin`, {
+        emailAddress: email,
+        password,
+      });
 
-      // check if the response.data.status is 'success'
-      if (response.data.status !== 'success') {
-        throw new Error(response.data.message);
-      }
+      const { uid, emailAddress, role, tokens } = response.data;
 
-      // Get the user data based on the role
-      let loggedInUser: TouristDTO | AdminDTO | GuideDTO;
-
-      if (role.name === 'tourist') {
-        loggedInUser = response.data.data as TouristDTO;
-      } else if (role.name === 'admin') {
-        loggedInUser = response.data.data as AdminDTO;
-      } else if (role.name === 'guide') {
-        loggedInUser = response.data.data as GuideDTO;
-      } else {
-        // Handle other roles if necessary
-        throw new Error('Unsupported role');
-      }
-
-      // Get the token from the user data
-      const authToken: string = loggedInUser.uid as string;
-
-      
+      // Map into one of your DTO shapes...
+      // If you need more fields (name, photo, etc.) — fetch /users/me
+      const loggedInUser: PartialUser = {
+        uid,
+        emailAddress,
+        role,
+      };
 
       // Store user data and token in Zustand store
-      login(loggedInUser, authToken);
+      // Persist both tokens + user
+      login(loggedInUser, tokens.accessToken, tokens.refreshToken);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Login failed');
+      setError(err instanceof Error ? err.message : "Login failed");
     } finally {
+      setLoading(false);
+    }
+  };
+
+  // 2) Sign up new user → then auto‑signin
+  const signup = async (email: string, password: string, role?: Role) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const signupBody: Record<string, any> = {
+        emailAddress: email,
+        password,
+      };
+      if (role) signupBody.role = role;
+
+      const resp = await api.post<LocalSignupResponse>(
+        `/api/auth/signup`,
+        signupBody,
+      );
+
+      // Backend did not return tokens, so immediately sign in:
+      await signin(email, password);
+    } catch (err: any) {
+      setError(err.response?.data?.message ?? err.message);
       setLoading(false);
     }
   };
@@ -64,13 +87,15 @@ export const useAuth = () => {
 
   return {
     user,
-    token,
+    accessToken,
+    refreshToken,
     isAuthenticated,
     loading,
     error,
-    authenticate,
+    signin,
+    signup,
     logoutUser,
     setUser,
-    setToken,
+    setTokens,
   };
 };

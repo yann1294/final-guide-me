@@ -2,13 +2,13 @@
 
 import { useState } from "react";
 import { useParams } from "next/navigation";
-import useGlobalStore from "@/stores/globalStore";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 import { Label } from "reactstrap";
 import { Input } from "reactstrap";
-import { useFetchTours } from "@/hooks/tours/useTours";
+
 import useTourStore from "@/stores/tourStore";
 
 export default function BookTourPage() {
@@ -51,7 +51,6 @@ export default function BookTourPage() {
 
       if (response.ok) {
         // Handle successful booking
-        
         // You can redirect to a confirmation page or show a success message
       } else {
         // Handle error

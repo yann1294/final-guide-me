@@ -1,18 +1,18 @@
-'use client';
-import Link from 'next/link';
-import React, { useState, FC } from 'react';
-import Image from 'next/image';
-import Logo from '../../../../public/assets/images/logo2.png';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faGoogle, faFacebook } from '@fortawesome/free-brands-svg-icons';
-import { Role } from '@/dto/helper.dto';
-import { useAuth } from '@/hooks/useAuth';
-import LoadingSpinner from '@/components/ui/LoadingSpinner';
+"use client";
+import Link from "next/link";
+import React, { useState, FC } from "react";
+import Image from "next/image";
+import Logo from "../../../../public/assets/images/logo2.png";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGoogle, faFacebook } from "@fortawesome/free-brands-svg-icons";
+import { Role } from "@/dto/helper.dto";
+import { useAuth } from "@/hooks/useAuth";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
 
 const Login: FC<{ userRole: Role }> = ({ userRole }) => {
-  const { loading, error, authenticate } = useAuth();
+  const { loading, error, signin } = useAuth();
   const [formError, setError] = useState<string | null>(null);
-  const [formData, setFormData] = useState({ email: '', password: '' });
+  const [formData, setFormData] = useState({ email: "", password: "" });
 
   return (
     <div className="container signin-container">
@@ -88,16 +88,12 @@ const Login: FC<{ userRole: Role }> = ({ userRole }) => {
 
                   // Check if email and password are provided
                   if (!formData.email || !formData.password) {
-                    setError('Please provide email and password');
+                    setError("Please provide email and password");
                     return; // Prevent the form from submitting if the fields are empty
                   }
 
                   // Call the authenticate function if both fields are filled
-                  await authenticate(
-                    formData.email,
-                    formData.password,
-                    userRole,
-                  );
+                  await signin(formData.email, formData.password);
                 }}
                 className="signin-button"
               >
