@@ -20,7 +20,7 @@ const TermsAndConditions: React.FC = () => {
             {/* Other paragraphs */}
             <h1 className="my-4">Cookies & Website Usage</h1>
             <p className='mb-4'>
-                We utilize a common technology called "cookies" and web server log on our websites. To learn about the specific cookies we employ, please consult our Cookies Policy. Our Privacy Policy was most recently revised in February of 2022.
+                We utilize a common technology called cookies and web server log on our websites. To learn about the specific cookies we employ, please consult our Cookies Policy. Our Privacy Policy was most recently revised in February of 2022.
             </p>
             <h1 className='mb-4'>Entry, health and visa requirements</h1>
             <p className='mb-4'>Discover up-to-date details regarding visa and travel document requirements, as well as COVID-19 vaccination and quarantine regulations imposed by local governments worldwide. Click the link to learn more.</p>

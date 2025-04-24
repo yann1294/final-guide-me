@@ -1,10 +1,10 @@
-"use client"
-import React from 'react';
-import GuideArea from '../about/GuideArea';
-import { useRouter } from 'next/navigation';
+"use client";
+import React from "react";
+import GuideArea from "../about/GuideArea";
+import { useRouter } from "next/navigation";
 
 const ContactCards: React.FC = () => {
-  const router = useRouter()
+  const router = useRouter();
   return (
     <div className="contact-cards">
       {/* Contact Info Section */}
@@ -17,7 +17,7 @@ const ContactCards: React.FC = () => {
             </div>
             <div className="contact-info">
               <h5>Address</h5>
-              <p>625 Bluffview Dr Lawrenceville, Georgia 30043</p>
+              <p>7600 2nd St. N Saint Paul Minnesota 55128</p>
             </div>
           </div>
           {/* Email & Phone */}
@@ -27,7 +27,7 @@ const ContactCards: React.FC = () => {
             </div>
             <div className="contact-info">
               <h5>Email &amp; Phone</h5>
-              <p>(+1) 4049660715 staff@guidemeapp.net</p>
+              <p>(+1) 4049660715 contact@guidemeinfos.com</p>
             </div>
           </div>
           {/* Social Media */}

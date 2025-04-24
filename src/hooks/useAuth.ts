@@ -1,10 +1,10 @@
 // hooks/useAuth.ts
+
 import { useState } from "react";
 import useAuthStore from "@/stores/authStore";
-import { TouristDTO } from "@/dto/tourist.dto";
+
 import { Role } from "@/dto/helper.dto";
-import { GuideDTO } from "@/dto/guide.dto";
-import { AdminDTO } from "@/dto/admin.dto";
+
 import api from "@/lib/api";
 import { LocalSigninResponse, PartialUser } from "@/dto/login.dto";
 import { LocalSignupResponse } from "@/dto/signup.dto";
@@ -20,6 +20,7 @@ export const useAuth = () => {
     setUser,
     setTokens,
   } = useAuthStore();
+
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
