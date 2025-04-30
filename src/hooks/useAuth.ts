@@ -6,10 +6,16 @@ import useAuthStore from "@/stores/authStore";
 import { Role } from "@/dto/helper.dto";
 
 import api from "@/lib/api";
-import { LocalSigninResponse, PartialUser } from "@/dto/login.dto";
+import {
+  LocalSigninAPIResponse,
+  LocalSigninResponse,
+  PartialUser,
+} from "@/dto/login.dto";
 import { LocalSignupResponse } from "@/dto/signup.dto";
+import { useRouter } from "next/navigation";
 
 export const useAuth = () => {
+  const router = useRouter();
   const {
     user,
     accessToken,
@@ -36,19 +42,30 @@ export const useAuth = () => {
         password,
       });
 
-      const { uid, emailAddress, role, tokens } = response.data;
+      const rawUser = response.data;
+
+      console.log("Received login response:", JSON.stringify(rawUser, null, 2));
+
+      if (!rawUser || !rawUser.uid) {
+        throw new Error("Invalid login response.");
+      }
 
       // Map into one of your DTO shapes...
       // If you need more fields (name, photo, etc.) — fetch /users/me
       const loggedInUser: PartialUser = {
-        uid,
-        emailAddress,
-        role,
+        uid: rawUser.uid,
+        emailAddress: rawUser.emailAddress,
+        role: rawUser.role,
       };
+
+      const accessToken = rawUser.tokens?.accessToken ?? "mock-access-token";
+      const refreshToken = rawUser.tokens?.refreshToken ?? "mock-refresh-token";
 
       // Store user data and token in Zustand store
       // Persist both tokens + user
-      login(loggedInUser, tokens.accessToken, tokens.refreshToken);
+      login(loggedInUser, accessToken, refreshToken);
+      const role = rawUser.role?.name ?? "tourist";
+      router.push(`/dashboard/${role}/complete-profile`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed");
     } finally {

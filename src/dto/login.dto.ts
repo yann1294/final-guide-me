@@ -17,6 +17,12 @@ export interface LocalSigninResponse {
   };
 }
 
+export interface LocalSigninAPIResponse {
+  status: string;
+  message: string;
+  data: LocalSigninResponse;
+}
+
 export interface PartialUser {
   uid: string;
   emailAddress: string;
