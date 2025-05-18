@@ -25,6 +25,7 @@ export const useAuth = () => {
     logout,
     setUser,
     setTokens,
+    setAuthStatus,
   } = useAuthStore();
 
   const [loading, setLoading] = useState<boolean>(false);
@@ -90,8 +91,18 @@ export const useAuth = () => {
         signupBody,
       );
 
-      // Backend did not return tokens, so immediately sign in:
-      await signin(email, password);
+      const newUser = resp.data;
+      // ✅ Store user info temporarily for use in CompleteProfilePage
+      const partialUser: PartialUser = {
+        uid: newUser.uid,
+        emailAddress: newUser.emailAddress,
+        role: newUser.role,
+      };
+
+      setUser(partialUser); // from useAuthStore
+      setAuthStatus(true); // ✅ marks as authenticated
+      const userRole = newUser.role?.name ?? "tourist";
+      router.push(`/dashboard/${userRole}/complete-profile`);
     } catch (err: any) {
       setError(err.response?.data?.message ?? err.message);
       setLoading(false);

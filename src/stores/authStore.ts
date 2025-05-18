@@ -19,9 +19,10 @@ interface AuthStore {
     refreshToken: string,
   ) => void; // Log the user in
   logout: () => void; // Log the user out
-  setUser: (user: TouristDTO) => void; // Set the user data
+  setUser: (user: PartialUser | TouristDTO | GuideDTO | AdminDTO) => void; // Set the user data
   setMethod: (method: "google" | "email") => void; // Set the authentication method
   setTokens: (accessToken: string, refreshToken: string) => void; // Set the authentication tokens
+  setAuthStatus: (isAuthenticated: boolean) => void; // ✅ New: manually control auth status
 }
 
 // Zustand store for authentication state with persistence
@@ -59,7 +60,8 @@ const useAuthStore = create<AuthStore>()(
         }),
 
       // Set user data
-      setUser: (user: TouristDTO | GuideDTO | AdminDTO) => set({ user }),
+      setUser: (user: PartialUser | TouristDTO | GuideDTO | AdminDTO) =>
+        set({ user }),
 
       // Set authentication method
       setMethod: (method: "google" | "email") => set({ method }),
@@ -67,6 +69,8 @@ const useAuthStore = create<AuthStore>()(
       // Set authentication tokens
       setTokens: (accessToken: string, refreshToken: string) =>
         set({ accessToken, refreshToken }),
+
+      setAuthStatus: (isAuthenticated: boolean) => set({ isAuthenticated }), // ✅ New: manually control auth status
     }),
     {
       name: "auth-storage", // This will be the name of the key in localStorage
