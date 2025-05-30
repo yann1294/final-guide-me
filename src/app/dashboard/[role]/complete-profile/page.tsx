@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import useAuthStore from "@/stores/authStore";
-import { useUpdateFullUser } from "@/hooks/useUsers";
+import { useUpdateUserProfile } from "@/hooks/useUsers";
 import { useUploadProfileImages } from "@/hooks/useUploadProfileImages";
 
 const CompleteProfilePage = () => {
@@ -27,9 +27,9 @@ const CompleteProfilePage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const { updateFullUser } = useUpdateFullUser();
+  const { updateFullUserProfile } = useUpdateUserProfile();
 
-  const { uploadImage } = useUploadProfileImages();
+  const { uploadImage, error: uploadError } = useUploadProfileImages();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,13 +57,17 @@ const CompleteProfilePage = () => {
       }
 
       // Upload files
-      const uploadedProfileUrl = await uploadImage(profileFile, "profile");
-      const uploadedIdUrl = await uploadImage(idFile, "identification");
+      const imageUrls = await uploadImage(profileFile, idFile);
 
-      if (!uploadedProfileUrl || !uploadedIdUrl) {
+      console.log("Uploading profile file:", profileFile);
+      console.log("Uploading ID file:", idFile);
+
+      if (!imageUrls) {
         setError("File upload failed.");
         return;
       }
+
+      const [profileUrl, idUrl] = imageUrls;
 
       // Prepare payload
       const commonFields = {
@@ -73,13 +77,13 @@ const CompleteProfilePage = () => {
         firstName: formData.firstName,
         lastName: formData.lastName,
         phoneNumber: formData.phoneNumber,
-        profilePhoto: uploadedProfileUrl,
+        profilePhoto: profileUrl,
         spokenLanguages: formData.spokenLanguages
           .split(",")
           .map((lang) => lang.trim()),
         identification: {
           type: formData.identificationType,
-          file: uploadedIdUrl,
+          file: idUrl,
         },
         accountStatus: "active", // Or whatever logic you want
       };
@@ -94,8 +98,8 @@ const CompleteProfilePage = () => {
         };
       }
 
-      // Send PUT request
-      const result = await updateFullUser(payload);
+      // Send PATCH request
+      const result = await updateFullUserProfile(payload);
       if (!result) throw new Error("Profile update failed.");
 
       router.push(`/dashboard/${params.role}`);
@@ -112,7 +116,7 @@ const CompleteProfilePage = () => {
     <section className="p-8 max-w-2xl mx-auto">
       <h1 className="text-2xl font-bold mb-6">Complete Your Profile</h1>
 
-      {error && <p className="text-red-500 mb-4">{error}</p>}
+      {uploadError && <p className="text-red-500 mb-4">{uploadError}</p>}
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
@@ -155,13 +159,13 @@ const CompleteProfilePage = () => {
           }
         />
         <input
+          id="profilePhoto"
           type="file"
           accept="image/*"
           placeholder="Profile Photo URL"
           className="input input-bordered w-full"
-          value={formData.profilePhoto}
-          onChange={(e) =>
-            setFormData((prev) => ({ ...prev, profilePhoto: e.target.value }))
+          onChange={
+            (e) => setFormData((prev) => ({ ...prev, profilePhoto: "" })) // reset if needed
           }
         />
         <input
@@ -177,17 +181,11 @@ const CompleteProfilePage = () => {
           }
         />
         <input
+          id="identificationFile"
           type="file"
           accept="image/*"
           placeholder="Upload Identification File"
           className="input input-bordered w-full"
-          value={formData.identificationFile}
-          onChange={(e) =>
-            setFormData((prev) => ({
-              ...prev,
-              identificationFile: e.target.value,
-            }))
-          }
         />
         <input
           type="text"

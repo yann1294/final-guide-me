@@ -51,7 +51,9 @@ const Login: FC<{ userRole: Role }> = ({ userRole }) => {
         <div className="col-lg-6 ">
           <div className="signin-form">
             {/* Title */}
-            <div className="signin-title">Access Your Traveler&rsquo;s Portal</div>
+            <div className="signin-title">
+              Access Your Traveler&rsquo;s Portal
+            </div>
             {/* email */}
             <div className="form-group">
               <input
@@ -121,7 +123,10 @@ const Login: FC<{ userRole: Role }> = ({ userRole }) => {
 
             {/* create account */}
             <div className="create-account">
-              Don&rsquo;t have an account? <a href="#">Sign Up</a>
+              Don&rsquo;t have an account?{" "}
+              <Link href={`/signup/${userRole?.name ?? "/signup"}`}>
+                Sign Up
+              </Link>
             </div>
           </div>
         </div>

@@ -125,26 +125,45 @@ export async function handlePATCH(
   }
 }
 
-export async function handlePUT(url: string, req: Request) {
+export async function handlePATCHProfile(targetUrl: string, req: Request) {
   try {
-    const body = await req.json();
+    // 1) Read the raw body exactly once
+    const bodyText = await req.text();
 
-    const response = await fetch(url, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed PUT request to ${url}`);
+    // 2) (Optional) log the parsed JSON for debugging
+    let parsed: any;
+    try {
+      parsed = JSON.parse(bodyText);
+      console.log("🔗 Proxy body:", parsed);
+    } catch {
+      console.log("🔗 Proxy body (raw):", bodyText);
     }
 
-    const data = await response.json();
-    return NextResponse.json(data);
-  } catch (error) {
-    console.error(error);
+    // 3) Build headers with Authorization
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+    };
+    const auth = req.headers.get("Authorization");
+    if (auth) headers["Authorization"] = auth;
+
+    // 4) Actually proxy to your backend
+    const proxyRes = await fetch(targetUrl, {
+      method: "PATCH",
+      headers,
+      body: bodyText,
+    });
+
+    const data = await proxyRes.json();
+    return NextResponse.json(data, { status: proxyRes.status });
+  } catch (err: any) {
+    console.error("❌ handlePATCHProfile error:", err);
     return NextResponse.json(
-      { status: "error", code: 500, message: error, data: null },
+      {
+        status: "error",
+        code: 500,
+        message: err.message,
+        data: null,
+      } as ResponseDTO,
       { status: 500 },
     );
   }

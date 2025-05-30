@@ -1,6 +1,6 @@
 import { ResponseDTO } from "@/dto/helper.dto";
-import { handlePUT } from "@/lib/utils/apiHandler";
 import { NextResponse } from "next/server";
+import { handlePATCHProfile } from "@/lib/utils/apiHandler";
 
 // fetch particular tourist
 export async function GET(req: Request, { params }: any) {
@@ -37,11 +37,12 @@ export async function GET(req: Request, { params }: any) {
   }
 }
 
-// 🚀 NEW: Handle profile update with PUT
-export async function PUT(req: Request, { params }: any) {
-  console.log(`API route: PUT /tourists/${params.id}`, params);
-  return await handlePUT(
-    `${process.env.NEXT_PUBLIC_BACKEND_URL}/tourists/${params.id}`,
+export async function PATCH(req: Request, { params }: any) {
+  console.log(`Proxying PROFILE-PATCH for tourists ${params.id}`);
+  // const body = await req.json();
+  // console.log("🛠  Proxy body:", body);
+  return await handlePATCHProfile(
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/me`,
     req,
   );
 }

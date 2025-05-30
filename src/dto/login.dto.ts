@@ -30,4 +30,15 @@ export interface PartialUser {
     name: string;
     permissions: string[];
   };
+  // Add optional profile-related fields
+  firstName?: string;
+  lastName?: string;
+  phoneNumber?: string;
+  profilePhoto?: string;
+  spokenLanguages?: string[];
+  identification?: {
+    file?: string;
+    type?: string;
+  };
+  availability?: boolean;
 }
