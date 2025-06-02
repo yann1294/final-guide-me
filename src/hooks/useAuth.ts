@@ -66,39 +66,31 @@ export const useAuth = () => {
 
       // Store user data and token in Zustand store
       // Persist both tokens + user
-      login(loggedInUser, accessToken, refreshToken);
+      login(rawUser, accessToken, refreshToken);
       const role = rawUser.role?.name ?? "tourist";
-      const uid = rawUser.uid;
 
       // 2) If tourist or guide, fetch their profile to see if it's complete
       if (role === "tourist" || role === "guide") {
-        const usersRes = await api.get<ResponseDTO>(
-          `/api/users/${role}s/${uid}`,
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          },
-        );
+        const baseComplete =
+          Boolean(rawUser.firstName) &&
+          Boolean(rawUser.lastName) &&
+          Boolean(rawUser.phoneNumber) &&
+          Boolean(rawUser.profilePhoto) &&
+          Boolean(rawUser.identificationFile) &&
+          Boolean(rawUser.identificationType) &&
+          Boolean(rawUser.spokenLanguages);
 
-        if (usersRes.data.status === "success") {
-          const profile = usersRes.data.data as TouristDTO | GuideDTO;
+        const isComplete =
+          role === "guide"
+            ? baseComplete && Boolean(rawUser.availability)
+            : baseComplete;
 
-          const isComplete =
-            Boolean(profile.firstName) &&
-            Boolean(profile.lastName) &&
-            Boolean(profile.phoneNumber) &&
-            Boolean(profile.profilePhoto) &&
-            Boolean(profile.identification?.file);
-
-          if (!isComplete) {
-            router.push(`/dashboard/${role}/complete-profile`);
-            return;
-          }
+        if (!isComplete) {
+          router.push(`/dashboard/${role}/complete-profile`);
+          return;
         }
+        router.push(`/dashboard/${role}`);
       }
-
-      router.push(`/dashboard/${role}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed");
     } finally {
@@ -147,10 +139,10 @@ export const useAuth = () => {
   };
 
   return {
-    user,
-    accessToken,
-    refreshToken,
-    isAuthenticated,
+    user: useAuthStore((s) => s.user),
+    accessToken: useAuthStore((s) => s.accessToken),
+    refreshToken: useAuthStore((s) => s.refreshToken),
+    isAuthenticated: useAuthStore((s) => s.isAuthenticated),
     loading,
     error,
     signin,

@@ -1,25 +1,27 @@
 // stores/authStore.ts
 import { AdminDTO } from "@/dto/admin.dto";
 import { GuideDTO } from "@/dto/guide.dto";
-import { PartialUser } from "@/dto/login.dto";
+import { LocalSigninResponse, PartialUser } from "@/dto/login.dto";
 import { TouristDTO } from "@/dto/tourist.dto";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
 interface AuthStore {
-  user: PartialUser | TouristDTO | GuideDTO | AdminDTO | null; // Current authenticated user (TouristDTO)
+  user: LocalSigninResponse | TouristDTO | GuideDTO | AdminDTO | null; // Current authenticated user (TouristDTO)
   accessToken: string | null; // Authentication token (JWT)
   refreshToken: string | null; // Refresh token (JWT)
   method: "google" | "email" | null; // Authentication method
   isAuthenticated: boolean; // Whether the user is authenticated
 
   login: (
-    user: PartialUser | TouristDTO | GuideDTO | AdminDTO,
+    user: LocalSigninResponse | TouristDTO | GuideDTO | AdminDTO,
     accessToken: string,
     refreshToken: string,
   ) => void; // Log the user in
   logout: () => void; // Log the user out
-  setUser: (user: PartialUser | TouristDTO | GuideDTO | AdminDTO) => void; // Set the user data
+  setUser: (
+    user: LocalSigninResponse | TouristDTO | GuideDTO | AdminDTO,
+  ) => void; // Set the user data
   setMethod: (method: "google" | "email") => void; // Set the authentication method
   setTokens: (accessToken: string, refreshToken: string) => void; // Set the authentication tokens
   setAuthStatus: (isAuthenticated: boolean) => void; // ✅ New: manually control auth status
@@ -37,7 +39,7 @@ const useAuthStore = create<AuthStore>()(
 
       // Login action to set user and token
       login: (
-        user: PartialUser | TouristDTO | GuideDTO | AdminDTO,
+        user: LocalSigninResponse | TouristDTO | GuideDTO | AdminDTO,
         accessToken: string,
         refreshToken: string,
       ) =>
@@ -60,7 +62,7 @@ const useAuthStore = create<AuthStore>()(
         }),
 
       // Set user data
-      setUser: (user: PartialUser | TouristDTO | GuideDTO | AdminDTO) =>
+      setUser: (user: LocalSigninResponse | TouristDTO | GuideDTO | AdminDTO) =>
         set({ user }),
 
       // Set authentication method

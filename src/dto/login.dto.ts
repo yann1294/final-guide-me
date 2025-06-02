@@ -15,6 +15,14 @@ export interface LocalSigninResponse {
     accessToken: string;
     refreshToken: string;
   };
+  firstName?: string;
+  lastName?: string;
+  phoneNumber?: string;
+  profilePhoto?: string;
+  identificationFile?: string;
+  identificationType?: string;
+  spokenLanguages?: string[];
+  availability?: boolean;
 }
 
 export interface LocalSigninAPIResponse {
