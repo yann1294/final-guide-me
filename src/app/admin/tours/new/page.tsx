@@ -1,50 +1,75 @@
-'use client';
-import CreateActivityComponent from '@/components/admin/CreateActivityComponent';
-import ImageUploader from '@/components/admin/ImageUploader';
-import { useTourManagement } from '@/hooks/tours/useTourManagement';
-import { convertSecondsToDate } from '@/lib/utils/dateUtils';
+"use client";
+import CreateActivityComponent from "@/components/admin/CreateActivityComponent";
+import ImageUploader from "@/components/admin/ImageUploader";
+import { useTourManagement } from "@/hooks/tours/useTourManagement";
+import { convertSecondsToDate } from "@/lib/utils/dateUtils";
 import {
   handleNestedChange,
   handleTourInputChange,
-} from '@/lib/utils/formInputHandlers';
-import { Calendar } from 'primereact/calendar';
-import { Checkbox } from 'primereact/checkbox';
-import { InputNumber } from 'primereact/inputnumber';
-import { InputText } from 'primereact/inputtext';
+} from "@/lib/utils/formInputHandlers";
+import { Calendar } from "primereact/calendar";
+import { Checkbox } from "primereact/checkbox";
+import { InputNumber } from "primereact/inputnumber";
+import { InputText } from "primereact/inputtext";
 
-export default function CreateTour({
-  origin = 'new', title = "Create a New Tour"
-}: {
-  origin: 'new' | 'edit/view';
-  title: string;
-}) {
+function isErrorObject(err: unknown): err is Error {
+  return (
+    typeof err === "object" &&
+    err !== null &&
+    "message" in err &&
+    typeof (err as any).message === "string"
+  );
+}
+
+interface PageProps {
+  searchParams?: {
+    origin?: "new" | "edit/view";
+    title?: string;
+  };
+}
+
+export default function CreateTour({ searchParams }: PageProps) {
+  const origin = searchParams?.origin === "edit/view" ? "edit/view" : "new";
+  const title = searchParams?.title || "Create a New Tour";
   const uTm = useTourManagement(origin);
 
   let tourInputChangeHandler = (e: any) => {
     return handleTourInputChange(
       e,
-      'text',
+      "text",
       uTm.setUpdatedTourFields,
       uTm.setTour,
     );
   };
 
+  // Grab whichever error is present
+  const rawError = uTm.createTourError ?? uTm.updateTourError;
+
+  // Narrow it down to a string if we can
+  let errorMessage: string | undefined;
+
+  if (typeof rawError === "string") {
+    errorMessage = rawError;
+  } else if (isErrorObject(rawError)) {
+    errorMessage = rawError.message;
+  }
+
   return (
     <div className="container create-form mt-20">
       <h2>{title}</h2>
-      {((uTm.action === 'creating' && !uTm.createTourError) ||
-        (uTm.action === 'updating' && !uTm.updateTourError)) && (
+      {((uTm.action === "creating" && !uTm.createTourError) ||
+        (uTm.action === "updating" && !uTm.updateTourError)) && (
         <div
           className="alert alert-success alert-dismissible fade show mt-20"
           role="alert"
         >
-          Successfully {uTm.action === 'updating' ? 'updated' : 'created'}{' '}
+          Successfully {uTm.action === "updating" ? "updated" : "created"}{" "}
           <strong>{uTm.tour.name}!</strong>.
           <button
             type="button"
             className="btn-close"
             aria-label="Close"
-            onClick={() => uTm.setAction('nothing')}
+            onClick={() => uTm.setAction("nothing")}
           ></button>
         </div>
       )}
@@ -54,16 +79,21 @@ export default function CreateTour({
           className="alert alert-danger alert-dismissible fade show mt-20"
           role="alert"
         >
-          {uTm.createTourError ?? uTm.updateTourError}
+          {typeof uTm.createTourError === "string"
+            ? uTm.createTourError
+            : (uTm.createTourError?.message ??
+              (typeof uTm.updateTourError === "string"
+                ? uTm.updateTourError
+                : uTm.updateTourError?.message))}
           <button
             type="button"
             className="btn-close"
             aria-label="Close"
-            onClick={() => uTm.setAction('nothing')}
+            onClick={() => uTm.setAction("nothing")}
           ></button>
         </div>
       )}
-      {origin !== 'new' && uTm.fetchingTourData && (
+      {origin !== "new" && uTm.fetchingTourData && (
         <div className="circular-loader-container">
           <div className="circular-loader"></div>
         </div>
@@ -73,17 +103,17 @@ export default function CreateTour({
       <div className="action-buttons mb-0 mt-20 justify-content-between align-item-center">
         <div
           style={{
-            border: '1px solid #ced4da',
-            padding: '0',
-            paddingLeft: '10px',
-            backgroundColor: '#6BC8B4',
+            border: "1px solid #ced4da",
+            padding: "0",
+            paddingLeft: "10px",
+            backgroundColor: "#6BC8B4",
           }}
           className="guide-area"
         >
-          <span style={{ color: 'white', fontWeight: 'bold' }}>Guide</span>{' '}
+          <span style={{ color: "white", fontWeight: "bold" }}>Guide</span>{" "}
           <select
             style={{
-              height: '40px',
+              height: "40px",
               borderTopLeftRadius: 0,
               borderBottomLeftRadius: 0,
             }}
@@ -93,7 +123,7 @@ export default function CreateTour({
             value={uTm.tour?.guide}
             required
           >
-            <option value={''} key={'initial'}>
+            <option value={""} key={"initial"}>
               Assign guide to tour
             </option>
             {uTm.guides.map((guide) => (
@@ -104,28 +134,28 @@ export default function CreateTour({
           </select>
         </div>
         <div
-        onClick={
+          onClick={
             uTm.isCreatingTour ||
             uTm.isUpdatingTour ||
-            (uTm.updatedTourFields.size === 0)
+            uTm.updatedTourFields.size === 0
               ? () => {
-                  console.log('Save tour: Not completed');
+                  console.log("Save tour: Not completed");
                 }
               : uTm.saveTourHandler
           }
           className={
             uTm.isCreatingTour ||
             uTm.isUpdatingTour ||
-            (uTm.updatedTourFields.size === 0)
-              ? 'disabled-button'
-              : '' + ' save-button add-resource'
+            uTm.updatedTourFields.size === 0
+              ? "disabled-button"
+              : "" + " save-button add-resource"
           }
         >
           {uTm.isCreatingTour
-            ? 'Creating...'
+            ? "Creating..."
             : uTm.isUpdatingTour
-            ? 'Updating...'
-            : 'Save Tour Details'}
+              ? "Updating..."
+              : "Save Tour Details"}
         </div>
       </div>
       <form id="create-tour-form" className="row">
@@ -160,7 +190,7 @@ export default function CreateTour({
               onChange={(e) =>
                 handleNestedChange(
                   e,
-                  'name',
+                  "name",
                   uTm.setUpdatedTourFields,
                   uTm.setTour,
                 )
@@ -183,7 +213,7 @@ export default function CreateTour({
               onChange={(e) =>
                 handleNestedChange(
                   e,
-                  'city',
+                  "city",
                   uTm.setUpdatedTourFields,
                   uTm.setTour,
                 )
@@ -206,7 +236,7 @@ export default function CreateTour({
               onChange={(e) =>
                 handleNestedChange(
                   e,
-                  'country',
+                  "country",
                   uTm.setUpdatedTourFields,
                   uTm.setTour,
                 )
@@ -298,7 +328,7 @@ export default function CreateTour({
               id="date"
               name="date"
               value={
-                origin === 'new' || uTm.updatedTourFields.has('date')
+                origin === "new" || uTm.updatedTourFields.has("date")
                   ? (uTm.tour.date as Date)
                   : convertSecondsToDate(uTm.tour.date._seconds)
               }
@@ -327,7 +357,7 @@ export default function CreateTour({
                 }));
                 // Track which fields have been updated (preserving structure)
                 uTm.setUpdatedTourFields((prevFields) =>
-                  new Set(prevFields).add('isAvailable'),
+                  new Set(prevFields).add("isAvailable"),
                 );
               }}
             />
@@ -348,10 +378,10 @@ export default function CreateTour({
               onChange={tourInputChangeHandler}
               rows={1}
               onInput={(e) => {
-                let desc = document.getElementById('description');
+                let desc = document.getElementById("description");
                 if (desc) {
-                  desc.style.height = 'auto';
-                  desc.style.height = desc.scrollHeight + 'px';
+                  desc.style.height = "auto";
+                  desc.style.height = desc.scrollHeight + "px";
                 }
               }}
               required

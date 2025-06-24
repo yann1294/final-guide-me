@@ -94,30 +94,44 @@ export async function handleDELETE(url: string) {
 }
 
 // handle patch requests
-export async function handlePATCH(
-  url: string,
-  req: Request,
-  body: string | null = null,
-) {
+export async function handlePATCH(url: string, req: Request) {
   try {
-    // Send a POST request to the backend API to create a tour
-    const response = await fetch(url, {
+    // 1) Read the raw request body exactly once
+    const bodyText = await req.text();
+
+    // 2) (Optional) log the parsed JSON or raw text for debugging
+    try {
+      console.log("🔗 Proxy body:", JSON.parse(bodyText));
+    } catch {
+      console.log("🔗 Proxy body (raw):", bodyText);
+    }
+
+    // 3) Reconstruct headers for the downstream request
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+    };
+    // const auth = req.headers.get("authorization");
+    // if (auth) {
+    //   headers["authorization"] = auth;
+    // }
+
+    // 4) Proxy the PATCH to the real backend
+    const proxyRes = await fetch(url, {
       method: "PATCH",
-      body: body != null ? body : JSON.stringify(await req.json()),
+      headers,
+      body: bodyText,
     });
 
-    // Parse the response data from the backend
-    const data = await response.json();
-    // Return the parsed data in the Next.js response
-    return NextResponse.json(data);
-  } catch (error) {
-    console.log(error);
-    // Return an error response with status 500
+    // 5) Read and return the backend’s JSON response
+    const data = await proxyRes.json();
+    return NextResponse.json(data, { status: proxyRes.status });
+  } catch (err: any) {
+    console.error("❌ handlePATCH error:", err);
     return NextResponse.json(
       {
         status: "error",
         code: 500,
-        message: JSON.stringify(error),
+        message: err.message,
         data: null,
       } as ResponseDTO,
       { status: 500 },
