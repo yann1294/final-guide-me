@@ -2,10 +2,6 @@
 
 import { useState } from "react";
 import { useParams } from "next/navigation";
-<<<<<<< HEAD
-
-=======
->>>>>>> 6678fb8ccd6e7105df35814619b6411760cc3468
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
