@@ -7,13 +7,11 @@ export async function PATCH(req: Request, { params }: any) {
     return await handlePATCH(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/admin/guides/approve/${params.id}`,
       req,
-      "",
     );
   } else {
     return await handlePATCH(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/admin/guides/reject/${params.id}`,
       req,
-      "",
     );
   }
 }
