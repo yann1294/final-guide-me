@@ -1,37 +1,40 @@
-'use client';
-import CreateActivityComponent from '@/components/admin/CreateActivityComponent';
-import ImageUploader from '@/components/admin/ImageUploader';
-import TourCard from '@/components/tours/TourCard';
-import { TourDTO } from '@/dto/tour.dto';
-import { usePackageManagement } from '@/hooks/packages/usePackageManagement';
-import { convertSecondsToDate } from '@/lib/utils/dateUtils';
+"use client";
+import CreateActivityComponent from "@/components/admin/CreateActivityComponent";
+import ImageUploader from "@/components/admin/ImageUploader";
+import TourCard from "@/components/tours/TourCard";
+import { TourDTO } from "@/dto/tour.dto";
+import { usePackageManagement } from "@/hooks/packages/usePackageManagement";
+import { convertSecondsToDate } from "@/lib/utils/dateUtils";
 import {
   handleNestedChange,
   handlePackageInputChange,
   handleTourInputChange,
-} from '@/lib/utils/formInputHandlers';
-import { EyeIcon } from 'lucide-react';
-import { Calendar } from 'primereact/calendar';
-import { Checkbox } from 'primereact/checkbox';
-import { Dropdown } from 'primereact/dropdown';
-import { InputNumber } from 'primereact/inputnumber';
-import { InputText } from 'primereact/inputtext';
-import { MultiSelect } from 'primereact/multiselect';
-import { useState } from 'react';
+} from "@/lib/utils/formInputHandlers";
+import { EyeIcon } from "lucide-react";
+import { Calendar } from "primereact/calendar";
+import { Checkbox } from "primereact/checkbox";
+import { Dropdown } from "primereact/dropdown";
+import { InputNumber } from "primereact/inputnumber";
+import { InputText } from "primereact/inputtext";
+import { MultiSelect } from "primereact/multiselect";
+import { useState } from "react";
 
-export default function CreatePackage({
-  origin = 'new',
-  title = 'Create a New Package',
-}: {
-  origin: 'new' | 'edit/view';
-  title: string;
-}) {
+interface PageProps {
+  searchParams?: {
+    origin?: "new" | "edit/view";
+    title?: string;
+  };
+}
+
+export default function CreatePackage({ searchParams }: PageProps) {
+  const origin = searchParams?.origin === "edit/view" ? "edit/view" : "new";
+  const title = searchParams?.title || "Create a New Tour";
   const uPkgM = usePackageManagement(origin);
 
   let packageInputChangeHandler = (e: any) => {
     return handlePackageInputChange(
       e,
-      'text',
+      "text",
       uPkgM.setUpdatedPackageFields,
       uPkgM.setPackage,
     );
@@ -40,19 +43,19 @@ export default function CreatePackage({
   return (
     <div className="container create-form mt-20">
       <h2>{title}</h2>
-      {((uPkgM.action === 'creating' && !uPkgM.createPackageError) ||
-        (uPkgM.action === 'updating' && !uPkgM.updatePackageError)) && (
+      {((uPkgM.action === "creating" && !uPkgM.createPackageError) ||
+        (uPkgM.action === "updating" && !uPkgM.updatePackageError)) && (
         <div
           className="alert alert-success alert-dismissible fade show mt-20"
           role="alert"
         >
-          Successfully {uPkgM.action === 'updating' ? 'updated' : 'created'}{' '}
+          Successfully {uPkgM.action === "updating" ? "updated" : "created"}{" "}
           <strong>{uPkgM.pkg.name}!</strong>.
           <button
             type="button"
             className="btn-close"
             aria-label="Close"
-            onClick={() => uPkgM.setAction('nothing')}
+            onClick={() => uPkgM.setAction("nothing")}
           ></button>
         </div>
       )}
@@ -67,11 +70,11 @@ export default function CreatePackage({
             type="button"
             className="btn-close"
             aria-label="Close"
-            onClick={() => uPkgM.setAction('nothing')}
+            onClick={() => uPkgM.setAction("nothing")}
           ></button>
         </div>
       )}
-      {origin !== 'new' && uPkgM.loading && (
+      {origin !== "new" && uPkgM.loading && (
         <div className="circular-loader-container">
           <div className="circular-loader"></div>
         </div>
@@ -81,17 +84,17 @@ export default function CreatePackage({
       <div className="action-buttons mb-0 mt-20 justify-content-between align-item-center">
         <div
           style={{
-            border: '1px solid #ced4da',
-            padding: '0',
-            paddingLeft: '10px',
-            backgroundColor: '#6BC8B4',
+            border: "1px solid #ced4da",
+            padding: "0",
+            paddingLeft: "10px",
+            backgroundColor: "#6BC8B4",
           }}
           className="guide-area"
         >
-          <span style={{ color: 'white', fontWeight: 'bold' }}>Guide</span>{' '}
+          <span style={{ color: "white", fontWeight: "bold" }}>Guide</span>{" "}
           <select
             style={{
-              height: '40px',
+              height: "40px",
               borderTopLeftRadius: 0,
               borderBottomLeftRadius: 0,
             }}
@@ -101,7 +104,7 @@ export default function CreatePackage({
             value={uPkgM.pkg?.guide}
             required
           >
-            <option value={''} key={'initial'}>
+            <option value={""} key={"initial"}>
               Assign guide to package
             </option>
             {uPkgM.guides.map((guide) => (
@@ -117,7 +120,7 @@ export default function CreatePackage({
             uPkgM.isUpdatingPackage ||
             uPkgM.updatedPackageFields.size === 0
               ? () => {
-                  console.log('Save tour: Not completed');
+                  console.log("Save tour: Not completed");
                 }
               : uPkgM.savePackageHandler
           }
@@ -125,15 +128,15 @@ export default function CreatePackage({
             uPkgM.isCreatingPackage ||
             uPkgM.isUpdatingPackage ||
             uPkgM.updatedPackageFields.size === 0
-              ? 'disabled-button'
-              : '' + ' save-button add-resource'
+              ? "disabled-button"
+              : "" + " save-button add-resource"
           }
         >
           {uPkgM.isCreatingPackage
-            ? 'Creating...'
+            ? "Creating..."
             : uPkgM.isUpdatingPackage
-            ? 'Updating...'
-            : 'Save Package Details'}
+              ? "Updating..."
+              : "Save Package Details"}
         </div>
       </div>
       <form id="create-tour-form" className="row">
@@ -168,7 +171,7 @@ export default function CreatePackage({
               onChange={(e) =>
                 handleNestedChange(
                   e,
-                  'name',
+                  "name",
                   uPkgM.setUpdatedPackageFields,
                   uPkgM.setPackage,
                 )
@@ -191,7 +194,7 @@ export default function CreatePackage({
               onChange={(e) =>
                 handleNestedChange(
                   e,
-                  'city',
+                  "city",
                   uPkgM.setUpdatedPackageFields,
                   uPkgM.setPackage,
                 )
@@ -214,7 +217,7 @@ export default function CreatePackage({
               onChange={(e) =>
                 handleNestedChange(
                   e,
-                  'country',
+                  "country",
                   uPkgM.setUpdatedPackageFields,
                   uPkgM.setPackage,
                 )
@@ -306,7 +309,7 @@ export default function CreatePackage({
               id="date"
               name="date"
               value={
-                origin === 'new' || uPkgM.updatedPackageFields.has('date')
+                origin === "new" || uPkgM.updatedPackageFields.has("date")
                   ? (uPkgM.pkg.date as Date)
                   : convertSecondsToDate(uPkgM.pkg.date._seconds)
               }
@@ -335,7 +338,7 @@ export default function CreatePackage({
                 }));
                 // Track which fields have been updated (preserving structure)
                 uPkgM.setUpdatedPackageFields((prevFields) =>
-                  new Set(prevFields).add('isAvailable'),
+                  new Set(prevFields).add("isAvailable"),
                 );
               }}
             />
@@ -356,10 +359,10 @@ export default function CreatePackage({
               onChange={packageInputChangeHandler}
               rows={1}
               onInput={(e) => {
-                let desc = document.getElementById('description');
+                let desc = document.getElementById("description");
                 if (desc) {
-                  desc.style.height = 'auto';
-                  desc.style.height = desc.scrollHeight + 'px';
+                  desc.style.height = "auto";
+                  desc.style.height = desc.scrollHeight + "px";
                 }
               }}
               required
@@ -370,20 +373,24 @@ export default function CreatePackage({
       {/* Tours */}
       <div className="tour-activities-actions mt-40 action-buttons">
         <div className="create-form-section-title disable-hover">
-          Package tours ({uPkgM.selectedTours.length.toString().padStart(2, '0')})
+          Package tours (
+          {uPkgM.selectedTours.length.toString().padStart(2, "0")})
         </div>
         <div className="flex disable-hover">
           <div
             className={
-              'add-resource ' + (uPkgM.selectedTours.length === 0 ? 'disabled-button' : '')
+              "add-resource " +
+              (uPkgM.selectedTours.length === 0 ? "disabled-button" : "")
             }
             onClick={() => {
               if (uPkgM.selectedTours.length > 0) {
-                uPkgM.saveTours(uPkgM.selectedTours.map((tour) => tour.id) as string[]);
+                uPkgM.saveTours(
+                  uPkgM.selectedTours.map((tour) => tour.id) as string[],
+                );
               }
             }}
           >
-            {false ? 'Saving...' : 'Save Tours'}
+            {false ? "Saving..." : "Save Tours"}
           </div>
           <MultiSelect
             value={uPkgM.selectedTours}
@@ -393,9 +400,9 @@ export default function CreatePackage({
             selectAll={false}
             maxSelectedLabels={1}
             onChange={(e) => {
-              console.log('Tours: ', e.value);
+              console.log("Tours: ", e.value);
               uPkgM.setSelectedTours(e.value);
-              console.log('Selected Tours: ', uPkgM.selectedTours);
+              console.log("Selected Tours: ", uPkgM.selectedTours);
             }}
             // panelHeaderTemplate={() => (<h5 className='p-multiselect-header'>Tours</h5>)}
             options={uPkgM.tours}
@@ -410,7 +417,7 @@ export default function CreatePackage({
             optionLabel="name"
             placeholder="Select Tours"
             className="add-resource"
-            style={{ minWidth: '14rem' }}
+            style={{ minWidth: "14rem" }}
           />
         </div>
       </div>
