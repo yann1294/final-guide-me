@@ -18,19 +18,18 @@ export const useFetchPackages = () => {
     try {
       // Replace with the actual endpoint for fetching packages
       const response = await axios.get<ResponseDTO>(`/api/packages`);
-      
+
       // Check if the response status is 'success'
-      if (response.data.status !== 'success') {
+      if (response.data.status !== "success") {
         console.error(response.data);
         throw new Error(response.data.message);
       }
 
-      
       // Persist the fetched packages in Zustand store
       setPackages(response.data.data as PackageDTO[]);
     } catch (err) {
       console.error(err);
-      setError(err instanceof Error ? err.message : 'Failed to fetch packages');
+      setError(err instanceof Error ? err.message : "Failed to fetch packages");
     } finally {
       setLoading(false);
     }
@@ -49,10 +48,12 @@ export const useFetchPackageTours = () => {
     setError(null);
     try {
       // Replace with the actual endpoint for fetching packages
-      const response = await axios.get<ResponseDTO>(`/api/packages/${packageId}/tours`);
-      
+      const response = await axios.get<ResponseDTO>(
+        `/api/packages/${packageId}/tours`,
+      );
+
       // Check if the response status is 'success'
-      if (response.data.status !== 'success') {
+      if (response.data.status !== "success") {
         console.error(response.data);
         throw new Error(response.data.message);
       }
@@ -61,7 +62,7 @@ export const useFetchPackageTours = () => {
       setPackageTours(packageId, response.data.data as TourDTO[]);
     } catch (err) {
       console.error(err);
-      setError(err instanceof Error ? err.message : 'Failed to fetch packages');
+      setError(err instanceof Error ? err.message : "Failed to fetch packages");
     } finally {
       setLoading(false);
     }
@@ -80,13 +81,15 @@ export const useFetchOnePackage = () => {
   const fetchOnePackage = async (packageId: string) => {
     setLoading(true);
     setError(null);
-    
+
     try {
       // Replace with the actual endpoint for fetching packages
-      const response = await axios.get<ResponseDTO>(`/api/packages/${packageId}`);
-      
+      const response = await axios.get<ResponseDTO>(
+        `/api/packages/${packageId}`,
+      );
+
       // Check if the response status is 'success'
-      if (response.data.status !== 'success') {
+      if (response.data.status !== "success") {
         console.error(response.data);
         throw new Error(response.data.message);
       }
@@ -99,10 +102,9 @@ export const useFetchOnePackage = () => {
       if (!guides.get(pkg.guide)) {
         await fetchOneGuide(pkg.guide);
       }
-      
     } catch (err) {
       console.error("Error: ", err);
-      setError(err instanceof Error ? err.message : 'Failed to fetch tours');
+      setError(err instanceof Error ? err.message : "Failed to fetch tours");
     } finally {
       setLoading(false);
     }
@@ -121,30 +123,38 @@ export const useCreateOnePackage = () => {
     setError(null);
 
     try {
-      console.log("Create One Package: ")
+      console.log("Create One Package: ");
       // convert activities to object
       let data: any = Object.assign({}, pkg);
       // data['activities'] = Object.fromEntries(tour.activities.entries());
-      data['tours'] = {};
+      //data["tours"] = {};
+      data.tours = [];
 
       // Replace with the actual endpoint for fetching tours
-      const response = await axios.post<ResponseDTO>(`/api/packages`, JSON.stringify(data));
-      console.log(response.data)
+      const response = await axios.post<ResponseDTO>(
+        `/api/packages`,
+        JSON.stringify(data),
+      );
+      console.log(response.data);
 
       // Check if the response status is 'success'
-      if (response.data.status !== 'success') {
+      if (response.data.status !== "success") {
         setError(response.data.message);
         throw new Error(response.data.message);
       }
 
       // add tour to tours
-      pkg.id = (response.data.data as string).split("/")[1];
-      addPackage(pkg);
+      // pkg.id = (response.data.data as string).split("/")[1];
+      const createdPackage = response.data.data as PackageDTO;
+      console.log("API created package:", createdPackage);
+      addPackage(createdPackage);
       setCurrentPackage(pkg);
-      console.log(response.data)
+      console.log(response.data);
     } catch (err: any) {
       // console.error("Error: ", err);
-      setError(err);
+      const msg = err instanceof Error ? err.message : JSON.stringify(err);
+
+      setError(msg);
     } finally {
       setLoading(false);
     }
@@ -154,12 +164,15 @@ export const useCreateOnePackage = () => {
 };
 
 export const useUpdateOnePackage = () => {
-  const { updatePackage, currentPackage, setCurrentPackage } = usePackageStore();
+  const { updatePackage, currentPackage, setCurrentPackage } =
+    usePackageStore();
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [status, setStatus] = useState<"updated" | "initial" | "failed">("initial");
+  const [status, setStatus] = useState<"updated" | "initial" | "failed">(
+    "initial",
+  );
 
-  const updateOnePackage = async (pkg: Partial<PackageDTO>) => {
+  const updateOnePackage = async (id: string, pkg: Partial<PackageDTO>) => {
     setLoading(true);
     setError(null);
 
@@ -169,27 +182,32 @@ export const useUpdateOnePackage = () => {
 
       // processing activities if it exist
       if (pkg.tours) {
-        data['tours'] = pkg.tours;
+        data["tours"] = pkg.tours;
       }
 
       // Replace with the actual endpoint for fetching tours
-      const response = await axios.patch<ResponseDTO>(`/api/packages/${pkg.id}`, data);
+      const response = await axios.patch<ResponseDTO>(
+        `/api/packages/${pkg.id}`,
+        JSON.stringify(pkg),
+        { headers: { "Content-Type": "application/json" } },
+      );
 
       // Check if the response status is 'success'
-      if (response.data.status !== 'success') {
-        console.log(JSON.parse(response.data.message))
+      if (response.data.status !== "success") {
+        console.log(JSON.parse(response.data.message));
         setError(response.data.message);
         setStatus("failed");
         throw new Error(response.data.message);
       }
 
-      console.log(response);
       setStatus("updated");
-      updatePackage({...currentPackage, ...pkg} as PackageDTO);
-      setCurrentPackage({...currentPackage, ...pkg} as PackageDTO);
+      const updated = { ...currentPackage, ...pkg } as PackageDTO;
+      updatePackage(updated);
+      setCurrentPackage(updated);
     } catch (err: any) {
       // console.error("Error: ", err);
-      setError(err);
+      const msg = err instanceof Error ? err.message : JSON.stringify(err);
+      setError(msg);
       setStatus("failed");
     } finally {
       setLoading(false);
@@ -212,17 +230,19 @@ export const useDeleteOnePackage = () => {
       console.log("Delete pkg");
 
       // Replace with the actual endpoint for fetching tours
-      const response = await axios.delete<ResponseDTO>(`/api/packages/${pkg.id}`);
+      const response = await axios.delete<ResponseDTO>(
+        `/api/packages/${pkg.id}`,
+      );
 
       // Check if the response status is 'success'
-      if (response.data.status !== 'success') {
-        console.log(JSON.parse(response.data.message))
+      if (response.data.status !== "success") {
+        console.log(JSON.parse(response.data.message));
         setError(response.data.message);
         throw new Error(response.data.message);
       }
 
       deletePackage(pkg as PackageDTO);
-      console.log(response)
+      console.log(response);
     } catch (err: any) {
       // console.error("Error: ", err);
       setError(err);

@@ -1,14 +1,24 @@
 import { useEffect, useState } from "react";
 import useTourStore from "@/stores/tourStore";
 import useUserStore from "@/stores/userStore";
-import { useCreateOneTour, useFetchOneTour, useFetchTours, useUpdateOneTour } from "../tours/useTours";
+import {
+  useCreateOneTour,
+  useFetchOneTour,
+  useFetchTours,
+  useUpdateOneTour,
+} from "../tours/useTours";
 import { emptyPackageObject } from "@/lib/utils/emptyObjects";
 import { TourDTO } from "@/dto/tour.dto";
 import { useFetchGuides } from "../useUsers";
 import { generateUpdatedData } from "@/lib/utils/formInputHandlers";
 import usePackageStore from "@/stores/packageStore";
 import { PackageDTO } from "@/dto/package.dto";
-import { useCreateOnePackage, useFetchOnePackage, useFetchPackageTours, useUpdateOnePackage } from "./usePackages";
+import {
+  useCreateOnePackage,
+  useFetchOnePackage,
+  useFetchPackageTours,
+  useUpdateOnePackage,
+} from "./usePackages";
 
 /**
  * Custom hook for managing tours, supporting creation and editing/viewing.
@@ -29,26 +39,39 @@ export const usePackageManagement = (origin: "new" | "edit/view") => {
   const { tours } = useTourStore();
 
   // Fetch and manage specific tour data
-  const  { fetchOnePackage, loading } = useFetchOnePackage();
+  const { fetchOnePackage, loading } = useFetchOnePackage();
 
   // Manage tour creation state and errors
-  const { updateOnePackage, loading: isUpdatingPackage, error: updatePackageError } = useUpdateOnePackage();
-  const { createOnePackage, loading: isCreatingPackage, error: createPackageError } = useCreateOnePackage();
+  const {
+    updateOnePackage,
+    loading: isUpdatingPackage,
+    error: updatePackageError,
+  } = useUpdateOnePackage();
+  const {
+    createOnePackage,
+    loading: isCreatingPackage,
+    error: createPackageError,
+  } = useCreateOnePackage();
   const { fetchPackageTours } = useFetchPackageTours();
 
   // Local state for managing the tour object
   const [pkg, setPackage] = useState<PackageDTO>(emptyPackageObject);
 
   // State for tracking the current action (creating, updating, or idle)
-  const [action, setAction] = useState<"creating" | "updating" | "nothing">("nothing");
+  const [action, setAction] = useState<"creating" | "updating" | "nothing">(
+    "nothing",
+  );
 
   // keeps track of fields that have been updated
-  const [updatedPackageFields, setUpdatedPackageFields] = useState<Set<string>>(new Set());
+  const [updatedPackageFields, setUpdatedPackageFields] = useState<Set<string>>(
+    new Set(),
+  );
 
   // Fetch guides and current tour when the component mounts
   useEffect(() => {
     if (guides.length === 0) fetchGuides();
-    if (!currentPackage && origin !== "new") fetchOnePackage(window.location.pathname.split("/").pop()!);
+    if (!currentPackage && origin !== "new")
+      fetchOnePackage(window.location.pathname.split("/").pop()!);
   }, [fetchGuides, fetchOnePackage, guides, currentPackage, origin]);
 
   // update selected tours when package is updated
@@ -57,7 +80,7 @@ export const usePackageManagement = (origin: "new" | "edit/view") => {
       setSelectedTours(Object.values(packageTours));
     }
   }, [packageTours]);
-  
+
   // Synchronize local state with the current tour for editing/viewing mode
   useEffect(() => {
     if (origin === "edit/view" && currentPackage) {
@@ -76,16 +99,15 @@ export const usePackageManagement = (origin: "new" | "edit/view") => {
   }, [currentPackage, origin]);
 
   // update package tours
-  const saveTours = async (tours: string[]) => {
-    // check whether current package is available
-    if (currentPackage) {
-      // update the package tours
-      updateOnePackage({ id: currentPackage.id, tours: tours } as Partial<PackageDTO>);
-    } else {
-      // alert user that package is not available
+  const saveTours = (tourIds: string[]) => {
+    if (!currentPackage) {
       alert("Please save the package first");
+      return;
     }
-  }
+
+    // id first, patch second
+    updateOnePackage(currentPackage.id!, { tours: tourIds });
+  };
 
   // Function to handle saving the tour (create or update)
   const savePackageHandler = () => {
@@ -107,7 +129,8 @@ export const usePackageManagement = (origin: "new" | "edit/view") => {
   };
 
   return {
-    updatedPackageFields, setUpdatedPackageFields,
+    updatedPackageFields,
+    setUpdatedPackageFields,
     savePackageHandler,
     pkg,
     setPackage,
@@ -123,6 +146,6 @@ export const usePackageManagement = (origin: "new" | "edit/view") => {
     tours,
     saveTours,
     selectedTours,
-    setSelectedTours
+    setSelectedTours,
   };
 };
