@@ -6,16 +6,14 @@ import Breadcrumb from "@/components/common/Breadcrumb";
 // Assuming TourContent and TourTab are designed to handle TourDTO
 import TourContent from "@/components/tours/TourContent";
 import TourTab from "@/components/tours/TourTab";
-
-
 import { useRouter } from "next/navigation";
 import useTourStore from "@/stores/tourStore";
 
 export default function TourDetailsContent() {
   const { id } = useParams(); // Get the tour ID from the URL query parameter
   const { tours } = useTourStore();
-  
-  // 
+
+  //
   const tour = tours?.find((tour) => tour.id === id);
 
   const router = useRouter();

@@ -1,10 +1,29 @@
+import { AdminDTO } from "@/dto/admin.dto";
 import { GuideDTO } from "@/dto/guide.dto";
 import { ResponseDTO } from "@/dto/helper.dto";
 import { PackageDTO } from "@/dto/package.dto";
 import { TouristDTO } from "@/dto/tourist.dto";
+import api from "@/lib/api";
+import useAuthStore from "@/stores/authStore";
 import useUserStore from "@/stores/userStore";
 import axios from "axios";
 import { useState } from "react";
+
+export interface FullUserDTO {
+  uid?: string;
+  role?: { name: string };
+  emailAddress?: string;
+  firstName?: string;
+  lastName?: string;
+  phoneNumber?: string;
+  profilePhoto?: string;
+  identification?: {
+    file?: string;
+    type?: string;
+  };
+  spokenLanguages?: string[];
+  availability?: boolean;
+}
 
 export const useFetchOneGuide = () => {
   const setTourGuides = useUserStore((state) => state.setTourGuides);
@@ -17,10 +36,12 @@ export const useFetchOneGuide = () => {
 
     try {
       // Replace with the actual endpoint for fetching packages
-      const response = await axios.get<ResponseDTO>(`/api/users/guides/${guideId}`);
+      const response = await axios.get<ResponseDTO>(
+        `/api/users/guides/${guideId}`,
+      );
 
       // Check if the response status is 'success'
-      if (response.data.status !== 'success') {
+      if (response.data.status !== "success") {
         console.error(response.data);
         throw new Error(response.data.message);
       }
@@ -29,7 +50,7 @@ export const useFetchOneGuide = () => {
       setTourGuides(response.data.data as GuideDTO);
     } catch (err) {
       console.error("Error: ", err);
-      setError(err instanceof Error ? err.message : 'Failed to fetch guides');
+      setError(err instanceof Error ? err.message : "Failed to fetch guides");
     } finally {
       setLoading(false);
     }
@@ -52,7 +73,7 @@ export const useFetchGuides = () => {
       const response = await axios.get<ResponseDTO>(`/api/users/guides`);
 
       // Check if the response status is 'success'
-      if (response.data.status !== 'success') {
+      if (response.data.status !== "success") {
         console.error(response.data);
         throw new Error(response.data.message);
       }
@@ -61,7 +82,7 @@ export const useFetchGuides = () => {
       setGuides(response.data.data as GuideDTO[]);
     } catch (err) {
       console.error(err);
-      setError(err instanceof Error ? err.message : 'Failed to fetch guides');
+      setError(err instanceof Error ? err.message : "Failed to fetch guides");
     } finally {
       setLoading(false);
     }
@@ -84,17 +105,16 @@ export const useFetchTourists = () => {
       const response = await axios.get<ResponseDTO>(`/api/users/tourists`);
 
       // Check if the response status is 'success'
-      if (response.data.status !== 'success') {
+      if (response.data.status !== "success") {
         console.error(response.data);
         throw new Error(response.data.message);
       }
-
 
       // Persist the fetched tourists in Zustand store
       setTourists(response.data.data as TouristDTO[]);
     } catch (err) {
       console.error(err);
-      setError(err instanceof Error ? err.message : 'Failed to fetch tourists');
+      setError(err instanceof Error ? err.message : "Failed to fetch tourists");
     } finally {
       setLoading(false);
     }
@@ -115,10 +135,12 @@ export const useFetchOneTourist = () => {
 
     try {
       // Replace with the actual endpoint for fetching packages
-      const response = await axios.get<ResponseDTO>(`/api/users/tourists/${touristId}`);
+      const response = await axios.get<ResponseDTO>(
+        `/api/users/tourists/${touristId}`,
+      );
 
       // Check if the response status is 'success'
-      if (response.data.status !== 'success') {
+      if (response.data.status !== "success") {
         console.error(response.data);
         throw new Error(response.data.message);
       }
@@ -127,7 +149,7 @@ export const useFetchOneTourist = () => {
       setTourists([response.data.data] as TouristDTO[]);
     } catch (err) {
       console.error("Error: ", err);
-      setError(err instanceof Error ? err.message : 'Failed to fetch tourists');
+      setError(err instanceof Error ? err.message : "Failed to fetch tourists");
     } finally {
       setLoading(false);
     }
@@ -141,7 +163,9 @@ export const useUpdateOneGuide = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const { updateGuide } = useUserStore();
-  const [updateStatus, setUpdateStatus] = useState<string | "initial">("initial");
+  const [updateStatus, setUpdateStatus] = useState<string | "initial">(
+    "initial",
+  );
 
   const updateOneGuide = async (oldData: GuideDTO, data: GuideDTO) => {
     setLoading(true);
@@ -149,10 +173,13 @@ export const useUpdateOneGuide = () => {
 
     try {
       // Replace with the actual endpoint for fetching packages
-      const response = await axios.patch<ResponseDTO>(`/api/users/guides/${data.uid}`, data);
+      const response = await axios.patch<ResponseDTO>(
+        `/api/users/guides/approve/${data.uid}`,
+        data,
+      );
 
       // Check if the response status is 'success'
-      if (response.data.status !== 'success') {
+      if (response.data.status !== "success") {
         setUpdateStatus("Failed to update guide. Please try again later.");
         console.error(response.data);
         throw new Error(response.data.message);
@@ -160,20 +187,122 @@ export const useUpdateOneGuide = () => {
 
       console.log("Updated guide: ", response.data);
       // update the guide in the store
-      updateGuide(
-        {
-          ...oldData,
-          ...data
-        } as GuideDTO
-      );
+      updateGuide({
+        ...oldData,
+        ...data,
+      } as GuideDTO);
       setUpdateStatus("Guide updated successfully");
     } catch (err) {
       console.error("Error: ", err);
-      setError(err instanceof Error ? err.message : 'Failed to update guide');
+      setError(err instanceof Error ? err.message : "Failed to update guide");
     } finally {
       setLoading(false);
     }
   };
 
   return { updateOneGuide, loading, error, updateStatus };
+};
+
+export const useUpdateUserProfile = () => {
+  const { accessToken, setUser } = useAuthStore();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const updateFullUserProfile = async (
+    user: FullUserDTO,
+  ): Promise<ResponseDTO | null> => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const role = user.role?.name;
+      if (!role) throw new Error("User role is missing.");
+      if (!user.uid) throw new Error("User UID is missing.");
+      if (!accessToken) throw new Error("Missing access token.");
+
+      let url = "";
+      switch (role) {
+        case "tourist":
+          url = `/api/users/tourists/${user.uid}`;
+          break;
+        case "guide":
+          url = `/api/users/guides/${user.uid}`;
+          break;
+        case "admin":
+          url = `/api/users/admins/${user.uid}`;
+          break;
+        default:
+          throw new Error("Unsupported user role.");
+      }
+      const patchBody: Record<string, any> = {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        phoneNumber: user.phoneNumber,
+        profilePhoto: user.profilePhoto,
+        spokenLanguages: user.spokenLanguages,
+        identificationFile: user.identification?.file,
+        identificationType: user.identification?.type,
+        availability: user.availability,
+      };
+      console.log(
+        "→ PATCH to",
+        url,
+        "with body:",
+        JSON.stringify(patchBody, null, 2),
+      );
+      const response = await api.patch<ResponseDTO>(url, patchBody, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      // if (response.data.status !== "success") {
+      //   throw new Error(response.data.message);
+      // }
+
+      // // ✅ Update Zustand store with new user state
+      // setUser({
+      //   uid: user.uid,
+      //   emailAddress: user.emailAddress!,
+      //   role: { name: role, permissions: [] }, // safe fallback
+      //   firstName: patchBody.firstName,
+      //   lastName: patchBody.lastName,
+      //   phoneNumber: patchBody.phoneNumber,
+      //   profilePhoto: patchBody.profilePhoto,
+      //   spokenLanguages: patchBody.spokenLanguages,
+      //   identification: {
+      //     file: patchBody.identificationFile,
+      //     type: patchBody.identificationType,
+      //   },
+      //   availability: patchBody.availability,
+      // });
+
+      // return response.data;
+      //    Grab the updated user object (either in data.data or data itself):
+      const updated = (response.data as any).data ?? (response.data as any);
+
+      // 3) Update the store with the new user:
+      setUser({
+        ...user,
+        ...updated,
+      } as any);
+
+      return updated;
+    } catch (err: any) {
+      console.error("❌ updateFullUserProfile caught:", {
+        message: err.message,
+        responseData: err.response?.data,
+        status: err.response?.status,
+      });
+      setError(err.message ?? "Failed to update user profile.");
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  };
+  return {
+    updateFullUserProfile,
+    loading,
+    error,
+  };
 };

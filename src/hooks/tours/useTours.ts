@@ -5,6 +5,7 @@ import { useState } from "react";
 import useTourStore from "@/stores/tourStore";
 import useUserStore from "@/stores/userStore";
 import { useFetchOneGuide } from "../useUsers";
+import api from "@/lib/api";
 
 export const useFetchTours = () => {
   const setTours = useTourStore((state) => state.setTours);
@@ -19,7 +20,7 @@ export const useFetchTours = () => {
       const response = await axios.get<ResponseDTO>(`/api/tours`);
 
       // Check if the response status is 'success'
-      if (response.data.status !== 'success') {
+      if (response.data.status !== "success") {
         console.error(response.data);
         throw new Error(response.data.message);
       }
@@ -28,7 +29,7 @@ export const useFetchTours = () => {
       setTours(response.data.data as TourDTO[]);
     } catch (err) {
       console.error("Error: ", err);
-      setError(err instanceof Error ? err.message : 'Failed to fetch tours');
+      setError(err instanceof Error ? err.message : "Failed to fetch tours");
     } finally {
       setLoading(false);
     }
@@ -53,7 +54,7 @@ export const useFetchOneTour = () => {
       const response = await axios.get<ResponseDTO>(`/api/tours/${tourId}`);
 
       // Check if the response status is 'success'
-      if (response.data.status !== 'success') {
+      if (response.data.status !== "success") {
         console.error(response.data);
         throw new Error(response.data.message);
       }
@@ -61,7 +62,10 @@ export const useFetchOneTour = () => {
       // Persist the fetched tours in Zustand store
       const tour: TourDTO = response.data.data as TourDTO;
       let activities = new Map<number, ActivityDTO>(
-        Object.entries(tour.activities).map(([key, value]) => [parseInt(key), value])
+        Object.entries(tour.activities).map(([key, value]) => [
+          parseInt(key),
+          value,
+        ]),
       );
       tour.activities = activities;
       setCurrentTour(tour);
@@ -70,10 +74,9 @@ export const useFetchOneTour = () => {
       if (!guides.get(tour.guide)) {
         await fetchOneGuide(tour.guide);
       }
-
     } catch (err) {
       console.error("Error: ", err);
-      setError(err instanceof Error ? err.message : 'Failed to fetch tours');
+      setError(err instanceof Error ? err.message : "Failed to fetch tours");
     } finally {
       setLoading(false);
     }
@@ -81,37 +84,49 @@ export const useFetchOneTour = () => {
 
   return { fetchOneTour, loading, error };
 };
+type TourError = Error | string | null;
 
 export const useCreateOneTour = () => {
   const { addTour, setCurrentTour } = useTourStore();
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<TourError>(null);
 
   const createOneTour = async (tour: TourDTO) => {
     setLoading(true);
     setError(null);
 
     try {
-      console.log("Create One tour: ")
+      console.log("Create One tour: ");
       // convert activities to object
       let data: any = Object.assign({}, tour);
       // data['activities'] = Object.fromEntries(tour.activities.entries());
-      data['activities'] = {};
+      data["activities"] = {};
 
       // Replace with the actual endpoint for fetching tours
-      const response = await axios.post<ResponseDTO>(`/api/tours`, JSON.stringify(data));
+      const response = await axios.post<ResponseDTO>(
+        `/api/tours`,
+        JSON.stringify(data),
+      );
 
       // Check if the response status is 'success'
-      if (response.data.status !== 'success') {
+      if (response.data.status !== "success") {
         setError(response.data.message);
         throw new Error(response.data.message);
       }
 
-      // add tour to tours
-      tour.id = (response.data.data as string).split("/")[1];
+      // console.log("createOneTour response.data.data:", response.data.data);
+
+      // // add tour to tours
+      // tour.id = (response.data.data as string).split("/")[1];
+      // ► HERE: pull the created tour object out of .data
+      const createdTour = response.data.data as TourDTO;
+      console.log("API created tour:", createdTour);
+
+      // assign the new ID back to your local tour
+      tour.id = createdTour.id;
       addTour(tour);
       setCurrentTour(tour);
-      console.log(response.data)
+      console.log(response.data);
     } catch (err: any) {
       // console.error("Error: ", err);
       setError(err);
@@ -126,8 +141,10 @@ export const useCreateOneTour = () => {
 export const useUpdateOneTour = () => {
   const { updateTour } = useTourStore();
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-  const [status, setStatus] = useState<"updated" | "initial" | "failed">("initial");
+  const [error, setError] = useState<TourError>(null);
+  const [status, setStatus] = useState<"updated" | "initial" | "failed">(
+    "initial",
+  );
 
   const updateOneTour = async (tour: Partial<TourDTO>) => {
     setLoading(true);
@@ -135,19 +152,33 @@ export const useUpdateOneTour = () => {
 
     try {
       // convert activities to object
-      let data: any = Object.assign({}, tour);
+      //let data: any = Object.assign({}, tour);
+
+      let data: any = { ...tour };
 
       // processing activities if it exist
       if (tour.activities) {
-        data['activities'] = Object.fromEntries(tour.activities.entries());
+        // data["activities"] = JSON.stringify(
+        //   Object.fromEntries(tour.activities.entries()),
+        // );
+        const plainActivities = Object.fromEntries(tour.activities.entries());
+        data["activities"] = JSON.stringify(plainActivities);
       }
 
       // Replace with the actual endpoint for fetching tours
-      const response = await axios.patch<ResponseDTO>(`/api/tours/${tour.id}`, data);
+      const response = await api.patch<ResponseDTO>(
+        `/api/tours/${tour.id}`,
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
+      );
 
       // Check if the response status is 'success'
-      if (response.data.status !== 'success') {
-        console.log(JSON.parse(response.data.message))
+      if (response.data.status !== "success") {
+        console.log(JSON.parse(response.data.message));
         setError(response.data.message);
         setStatus("failed");
         throw new Error(response.data.message);
@@ -184,14 +215,14 @@ export const useDeleteOneTour = () => {
       const response = await axios.delete<ResponseDTO>(`/api/tours/${tour.id}`);
 
       // Check if the response status is 'success'
-      if (response.data.status !== 'success') {
-        console.log(JSON.parse(response.data.message))
+      if (response.data.status !== "success") {
+        console.log(JSON.parse(response.data.message));
         setError(response.data.message);
         throw new Error(response.data.message);
       }
 
       deleteTour(tour as TourDTO);
-      console.log(response)
+      console.log(response);
     } catch (err: any) {
       // console.error("Error: ", err);
       setError(err);
