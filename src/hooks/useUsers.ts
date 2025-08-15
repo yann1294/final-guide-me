@@ -175,7 +175,7 @@ export const useUpdateOneGuide = () => {
       // Replace with the actual endpoint for fetching packages
       const response = await axios.patch<ResponseDTO>(
         `/api/users/guides/approve/${data.uid}`,
-        data,
+        { approvalStatus: data.approvalStatus },
       );
 
       // Check if the response status is 'success'
@@ -189,7 +189,7 @@ export const useUpdateOneGuide = () => {
       // update the guide in the store
       updateGuide({
         ...oldData,
-        ...data,
+        approvalStatus: data.approvalStatus,
       } as GuideDTO);
       setUpdateStatus("Guide updated successfully");
     } catch (err) {

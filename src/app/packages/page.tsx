@@ -14,7 +14,9 @@ import ResponsivePackageCard from "@/components/packages/ResponsivePackageCard";
 
 const Packages: React.FC = () => {
   // Accessing packages and tours data from the store
-  const { packages, tours } = usePackageStore();
+  // ✅ select slices (reactive)
+  const packages = usePackageStore((s) => s.packages);
+  const toursByPackage = usePackageStore((s) => s.toursByPackage);
 
   // Fetching packages and tours with their respective loading and error states
   const {
@@ -36,16 +38,20 @@ const Packages: React.FC = () => {
       return;
     }
 
-    // Step 2: once we have packages, only fetch tours if `pkg.tours` is a non‐empty array
-    packages.forEach(async (pkg) => {
-      const alreadyHave = tours.has(pkg.id!);
-      const hasAnyTourIds = Array.isArray(pkg.tours) && pkg.tours.length > 0;
+    // 2) for each package, fetch its tours only if:
+    //    - package has tour IDs
+    //    - we haven't already loaded them
+    packages.forEach((pkg) => {
+      const id = pkg.id;
+      if (!id) return;
 
-      if (hasAnyTourIds && !alreadyHave) {
-        await fetchPackageTours(pkg.id!);
+      const hasAnyTourIds = Array.isArray(pkg.tours) && pkg.tours.length > 0;
+      const alreadyLoaded = Boolean(toursByPackage[id]);
+      if (hasAnyTourIds && !alreadyLoaded) {
+        fetchPackageTours(id);
       }
     });
-  }, [packages, fetchPackages, fetchPackageTours, tours]); // Re-run the effect whenever packages change
+  }, [packages, toursByPackage, fetchPackages, fetchPackageTours]);
 
   // Only show the “available” packages
   const availablePackages = packages.filter((pkg) => pkg.isAvailable);
@@ -85,12 +91,13 @@ const Packages: React.FC = () => {
               </div>
             ) : (
               availablePackages.map((pkg) => {
-                // Pull this package’s tours from Zustand (or default to empty array)
-                const toursForThisPackage =
-                  usePackageStore.getState().tours.get(pkg.id!) || [];
+                const id = typeof pkg.id === "string" ? pkg.id : null;
+                const toursForThisPackage = id
+                  ? (toursByPackage[id] ?? [])
+                  : [];
 
                 return (
-                  <div key={pkg.id} className="mb-12">
+                  <div key={id ?? pkg.name} className="mb-12">
                     <ResponsivePackageCard
                       pkg={pkg}
                       tours={toursForThisPackage}

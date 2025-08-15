@@ -110,10 +110,10 @@ export async function handlePATCH(url: string, req: Request) {
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
     };
-    // const auth = req.headers.get("authorization");
-    // if (auth) {
-    //   headers["authorization"] = auth;
-    // }
+    const auth = req.headers.get("authorization");
+    if (auth) {
+      headers["authorization"] = auth;
+    }
 
     // 4) Proxy the PATCH to the real backend
     const proxyRes = await fetch(url, {

@@ -1,20 +1,29 @@
-import React from 'react';
-import Link from 'next/link';
-import { PackageDTO } from '@/dto/package.dto';
-import { TourDTO } from '@/dto/tour.dto';
-import usePackageStore from '@/stores/packageStore';
-import useTourStore from '@/stores/tourStore';
-import { CONTEXT, ContextType } from '@/lib/utils/contextUtils';
-import { convertSecondsToDateString } from '@/lib/utils/dateUtils';
+import React from "react";
+import Link from "next/link";
+import { PackageDTO } from "@/dto/package.dto";
+import { TourDTO } from "@/dto/tour.dto";
+import usePackageStore from "@/stores/packageStore";
+import useTourStore from "@/stores/tourStore";
+import { CONTEXT, ContextType } from "@/lib/utils/contextUtils";
+import { convertSecondsToDateString } from "@/lib/utils/dateUtils";
 
 interface TourPackageTabProps {
   resource: TourDTO | PackageDTO;
   context: CONTEXT;
 }
 
-export default function TourPackageTab({ resource, context }: TourPackageTabProps) {
-  const { tours } = usePackageStore();
+export default function TourPackageTab({
+  resource,
+  context,
+}: TourPackageTabProps) {
+  const toursByPackage = usePackageStore((s) => s.toursByPackage);
   const { setCurrentTour } = useTourStore();
+
+  // ✅ only read package id when on the package context
+  const pkgId =
+    context === ContextType.package ? (resource as PackageDTO).id : undefined;
+  // ✅ safe lookup; default to empty array if not present yet
+  const toursForPkg: TourDTO[] = pkgId ? (toursByPackage[pkgId] ?? []) : [];
 
   return (
     <>
@@ -89,7 +98,8 @@ export default function TourPackageTab({ resource, context }: TourPackageTabProp
                 <div className="tab-content-1">
                   <div className="p-overview">
                     <h5>
-                      {context === ContextType.tour ? 'Tour' : 'Package'} description
+                      {context === ContextType.tour ? "Tour" : "Package"}{" "}
+                      description
                     </h5>
                     <p>{resource.description}</p>
                   </div>
@@ -116,7 +126,7 @@ export default function TourPackageTab({ resource, context }: TourPackageTabProp
                             <div className="timeline-index">
                               <div className="index-circle">
                                 <h5>
-                                  {(index + 1).toString().padStart(2, '0')}
+                                  {(index + 1).toString().padStart(2, "0")}
                                 </h5>
                               </div>
                             </div>
@@ -125,16 +135,18 @@ export default function TourPackageTab({ resource, context }: TourPackageTabProp
                                 Activity {index + 1}: {activity.name}
                               </h5>
                               <strong>
-                                Duration: {activity.durationHours}{' '}
+                                Duration: {activity.durationHours}{" "}
                                 {activity.durationHours === 1
-                                  ? 'hour'
-                                  : 'hours'}
+                                  ? "hour"
+                                  : "hours"}
                               </strong>
                               <ul>
                                 <li />
                                 <li>
                                   <i className="flaticon-arrival" />
-                                  {activity.location.name}, {activity.location.city}, {activity.location.country}
+                                  {activity.location.name},{" "}
+                                  {activity.location.city},{" "}
+                                  {activity.location.country}
                                 </li>
                                 <li />
                                 <li>
@@ -159,7 +171,7 @@ export default function TourPackageTab({ resource, context }: TourPackageTabProp
                               </ul>
                             </div>
                           </li>
-                        )
+                        ),
                       )}
                   </ul>
                 </div>
@@ -177,57 +189,65 @@ export default function TourPackageTab({ resource, context }: TourPackageTabProp
             <div className="tab-content-2">
               <div className="row">
                 {context === ContextType.package &&
-                  tours.get(resource.id as string)?.map((tour) => (
-                    <div key={tour.id} className="col-lg-4 col-md-6 col-sm-6">
-                      <Link
-                        onClick={() => setCurrentTour(tour)}
-                        href={`/tours/${tour.id}`}
-                      >
-                        <div className="package-card">
-                          <div className="package-thumb">
-                            <img
-                              src={tour.images ? tour.images[0] : ''}
-                              alt=""
-                              className="img-fluid"
-                            />
-                          </div>
-                          <div className="package-details">
-                            <div className="resource-name text-black">
-                              {tour.name}
-                            </div>
-                            <div className="resource-location">
-                              <i className="flaticon-arrival" />
-                              <Link
-                                style={{ fontSize: 'small' }}
-                                href={`/tours/${tour.id}`}
-                              >
-                                &nbsp;{tour.location.name}, {tour.location.city},{' '}
-                                {tour.location.country}
-                              </Link>
-                            </div>
-                            <div className="card-foot d-flex justify-content-between">
-                              {/* Tour availability */}
-                              {tour.isAvailable ? (
-                                <div className="card-chip package-availability">
-                                  Available
-                                </div>
-                              ) : (
-                                <div className="card-chip package-availability card-chip-not-available">
-                                  Not Available
-                                </div>
-                              )}
-                              <div className="card-chip number-of-seats">
-                                {tour.numberOfSeats}{' '}
-                                {tour.numberOfSeats === 1 ? 'seat' : 'seats'}
-                              </div>
-                              <div className="card-chip date">
-                                {convertSecondsToDateString(tour.date._seconds)}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </Link>
+                  (toursForPkg.length === 0 ? (
+                    <div className="text-center py-3">
+                      No tours in this package yet.
                     </div>
+                  ) : (
+                    toursForPkg.map((tour) => (
+                      <div key={tour.id} className="col-lg-4 col-md-6 col-sm-6">
+                        <Link
+                          onClick={() => setCurrentTour(tour)}
+                          href={`/tours/${tour.id}`}
+                        >
+                          <div className="package-card">
+                            <div className="package-thumb">
+                              <img
+                                src={tour.images ? tour.images[0] : ""}
+                                alt=""
+                                className="img-fluid"
+                              />
+                            </div>
+                            <div className="package-details">
+                              <div className="resource-name text-black">
+                                {tour.name}
+                              </div>
+                              <div className="resource-location">
+                                <i className="flaticon-arrival" />
+                                <Link
+                                  style={{ fontSize: "small" }}
+                                  href={`/tours/${tour.id}`}
+                                >
+                                  &nbsp;{tour.location.name},{" "}
+                                  {tour.location.city}, {tour.location.country}
+                                </Link>
+                              </div>
+                              <div className="card-foot d-flex justify-content-between">
+                                {/* Tour availability */}
+                                {tour.isAvailable ? (
+                                  <div className="card-chip package-availability">
+                                    Available
+                                  </div>
+                                ) : (
+                                  <div className="card-chip package-availability card-chip-not-available">
+                                    Not Available
+                                  </div>
+                                )}
+                                <div className="card-chip number-of-seats">
+                                  {tour.numberOfSeats}{" "}
+                                  {tour.numberOfSeats === 1 ? "seat" : "seats"}
+                                </div>
+                                <div className="card-chip date">
+                                  {convertSecondsToDateString(
+                                    tour.date._seconds,
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </Link>
+                      </div>
+                    ))
                   ))}
               </div>
             </div>
