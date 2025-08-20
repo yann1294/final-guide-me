@@ -113,6 +113,8 @@ export default function AdminGuidesPage() {
           )}
           <div className="col-12 management-container">
             <DataTable
+              value={guides} // ✅ give DataTable fresh rows explicitly
+              dataKey="uid" // ✅ helps PrimeReact diff row
               {...dataTableConfig}
               editMode={"cell"}
               onRowEditChange={(e) => console.log(e)}
