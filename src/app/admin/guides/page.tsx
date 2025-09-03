@@ -66,10 +66,10 @@ export default function AdminGuidesPage() {
   useEffect(() => {
     fetchGuides();
     // nice-to-have: refresh when window regains focus
-    const onFocus = () => fetchGuides();
-    window.addEventListener("focus", onFocus);
-    return () => window.removeEventListener("focus", onFocus);
-  }, [fetchGuides]);
+    //const onFocus = () => fetchGuides();
+    //window.addEventListener("focus", onFocus);
+    //return () => window.removeEventListener("focus", onFocus);
+  }, []);
 
   // Get DataTable configuration
   const dataTableConfig = useDataTableConfig(
@@ -171,20 +171,22 @@ export default function AdminGuidesPage() {
                           ] as SelectItem[]
                         }
                         onChange={(e) => {
+                          const newStatus = e.value;
                           setApproved({
                             ...approved,
                             [data.uid]: {
                               old: data.approvalStatus,
-                              new: e.value,
+                              new: newStatus,
                             },
                           });
-                          updateOneGuide(
+                          const updatedGuide = updateOneGuide(
                             data as GuideDTO,
                             {
                               uid: data.uid,
-                              approvalStatus: e.value,
+                              approvalStatus: newStatus,
                             } as GuideDTO,
                           );
+                          fetchGuides();
                         }}
                         value={
                           approved[data.uid] === undefined

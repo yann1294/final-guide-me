@@ -171,18 +171,51 @@ export const useUpdateOneGuide = () => {
     setLoading(true);
     setError(null);
 
+    const urlApprove = `http://localhost:3001/admin/guides/approve/${data.uid}`;
+    const urlReject = `http://localhost:3001/admin/guides/reject/${data.uid}`;
+    const urlPending = `http://localhost:3001/admin/guides/pending/${data.uid}`;
+    let response: any = {};
+
     try {
       // Replace with the actual endpoint for fetching packages
-      const response = await axios.patch<ResponseDTO>(
-        `/api/users/guides/approve/${data.uid}`,
-        { approvalStatus: data.approvalStatus },
-      );
+      switch (data.approvalStatus) {
+        case "approved":
+          {
+            console.log("coming here");
+            console.log("Old data ", oldData);
+            console.log("New DATA", data.approvalStatus);
+            response = await axios.patch<ResponseDTO>(urlApprove, {
+              approvalStatus: data.approvalStatus,
+            });
+            console.log("Response: ", response);
+          }
+          break;
+
+        case "pending":
+          console.log("Is this being triggered too ???");
+          response = await axios.patch<ResponseDTO>(urlPending, {
+            approvalStatus: data.approvalStatus,
+          });
+          break;
+        case "rejected":
+          response = await axios.patch<ResponseDTO>(urlReject, {
+            approvalStatus: data.approvalStatus,
+          });
+          break;
+
+        default:
+          console.log("Unknown state");
+      }
+      // const response = await axios.patch<ResponseDTO>(
+      //   `/api/users/guides/approve/${data.uid}`, // TODO: endpoint is not correct
+      //   { approvalStatus: data.approvalStatus },
+      // );
 
       // Check if the response status is 'success'
       if (response.data.status !== "success") {
         setUpdateStatus("Failed to update guide. Please try again later.");
-        console.error(response.data);
-        throw new Error(response.data.message);
+        console.error("Response request ", response.data);
+        throw new Error("Error sent : ", response.data.message);
       }
 
       console.log("Updated guide: ", response.data);
