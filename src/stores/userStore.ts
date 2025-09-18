@@ -7,10 +7,12 @@ interface UserStore {
   tourGuides: Map<string, GuideDTO>; // Map to store guides by their guideId
   guides: GuideDTO[];
   tourists: TouristDTO[];
+  guidesTotal: number; // NEW
 
   setTourGuides: (tourGuides: GuideDTO) => void; // Set guides
   setGuides: (tourGuides: GuideDTO[]) => void; // Set guides
   setTourists: (tourGuides: TouristDTO[]) => void; // Set guides
+  setGuidesTotal: (n: number) => void; // NEW
   updateGuide: (guide: GuideDTO) => void; // Update a guide
   updateTourist: (tourist: TouristDTO) => void; // Update a tourist
 }
@@ -19,8 +21,13 @@ const useUserStore = create<UserStore>((set) => ({
   tourGuides: new Map<string, GuideDTO>(), // Initialize with an empty map of guides
   guides: [],
   tourists: [],
+  guidesTotal: 0, // Initialize guidesTotal to 0,
 
   // Set guides in the store
+  setGuidesTotal: (n: number) =>
+    set((state) => {
+      return { guidesTotal: n };
+    }),
   setTourGuides: (tourGuides: GuideDTO) =>
     set((state) => {
       const newGuides = new Map(state.tourGuides);

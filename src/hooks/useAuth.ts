@@ -49,20 +49,20 @@ export const useAuth = () => {
 
       console.log("Received login response:", JSON.stringify(rawUser, null, 2));
 
-      if (!rawUser || !rawUser.uid) {
-        throw new Error("Invalid login response.");
+      if (!rawUser?.tokens?.accessToken || !rawUser?.tokens?.refreshToken) {
+        throw new Error("Signin failed: server did not return tokens.");
       }
 
       // Map into one of your DTO shapes...
       // If you need more fields (name, photo, etc.) — fetch /users/me
-      const loggedInUser: PartialUser = {
-        uid: rawUser.uid,
-        emailAddress: rawUser.emailAddress,
-        role: rawUser.role,
-      };
+      // const loggedInUser: PartialUser = {
+      //   uid: rawUser.uid,
+      //   emailAddress: rawUser.emailAddress,
+      //   role: rawUser.role,
+      // };
 
-      const accessToken = rawUser.tokens?.accessToken ?? "mock-access-token";
-      const refreshToken = rawUser.tokens?.refreshToken ?? "mock-refresh-token";
+      const accessToken = rawUser.tokens?.accessToken;
+      const refreshToken = rawUser.tokens?.refreshToken;
 
       // Store user data and token in Zustand store
       // Persist both tokens + user
