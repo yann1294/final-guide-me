@@ -13,15 +13,15 @@ export const useCreateStripeOrder = () => {
   const createStripeOrder = async (payment: PaymentDTO) => {
     setLoading(true);
     setError(null);
-    
-    console.log("Payment", payment)
+
+    console.log("Sending PaymentDTO:", JSON.stringify(payment, null, 2)); // Debug payload
     try {
       // Replace with the actual endpoint for fetching packages
-      const response = await axios.post<ResponseDTO>('/api/payments', payment);
-      
+      const response = await axios.post<ResponseDTO>("/api/payments", payment);
+
       // Check if the response status is 'success'
-      if (response.data.status !== 'success') {
-        console.error(response.data);
+      if (response.data.status !== "success") {
+        console.error("Server response:", response.data);
         throw new Error(response.data.message);
       }
 
@@ -30,11 +30,11 @@ export const useCreateStripeOrder = () => {
       if (response.data.data) {
         window.location.assign((response.data.data as { url: string }).url);
       }
-      console.log
+      console.log;
       setPayment(payment);
     } catch (err) {
       console.error("Error: ", err);
-      setError(err instanceof Error ? err.message : 'Failed to fetch tours');
+      setError(err instanceof Error ? err.message : "Failed to fetch tours");
     } finally {
       setLoading(false);
     }
@@ -42,7 +42,6 @@ export const useCreateStripeOrder = () => {
 
   return { createStripeOrder, loading, error };
 };
-
 
 export const useFetchBookings = () => {
   const setBookings = useBookingStore((state) => state.setBookings);
@@ -55,9 +54,9 @@ export const useFetchBookings = () => {
     try {
       // Replace with the actual endpoint for fetching bookings
       const response = await axios.get<ResponseDTO>(`/api/bookings`);
-      
+
       // Check if the response status is 'success'
-      if (response.data.status !== 'success') {
+      if (response.data.status !== "success") {
         console.error(response.data);
         throw new Error(response.data.message);
       }
@@ -66,7 +65,7 @@ export const useFetchBookings = () => {
       setBookings(response.data.data as BookingDTO[]);
     } catch (err) {
       console.error(err);
-      setError(err instanceof Error ? err.message : 'Failed to fetch bookings');
+      setError(err instanceof Error ? err.message : "Failed to fetch bookings");
     } finally {
       setLoading(false);
     }
@@ -74,7 +73,6 @@ export const useFetchBookings = () => {
 
   return { fetchBookings, loading, error };
 };
-
 
 // fetch one booking
 export const useFetchOneBooking = (id: string) => {
@@ -88,9 +86,9 @@ export const useFetchOneBooking = (id: string) => {
     try {
       // Replace with the actual endpoint for fetching bookings
       const response = await axios.get<ResponseDTO>(`/api/bookings/${id}`);
-      
+
       // Check if the response status is 'success'
-      if (response.data.status !== 'success') {
+      if (response.data.status !== "success") {
         console.error(response.data);
         throw new Error(response.data.message);
       }
@@ -99,7 +97,7 @@ export const useFetchOneBooking = (id: string) => {
       setBooking([response.data.data] as BookingDTO[]);
     } catch (err) {
       console.error(err);
-      setError(err instanceof Error ? err.message : 'Failed to fetch booking');
+      setError(err instanceof Error ? err.message : "Failed to fetch booking");
     } finally {
       setLoading(false);
     }
@@ -110,7 +108,7 @@ export const useFetchOneBooking = (id: string) => {
 
 // create booking
 export const useCreateBooking = (booking: BookingDTO) => {
-  const {setCurrentBooking, setBookings, bookings} = useBookingStore();
+  const { setCurrentBooking, setBookings, bookings } = useBookingStore();
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -119,10 +117,10 @@ export const useCreateBooking = (booking: BookingDTO) => {
     setError(null);
     try {
       // Replace with the actual endpoint for fetching bookings
-      const response = await axios.get<ResponseDTO>(`/api/bookings`);
-      
+      const response = await axios.post<ResponseDTO>(`/api/bookings`, booking);
+
       // Check if the response status is 'success'
-      if (response.data.status !== 'success') {
+      if (response.data.status !== "success") {
         console.error(response.data);
         throw new Error(response.data.message);
       }
@@ -134,7 +132,7 @@ export const useCreateBooking = (booking: BookingDTO) => {
       setBookings([...bookings, booking]);
     } catch (err) {
       console.error(err);
-      setError(err instanceof Error ? err.message : 'Failed to fetch booking');
+      setError(err instanceof Error ? err.message : "Failed to fetch booking");
     } finally {
       setLoading(false);
     }
