@@ -7,8 +7,8 @@ export async function POST(req: Request) {
     console.log("📥 Received file upload for profile");
     const formData = await req.formData();
 
-    if (!formData.has("file")) {
-      console.error("❌ No 'file' field in formData");
+    if (!formData.has("profilePhoto") || !formData.has("identificationFile")) {
+      throw new Error("Missing required file fields");
     }
 
     const response = await fetch(
@@ -26,15 +26,19 @@ export async function POST(req: Request) {
     const data = (await response.json()) as ResponseDTO;
     console.log("📤 Upload result:", data);
 
-    if (data.status !== "success") throw data;
+    if (!response.ok || data.status !== "success") {
+      console.error("Upload failed:", data);
+      return NextResponse.json(data, { status: response.status });
+    }
 
     return NextResponse.json(data);
   } catch (error) {
+    console.error("Proxy upload error:", error);
     return NextResponse.json(
       {
         status: "error",
         code: 500,
-        message: JSON.stringify(error),
+        message: error instanceof Error ? error.message : "Upload proxy failed",
         data: null,
       } as ResponseDTO,
       { status: 500 },

@@ -1,28 +1,56 @@
 // components/tours/TourSummary.tsx
 
-import { PaymentDTO } from '@/dto/payment.dto';
-import { ContextType } from '@/lib/utils/contextUtils';
-import React from 'react';
+import { BookingDTO, TouristBooking } from "@/dto/booking.dto";
+import { PaymentDTO } from "@/dto/payment.dto";
+import useBookingStore from "@/stores/bookingStore";
+import { useCreateBooking, useCreateStripeOrder } from "@/hooks/useBookings";
+import { ContextType } from "@/lib/utils/contextUtils";
+import React from "react";
 
 const BookingSummary = ({
   tour,
   numberOfPeople,
   setNumberOfPeople,
   tax,
-  createStripeOrder,
   user,
   context,
-  loading
 }: any) => {
+  const {
+    createStripeOrder,
+    loading: paymentLoading,
+    error: paymentError,
+  } = useCreateStripeOrder();
+  const {
+    createBooking,
+    loading: bookingLoading,
+    error: bookingError,
+  } = useCreateBooking({
+    status: "pending", // Required: Set a valid status
+    bookedOn: new Date().toISOString(), // Required: ISO date string
+    tourist: new Map<string, TouristBooking>([
+      // Required: Provide a Map of tourists (adjust keys/values as needed)
+      ["primary", { name: user?.name || "User", age: 30 }], // Placeholder; use real data
+      // Add more for numberOfPeople if needed, e.g., loop to generate
+    ]),
+    ...(context === ContextType.tour
+      ? { tour: tour.id }
+      : { tourPackage: tour.id }), // Optional: Set based on context (exclusive)
+  } as BookingDTO);
+
+  const loading = paymentLoading || bookingLoading;
   return (
     <div className="col-lg-12 col-md-6">
       <div className="p-sidebar-form">
-        <h5 className="package-d-head">Book This {context === ContextType.tour ? "Tour" : "Package"}</h5>
+        <h5 className="package-d-head">
+          Book This {context === ContextType.tour ? "Tour" : "Package"}
+        </h5>
         <hr />
         <div className="row">
           <div className="col-lg-12 order-summary">
             <div className="field">Type</div>
-            <div className="value">{context === ContextType.tour ? "Tour" : "Package"}</div>
+            <div className="value">
+              {context === ContextType.tour ? "Tour" : "Package"}
+            </div>
           </div>
           <div className="col-lg-12 order-summary">
             <div className="field">Price</div>
@@ -37,7 +65,7 @@ const BookingSummary = ({
           <div className="col-lg-12 order-summary">
             <div className="field">People</div>
             <div className="value">
-              {numberOfPeople.toString().padStart(2, '0')}
+              {numberOfPeople.toString().padStart(2, "0")}
             </div>
           </div>
           <div className="col-lg-12 order-summary">
@@ -71,24 +99,67 @@ const BookingSummary = ({
           </div>
           <hr />
           <div className="col-lg-12">
+            {bookingError && (
+              <p className="error">Booking Error: {bookingError}</p>
+            )}
+            {paymentError && (
+              <p className="error">Payment Error: {paymentError}</p>
+            )}
             <input
               onClick={async () => {
-                await createStripeOrder({
-                  resourceId: tour.id,
-                  resourceType: context.context,
-                  gateway: 'stripe',
-                  amount:
-                    parseFloat((numberOfPeople *
-                    (tour.price + tax - tour.price * (tour.discount / 100))).toFixed(2)),
-                  currency: 'USD',
-                  userId: user?.uid,
-                  createdAt: new Date().toISOString(),
-                  updatedAt: new Date().toISOString(),
-                } as PaymentDTO);
+                if (!user?.uid) {
+                  alert("You must be logged in to make a payment.");
+                  return;
+                }
+
+                try {
+                  // Create booking
+                  await createBooking();
+                  const bookingId =
+                    useBookingStore.getState().currentBooking?.id;
+                  if (!bookingId) {
+                    throw new Error("Failed to create booking.");
+                  }
+
+                  // Create payment
+                  const paymentId = `pay_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+                  const paymentAmount = parseFloat(
+                    (
+                      numberOfPeople *
+                      (tour.price + tax - tour.price * (tour.discount / 100))
+                    ).toFixed(2),
+                  );
+                  const payment: PaymentDTO = {
+                    resourceId: tour.id || "",
+                    resourceType: context.context || "",
+                    gateway: "stripe",
+                    paymentId: paymentId,
+                    amount: paymentAmount,
+                    currency: "USD",
+                    status: "pending",
+                    bookingId: bookingId,
+                    userId: user.uid,
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString(),
+                  };
+
+                  if (!bookingId || !tour.id || !user.uid) {
+                    alert(
+                      "Missing required fields: booking ID, tour ID, or user ID.",
+                    );
+                    return;
+                  }
+
+                  await createStripeOrder(payment);
+                } catch (err) {
+                  console.error("Payment failed:", err);
+                  alert("Failed to initiate payment. Please try again.");
+                }
               }}
               type="submit"
-              value={loading ? "Processing..." : "Pay with stripe"}
+              value={loading ? "Processing..." : "Pay with Stripe"}
               className={loading ? "disabled-button" : ""}
+              disabled={loading}
             />
           </div>
           <div className="col-lg-12">

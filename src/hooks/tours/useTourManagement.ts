@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import useTourStore from "@/stores/tourStore";
 import useUserStore from "@/stores/userStore";
-import { useCreateOneTour, useFetchOneTour, useUpdateOneTour } from "./useTours";
+import {
+  useCreateOneTour,
+  useFetchOneTour,
+  useUpdateOneTour,
+} from "./useTours";
 import { emptyTourObject } from "@/lib/utils/emptyObjects";
 import { TourDTO } from "@/dto/tour.dto";
 import { useFetchGuides } from "../useUsers";
@@ -24,22 +28,40 @@ export const useTourManagement = (origin: "new" | "edit/view") => {
   const { fetchOneTour, loading: fetchingTourData } = useFetchOneTour();
 
   // Manage tour creation state and errors
-  const { updateOneTour, loading: isUpdatingTour, error: updateTourError } = useUpdateOneTour();
-  const { createOneTour, loading: isCreatingTour, error: createTourError } = useCreateOneTour();
+  const {
+    updateOneTour,
+    loading: isUpdatingTour,
+    error: updateTourError,
+  } = useUpdateOneTour();
+  const {
+    createOneTour,
+    loading: isCreatingTour,
+    error: createTourError,
+  } = useCreateOneTour();
 
   // Local state for managing the tour object
   const [tour, setTour] = useState<TourDTO>(emptyTourObject);
 
   // State for tracking the current action (creating, updating, or idle)
-  const [action, setAction] = useState<"creating" | "updating" | "nothing">("nothing");
+  const [action, setAction] = useState<"creating" | "updating" | "nothing">(
+    "nothing",
+  );
 
   // keeps track of fields that have been updated
-  const [updatedTourFields, setUpdatedTourFields] = useState<Set<string>>(new Set());
+  const [updatedTourFields, setUpdatedTourFields] = useState<Set<string>>(
+    new Set(),
+  );
 
   // Fetch guides and current tour when the component mounts
   useEffect(() => {
-    if (guides.length === 0) fetchGuides();
-    if (!currentTour && origin !== "new") fetchOneTour(window.location.pathname.split("/").pop()!);
+    if (guides.length === 0)
+      fetchGuides({
+        page: 1,
+        limit: 12,
+        status: "approved",
+      });
+    if (!currentTour && origin !== "new")
+      fetchOneTour(window.location.pathname.split("/").pop()!);
   }, [fetchGuides, fetchOneTour, guides, currentTour, origin]);
 
   // Synchronize local state with the current tour for editing/viewing mode
@@ -79,7 +101,8 @@ export const useTourManagement = (origin: "new" | "edit/view") => {
   };
 
   return {
-    updatedTourFields, setUpdatedTourFields,
+    updatedTourFields,
+    setUpdatedTourFields,
     saveTourHandler,
     tour,
     setTour,

@@ -135,6 +135,7 @@ import { Image } from "primereact/image";
 import { dropDownFilterTemplate } from "@/components/admin/FilterTemplates";
 import { convertSecondsToDateString } from "../utils/dateUtils";
 import { Checkbox } from "primereact/checkbox";
+import Link from "next/link";
 
 const imgCellStyle: React.CSSProperties = {
   height: "42px",
@@ -149,6 +150,72 @@ const toSeconds = (v: any): number | undefined => {
   const ms = Date.parse(v); // handles ISO strings
   return Number.isFinite(ms) ? Math.floor(ms / 1000) : undefined;
 };
+
+// 🔽 Resolve the identification file src from various shapes
+// guideColumnConfig.ts
+const resolveIdFileSrc = (row: any): string | undefined => {
+  // 1) common keys
+  let v: any =
+    row?.identification?.file ??
+    row?.identificationFile ??
+    row?.identification?.url ??
+    row?.idFileUrl ??
+    row?.idFile?.url ??
+    row?.idFile; // sometimes a plain string
+
+  // 2) object forms like { url }, { href }, { bucket, fullPath }, etc.
+  if (v && typeof v === "object") {
+    v =
+      v.url ?? v.href ?? v.downloadURL ?? v.downloadUrl ?? v.path ?? v.fullPath;
+    // if still object with {bucket, fullPath}, try to build
+    if (typeof v !== "string") {
+      const bucket =
+        row?.identification?.bucket ??
+        row?.bucket ??
+        process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET;
+      const fullPath =
+        row?.identification?.fullPath ??
+        row?.identification?.path ??
+        row?.fullPath ??
+        row?.path;
+      const token =
+        row?.identification?.downloadToken ??
+        row?.identification?.downloadTokens?.split(",")[0] ??
+        row?.downloadToken ??
+        row?.downloadTokens?.split(",")[0];
+
+      if (bucket && fullPath) {
+        const base = `https://firebasestorage.googleapis.com/v0/b/${bucket}/o/${encodeURIComponent(fullPath)}?alt=media`;
+        return token ? `${base}&token=${encodeURIComponent(token)}` : base;
+      }
+    }
+  }
+
+  if (!v || typeof v !== "string") return undefined;
+
+  // 3) http(s) directly usable
+  if (/^https?:\/\//i.test(v)) return v;
+
+  // 4) raw Firebase REST path
+  if (v.startsWith("/v0/b/"))
+    return `https://firebasestorage.googleapis.com${v}`;
+
+  // 5) gs://bucket/path → public download URL (if public or tokenless allowed)
+  if (v.startsWith("gs://")) {
+    const m = /^gs:\/\/([^/]+)\/(.+)$/.exec(v);
+    if (m) {
+      const [, bucket, path] = m;
+      return `https://firebasestorage.googleapis.com/v0/b/${bucket}/o/${encodeURIComponent(
+        path,
+      )}?alt=media`;
+    }
+  }
+
+  return undefined; // unknown format
+};
+
+const isImage = (u: string) =>
+  /\.(png|jpe?g|gif|webp|bmp|svg)$/i.test(new URL(u, location.origin).pathname);
 
 export const guideColumnConfigs: ColumnProps[] = [
   { field: "uid", header: "UID" },
@@ -186,11 +253,15 @@ export const guideColumnConfigs: ColumnProps[] = [
     field: "identification.file",
     header: "Identification File",
     body: (row: any) => {
-      const src = row?.identification?.file;
-      return src ? (
+      const src = resolveIdFileSrc(row);
+      if (!src) return <span className="text-muted">No file</span>;
+
+      return isImage(src) ? (
         <Image style={imgCellStyle} src={src} alt="ID" preview />
       ) : (
-        <span className="text-muted">No file</span>
+        <Link href={src} target="_blank" rel="noreferrer">
+          Open file
+        </Link>
       );
     },
   },
@@ -203,7 +274,7 @@ export const guideColumnConfigs: ColumnProps[] = [
     filterElement: (options) =>
       dropDownFilterTemplate(options, ["passport", "license", "national"]),
     body: (row: any) => {
-      const t = row?.identification?.type;
+      const t = row?.identification?.type ?? row?.identificationType;
       return t ? String(t).toUpperCase() : "N/A";
     },
   },
