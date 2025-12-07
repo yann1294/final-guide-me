@@ -36,7 +36,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 import { NextRequest, NextResponse } from "next/server";
-const BACKEND = process.env.BACKEND_BASE_URL ?? "http://localhost:3001";
+const BACKEND = process.env.NEXT_PUBLIC_BACKEND_URL ?? "http://localhost:3001";
 
 export async function GET(req: NextRequest) {
   const sp = req.nextUrl.searchParams; // page, limit, sort, order, q, status...

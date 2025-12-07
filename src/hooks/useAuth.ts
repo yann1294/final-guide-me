@@ -70,7 +70,7 @@ export const useAuth = () => {
       const role = rawUser.role?.name ?? "tourist";
 
       // 2) If tourist or guide, fetch their profile to see if it's complete
-      if (role === "tourist" || role === "guide") {
+      if (role === "tourist" || role === "guide" || role === "admin") {
         const baseComplete =
           Boolean(rawUser.firstName) &&
           Boolean(rawUser.lastName) &&
