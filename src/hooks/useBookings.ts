@@ -119,6 +119,8 @@ export const useCreateBooking = (booking: BookingDTO) => {
       // Replace with the actual endpoint for fetching bookings
       const response = await axios.post<ResponseDTO>(`/api/bookings`, booking);
 
+      console.log("response boooking", response.data);
+
       // Check if the response status is 'success'
       if (response.data.status !== "success") {
         console.error(response.data);
