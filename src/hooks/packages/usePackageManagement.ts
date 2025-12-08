@@ -80,7 +80,12 @@ export const usePackageManagement = (origin: "new" | "edit/view") => {
 
   // Fetch guides and current tour when the component mounts
   useEffect(() => {
-    if (guides.length === 0) fetchGuides();
+    if (guides.length === 0)
+      fetchGuides({
+        page: 1,
+        limit: 12,
+        status: "approved",
+      });
     if (!currentPackage && origin !== "new")
       fetchOnePackage(window.location.pathname.split("/").pop()!);
   }, [fetchGuides, fetchOnePackage, guides, currentPackage, origin]);
