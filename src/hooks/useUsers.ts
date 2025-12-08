@@ -7,7 +7,7 @@ import api from "@/lib/api";
 import useAuthStore from "@/stores/authStore";
 import useUserStore from "@/stores/userStore";
 import axios from "axios";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 export interface FullUserDTO {
   uid?: string;
@@ -25,36 +25,48 @@ export interface FullUserDTO {
   availability?: boolean;
 }
 
+type PaginatedGuides =
+  | { items: GuideDTO[]; total?: number; totalCount?: number; count?: number }
+  | { data: GuideDTO[]; total?: number; totalCount?: number; count?: number }; // in case backend nests
+
+const pickTotal = (x: any, fallbackLen: number) =>
+  typeof x?.total === "number"
+    ? x.total
+    : typeof x?.totalCount === "number"
+      ? x.totalCount
+      : typeof x?.count === "number"
+        ? x.count
+        : fallbackLen;
+
+const isPaginatedGuides = (x: any): x is PaginatedGuides =>
+  x &&
+  typeof x === "object" &&
+  (Array.isArray(x.items) || Array.isArray(x.data));
+
 export const useFetchOneGuide = () => {
-  const setTourGuides = useUserStore((state) => state.setTourGuides);
-  const [loading, setLoading] = useState<boolean>(false);
+  const setTourGuides = useUserStore((s) => s.setTourGuides);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchOneGuide = async (guideId: string) => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      // Replace with the actual endpoint for fetching packages
-      const response = await axios.get<ResponseDTO>(
-        `/api/users/guides/${guideId}`,
-      );
-
-      // Check if the response status is 'success'
-      if (response.data.status !== "success") {
-        console.error(response.data);
-        throw new Error(response.data.message);
+  const fetchOneGuide = useCallback(
+    async (guideId: string) => {
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await api.get<ResponseDTO>(`/api/users/guides/${guideId}`);
+        if (res.data.status !== "success")
+          throw new Error(res.data.message || "Fetch failed");
+        setTourGuides(res.data.data as GuideDTO);
+      } catch (e: any) {
+        setError(
+          e?.response?.data?.message ?? e?.message ?? "Failed to fetch guide",
+        );
+      } finally {
+        setLoading(false);
       }
-
-      // Persist the fetched tours in Zustand store
-      setTourGuides(response.data.data as GuideDTO);
-    } catch (err) {
-      console.error("Error: ", err);
-      setError(err instanceof Error ? err.message : "Failed to fetch guides");
-    } finally {
-      setLoading(false);
-    }
-  };
+    },
+    [setTourGuides],
+  );
 
   return { fetchOneGuide, loading, error };
 };
@@ -62,31 +74,75 @@ export const useFetchOneGuide = () => {
 // get all guides
 export const useFetchGuides = () => {
   const setGuides = useUserStore((state) => state.setGuides);
+  const setGuidesTotal = useUserStore((s) => s.setGuidesTotal);
+
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchGuides = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      // Replace with the actual endpoint for fetching guides
-      const response = await axios.get<ResponseDTO>(`/api/users/guides`);
+  const fetchGuides = useCallback(
+    async (opts: {
+      page: number;
+      limit: number;
+      sortField?: string;
+      sortOrder?: 1 | -1;
+      q?: string;
+      status?: string;
+    }) => {
+      setLoading(true);
+      setError(null);
+      try {
+        const { page, limit, sortField, sortOrder, q, status } = opts;
 
-      // Check if the response status is 'success'
-      if (response.data.status !== "success") {
-        console.error(response.data);
-        throw new Error(response.data.message);
+        const res = await api.get<ResponseDTO>("/api/users/guides", {
+          params: {
+            page,
+            limit,
+            ...(sortField ? { sort: sortField } : {}),
+            ...(sortOrder ? { order: sortOrder === 1 ? "asc" : "desc" } : {}),
+            ...(q ? { q } : {}),
+            ...(status ? { status } : {}),
+          },
+        });
+
+        if (res.data.status !== "success") {
+          throw new Error(res.data.message || "Fetch failed");
+        }
+
+        const raw = res.data.data as unknown;
+
+        let items: GuideDTO[] = [];
+        let total = 0;
+        if (Array.isArray(raw)) {
+          items = raw;
+          total = items.length;
+        } else if (isPaginatedGuides(raw)) {
+          const arr = Array.isArray((raw as any).items)
+            ? (raw as any).items
+            : (raw as any).data;
+          items = arr ?? [];
+          total = pickTotal(raw, items.length);
+        } else {
+          console.warn("Unexpected /api/users/guides payload shape:", raw);
+        }
+
+        // persist current page + total
+        setGuides(items);
+        setGuidesTotal(total);
+
+        return { items, total };
+      } catch (e: any) {
+        setError(
+          e?.response?.data?.message ?? e?.message ?? "Failed to fetch guides",
+        );
+        setGuides([]);
+        setGuidesTotal(0);
+        return { items: [], total: 0 };
+      } finally {
+        setLoading(false);
       }
-
-      // Persist the fetched guides in Zustand store
-      setGuides(response.data.data as GuideDTO[]);
-    } catch (err) {
-      console.error(err);
-      setError(err instanceof Error ? err.message : "Failed to fetch guides");
-    } finally {
-      setLoading(false);
-    }
-  };
+    },
+    [setGuides, setGuidesTotal],
+  );
 
   return { fetchGuides, loading, error };
 };
@@ -171,25 +227,67 @@ export const useUpdateOneGuide = () => {
     setLoading(true);
     setError(null);
 
+    // const urlApprove = `http://localhost:3001/admin/guides/approve/${data.uid}`;
+    // const urlReject = `http://localhost:3001/admin/guides/reject/${data.uid}`; // cice's part
+    // const urlPending = `http://localhost:3001/admin/guides/pending/${data.uid}`;
+    const urlApprove = `/api/users/guides/approve/${data.uid}`;
+    const urlReject = `/api/users/guides/reject/${data.uid}`;
+    const urlPending = `/api/users/guides/pending/${data.uid}`;
+    let response: any = {};
+
     try {
       // Replace with the actual endpoint for fetching packages
-      const response = await axios.patch<ResponseDTO>(
-        `/api/users/guides/approve/${data.uid}`,
-        data,
-      );
+      switch (data.approvalStatus) {
+        case "approved":
+          {
+            console.log("coming here");
+            console.log("Old data ", oldData);
+            console.log("New DATA", data.approvalStatus);
+            response = await api.patch<ResponseDTO>(urlApprove, {
+              approvalStatus: data.approvalStatus,
+            });
+            console.log("Response: ", response);
+          }
+          break;
+
+        case "pending":
+          console.log("Is this being triggered too ???");
+          response = await api.patch<ResponseDTO>(urlPending, {
+            approvalStatus: data.approvalStatus,
+          });
+          break;
+        case "rejected":
+          {
+            console.log("coming here");
+            console.log("Old data ", oldData);
+            console.log("New DATA", data.approvalStatus);
+            response = await api.patch<ResponseDTO>(urlReject, {
+              approvalStatus: data.approvalStatus,
+            });
+            console.log("Response: ", response);
+          }
+          break;
+
+        default:
+          console.log("Unknown state");
+      }
+      // const response = await axios.patch<ResponseDTO>(
+      //   `/api/users/guides/approve/${data.uid}`, // TODO: endpoint is not correct
+      //   { approvalStatus: data.approvalStatus },
+      // );
 
       // Check if the response status is 'success'
       if (response.data.status !== "success") {
         setUpdateStatus("Failed to update guide. Please try again later.");
-        console.error(response.data);
-        throw new Error(response.data.message);
+        console.error("Response request ", response.data);
+        throw new Error("Error sent : ", response.data.message);
       }
 
       console.log("Updated guide: ", response.data);
       // update the guide in the store
       updateGuide({
         ...oldData,
-        ...data,
+        approvalStatus: data.approvalStatus,
       } as GuideDTO);
       setUpdateStatus("Guide updated successfully");
     } catch (err) {

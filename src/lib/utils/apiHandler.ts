@@ -4,16 +4,26 @@ import { NextResponse } from "next/server";
 export async function handleGET(url: string) {
   try {
     // Send a GET request to the backend API to get all tours
-    const response = await fetch(url);
-
-    // If the response from the backend is not OK, throw an error
-    if (!response.ok) {
-      throw new Error("Failed to fetch tours");
-    }
+    const response = await fetch(url, {
+      headers: { "Content-Type": "application/json" },
+      cache: "no-store",
+    });
 
     // Parse the response data from the backend
     const data = await response.json();
 
+    // If the response from the backend is not OK, throw an error
+    if (!response.ok) {
+      console.error("Backend error:", data);
+
+      return NextResponse.json(
+        data ?? {
+          status: "error",
+          message: "Backend request failed",
+        },
+        { status: response.status },
+      );
+    }
     // Return the parsed data in the Next.js response
     return NextResponse.json(data);
   } catch (error) {
@@ -24,10 +34,8 @@ export async function handleGET(url: string) {
     return NextResponse.json(
       {
         status: "error",
-        code: 500,
-        message: error,
-        data: null,
-      } as ResponseDTO,
+        message: error instanceof Error ? error.message : "Proxy failed",
+      },
       { status: 500 },
     );
   }
@@ -110,10 +118,10 @@ export async function handlePATCH(url: string, req: Request) {
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
     };
-    // const auth = req.headers.get("authorization");
-    // if (auth) {
-    //   headers["authorization"] = auth;
-    // }
+    const auth = req.headers.get("authorization");
+    if (auth) {
+      headers["authorization"] = auth;
+    }
 
     // 4) Proxy the PATCH to the real backend
     const proxyRes = await fetch(url, {

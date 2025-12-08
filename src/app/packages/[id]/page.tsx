@@ -1,28 +1,30 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState } from 'react';
-import TourPackageContent from '@/components/common/TourAndPackageContent';
-import TourPackageTab from '@/components/common/TourAndPackageTab';
-import Breadcumb from '@/components/common/Breadcrumb';
-import BookingSummary from '@/components/common/BookingSummary';
-import TourGuide from '@/components/common/TourGuide';
-import RelatedSection from '@/components/common/RelatedSection';
-import { useCreateStripeOrder } from '@/hooks/useBookings';
-import { usePathname } from 'next/navigation';
-import usePackageStore from '@/stores/packageStore';
-import useUserStore from '@/stores/userStore';
-import { ContextType } from '@/lib/utils/contextUtils';
-import { useFetchOneGuide } from '@/hooks/useUsers';
-import useAuthStore from '@/stores/authStore';
-import { useFetchOnePackage, useFetchPackageTours } from '@/hooks/packages/usePackages';
+import React, { useEffect, useState } from "react";
+import TourPackageContent from "@/components/common/TourAndPackageContent";
+import TourPackageTab from "@/components/common/TourAndPackageTab";
+import Breadcumb from "@/components/common/Breadcrumb";
+import BookingSummary from "@/components/common/BookingSummary";
+import TourGuide from "@/components/common/TourGuide";
+import RelatedSection from "@/components/common/RelatedSection";
+import { useCreateStripeOrder } from "@/hooks/useBookings";
+import { usePathname } from "next/navigation";
+import usePackageStore from "@/stores/packageStore";
+import useUserStore from "@/stores/userStore";
+import { ContextType } from "@/lib/utils/contextUtils";
+import { useFetchOneGuide } from "@/hooks/useUsers";
+import useAuthStore from "@/stores/authStore";
+import {
+  useFetchOnePackage,
+  useFetchPackageTours,
+} from "@/hooks/packages/usePackages";
 
 const usePackageDetails = (pathName: string) => {
-  const {
-    currentPackage: pkg,
-    packages,
-    tours,
-    setCurrentPackage,
-  } = usePackageStore();
+  const pkg = usePackageStore((s) => s.currentPackage);
+  const packages = usePackageStore((s) => s.packages);
+  const toursByPkg = usePackageStore((s) => s.toursByPackage);
+  const setCurrent = usePackageStore((s) => s.setCurrentPackage);
+
   const { tourGuides } = useUserStore();
   const { fetchPackageTours } = useFetchPackageTours();
   const { fetchOnePackage, loading, error } = useFetchOnePackage();
@@ -33,38 +35,47 @@ const usePackageDetails = (pathName: string) => {
 
   useEffect(() => {
     const fetchCurrentPackage = async () => {
-      const currentPackageId = pathName.split('/').slice(-1)[0];
+      const currentPackageId = pathName.split("/").slice(-1)[0];
 
-      // Check if package exists in store or fetch it
+      // 1) Ensure we have the package in store
       if (!pkg) {
-        const result = packages.find((p) => p.id === currentPackageId);
-        if (result) {
-          setCurrentPackage(result);
+        const existing = packages.find((p) => p.id === currentPackageId);
+        if (existing) {
+          setCurrent(existing);
         } else {
           await fetchOnePackage(currentPackageId);
         }
-      } else {
-        if (!tourGuides.has(pkg.guide)) {
-          await fetchOneGuide(pkg.guide);
-        }
       }
 
-      // Fetch package tours if not already in store
-      if (!tours.has(currentPackageId)) {
+      // 2) Read the *fresh* package from the store after any fetch/set
+      const freshPkg = usePackageStore.getState().currentPackage;
+
+      // 3) Ensure guide is loaded
+      if (freshPkg?.guide && !tourGuides.has(freshPkg.guide)) {
+        await fetchOneGuide(freshPkg.guide);
+      }
+
+      // 4) If this package has tour IDs and we haven't loaded them yet, fetch tours
+      const hasAnyIds =
+        Array.isArray(freshPkg?.tours) && freshPkg!.tours!.length > 0;
+      const alreadyLoaded = Boolean(toursByPkg[currentPackageId]);
+
+      if (hasAnyIds && !alreadyLoaded) {
         await fetchPackageTours(currentPackageId);
       }
     };
 
     fetchCurrentPackage();
   }, [
-    packages,
-    pkg,
-    tours,
     pathName,
-    setCurrentPackage,
+    packages,
+    pkg, // ok to keep; we still read fresh state after fetch
+    toursByPkg,
+    setCurrent,
     fetchOnePackage,
     fetchPackageTours,
     fetchOneGuide,
+    tourGuides,
   ]);
 
   return {

@@ -1,23 +1,17 @@
 "use client";
-import CreateActivityComponent from "@/components/admin/CreateActivityComponent";
 import ImageUploader from "@/components/admin/ImageUploader";
 import TourCard from "@/components/tours/TourCard";
-import { TourDTO } from "@/dto/tour.dto";
 import { usePackageManagement } from "@/hooks/packages/usePackageManagement";
 import { convertSecondsToDate } from "@/lib/utils/dateUtils";
 import {
   handleNestedChange,
   handlePackageInputChange,
-  handleTourInputChange,
 } from "@/lib/utils/formInputHandlers";
-import { EyeIcon } from "lucide-react";
 import { Calendar } from "primereact/calendar";
 import { Checkbox } from "primereact/checkbox";
-import { Dropdown } from "primereact/dropdown";
 import { InputNumber } from "primereact/inputnumber";
 import { InputText } from "primereact/inputtext";
 import { MultiSelect } from "primereact/multiselect";
-import { useState } from "react";
 
 interface PageProps {
   searchParams?: {
@@ -28,7 +22,7 @@ interface PageProps {
 
 export default function CreatePackage({ searchParams }: PageProps) {
   const origin = searchParams?.origin === "edit/view" ? "edit/view" : "new";
-  const title = searchParams?.title || "Create a New Tour";
+  const title = searchParams?.title || "Create a New Package";
   const uPkgM = usePackageManagement(origin);
 
   let packageInputChangeHandler = (e: any) => {
@@ -101,7 +95,7 @@ export default function CreatePackage({ searchParams }: PageProps) {
             className="form-select m-0 w-auto"
             name="guide"
             onChange={packageInputChangeHandler}
-            value={uPkgM.pkg?.guide}
+            value={uPkgM.pkg?.guide ?? ""}
             required
           >
             <option value={""} key={"initial"}>
@@ -150,7 +144,7 @@ export default function CreatePackage({ searchParams }: PageProps) {
               className="form-control"
               id="name"
               name="name"
-              value={uPkgM.pkg.name}
+              value={uPkgM.pkg.name ?? ""}
               onChange={packageInputChangeHandler}
               required
             />
@@ -167,7 +161,7 @@ export default function CreatePackage({ searchParams }: PageProps) {
               className="form-control"
               id="locationName"
               name="location.name"
-              value={uPkgM.pkg.location.name}
+              value={uPkgM.pkg.location?.name ?? ""}
               onChange={(e) =>
                 handleNestedChange(
                   e,
@@ -190,7 +184,7 @@ export default function CreatePackage({ searchParams }: PageProps) {
             <InputText
               className="form-control"
               id="city"
-              value={uPkgM.pkg.location.city}
+              value={uPkgM.pkg.location?.city ?? ""}
               onChange={(e) =>
                 handleNestedChange(
                   e,
@@ -213,7 +207,7 @@ export default function CreatePackage({ searchParams }: PageProps) {
             <InputText
               className="form-control"
               id="country"
-              value={uPkgM.pkg.location.country}
+              value={uPkgM.pkg.location.country ?? ""}
               onChange={(e) =>
                 handleNestedChange(
                   e,
@@ -237,7 +231,7 @@ export default function CreatePackage({ searchParams }: PageProps) {
               className="form-control"
               id="price"
               name="price"
-              value={uPkgM.pkg.price}
+              value={uPkgM.pkg.price ?? 0}
               onValueChange={packageInputChangeHandler}
               mode="currency"
               currency="USD"
@@ -256,7 +250,7 @@ export default function CreatePackage({ searchParams }: PageProps) {
               className="form-control"
               id="durationDays"
               name="durationDays"
-              value={uPkgM.pkg.durationDays}
+              value={uPkgM.pkg.durationDays ?? 0}
               onValueChange={packageInputChangeHandler}
               required
             />
@@ -273,7 +267,7 @@ export default function CreatePackage({ searchParams }: PageProps) {
               className="form-control"
               id="discount"
               name="discount"
-              value={uPkgM.pkg.discount}
+              value={uPkgM.pkg.discount ?? 0}
               min={0}
               max={100}
               onValueChange={packageInputChangeHandler}
@@ -291,7 +285,7 @@ export default function CreatePackage({ searchParams }: PageProps) {
               className="form-control"
               id="numberOfSeats"
               name="numberOfSeats"
-              value={uPkgM.pkg.numberOfSeats}
+              value={uPkgM.pkg.numberOfSeats ?? 0}
               onValueChange={packageInputChangeHandler}
               required
             />
@@ -308,11 +302,25 @@ export default function CreatePackage({ searchParams }: PageProps) {
               className="form-control date-element"
               id="date"
               name="date"
-              value={
-                origin === "new" || uPkgM.updatedPackageFields.has("date")
-                  ? (uPkgM.pkg.date as Date)
-                  : convertSecondsToDate(uPkgM.pkg.date._seconds)
-              }
+              value={((): Date | null => {
+                // if user already changed date on this screen, use that Date
+                if (
+                  origin === "new" ||
+                  uPkgM.updatedPackageFields.has("date")
+                ) {
+                  return (uPkgM.pkg.date as Date) ?? null;
+                }
+                // else we’re in edit mode; convert stored timestamp safely
+                const stored: any = uPkgM.pkg.date;
+                if (
+                  stored &&
+                  typeof stored === "object" &&
+                  "_seconds" in stored
+                ) {
+                  return convertSecondsToDate(stored._seconds);
+                }
+                return null; // ⬅️ not undefined
+              })()}
               onChange={packageInputChangeHandler}
               showTime
               showIcon={true}
@@ -330,7 +338,7 @@ export default function CreatePackage({ searchParams }: PageProps) {
             </label>
             <Checkbox
               inputId="isAvailable"
-              checked={uPkgM.pkg.isAvailable}
+              checked={!!uPkgM.pkg.isAvailable}
               onChange={(e) => {
                 uPkgM.setPackage((prev) => ({
                   ...prev,
@@ -355,7 +363,7 @@ export default function CreatePackage({ searchParams }: PageProps) {
               className="form-control"
               name="description"
               id="description"
-              value={uPkgM.pkg.description}
+              value={uPkgM.pkg.description ?? ""}
               onChange={packageInputChangeHandler}
               rows={1}
               onInput={(e) => {
@@ -375,25 +383,52 @@ export default function CreatePackage({ searchParams }: PageProps) {
         <div className="create-form-section-title disable-hover">
           Package tours (
           {uPkgM.selectedTours.length.toString().padStart(2, "0")})
+          {uPkgM.saveToursStatus === "success" && (
+            <span
+              className="card-chip"
+              style={{ marginLeft: 8, background: "#e6f7ed", color: "#1f7a4d" }}
+            >
+              Saved ✓
+            </span>
+          )}
+          {uPkgM.saveToursStatus === "error" && (
+            <span
+              className="card-chip"
+              style={{ marginLeft: 8, background: "#fdecea", color: "#b71c1c" }}
+            >
+              Failed to save
+            </span>
+          )}
         </div>
+
         <div className="flex disable-hover">
           <div
-            className={
-              "add-resource " +
-              (uPkgM.selectedTours.length === 0 ? "disabled-button" : "")
-            }
             onClick={() => {
-              if (uPkgM.selectedTours.length > 0) {
+              if (
+                uPkgM.selectedTours.length > 0 &&
+                uPkgM.saveToursStatus !== "saving"
+              ) {
                 uPkgM.saveTours(
-                  uPkgM.selectedTours.map((tour) => tour.id) as string[],
+                  uPkgM.selectedTours.map((t) => t.id!) as string[],
                 );
               }
             }}
+            className={
+              "add-resource " +
+              (uPkgM.selectedTours.length === 0 ||
+              uPkgM.saveToursStatus === "saving"
+                ? "disabled-button"
+                : "")
+            }
           >
-            {false ? "Saving..." : "Save Tours"}
+            {uPkgM.saveToursStatus === "saving"
+              ? "Saving..."
+              : uPkgM.saveToursStatus === "success"
+                ? "Saved ✓"
+                : "Save Tours"}
           </div>
           <MultiSelect
-            value={uPkgM.selectedTours}
+            value={uPkgM.selectedTours ?? []}
             filter
             filterBy="name"
             filterPlaceholder="Search Tours"
@@ -401,11 +436,12 @@ export default function CreatePackage({ searchParams }: PageProps) {
             maxSelectedLabels={1}
             onChange={(e) => {
               console.log("Tours: ", e.value);
-              uPkgM.setSelectedTours(e.value);
+              const next = Array.isArray(e.value) ? e.value : [];
+              uPkgM.setSelectedTours(next);
               console.log("Selected Tours: ", uPkgM.selectedTours);
             }}
             // panelHeaderTemplate={() => (<h5 className='p-multiselect-header'>Tours</h5>)}
-            options={uPkgM.tours}
+            options={uPkgM.tours ?? []}
             itemTemplate={(option) => (
               <div className="tour-item">
                 <div>{option.name}</div>

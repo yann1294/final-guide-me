@@ -7,9 +7,14 @@ import usePackageStore from "@/stores/packageStore";
  * Custom hook for managing photos in tours.
  * @returns {Object} State and handlers for managing photos.
  */
-export const usePhotoManagement = (origin: "new" | "edit/view", page: "tour" | "package" = "tour") => {
+export const usePhotoManagement = (
+  origin: "new" | "edit/view",
+  page: "tour" | "package" = "tour",
+) => {
   // State for managing photos related to the tour
-  const [photos, setPhotos] = useState<Map<number, { file: File; dataString: string }>>(new Map());
+  const [photos, setPhotos] = useState<
+    Map<number, { file: File; dataString: string }>
+  >(new Map());
 
   const { currentTour } = useTourStore();
   const { currentPackage } = usePackageStore();
@@ -63,8 +68,8 @@ export const usePhotoManagement = (origin: "new" | "edit/view", page: "tour" | "
    * @returns {Promise} - A promise that resolves when the upload is complete.
    */
   const uploadImagesHandler = async (): Promise<void> => {
-     // check whether tour details have been saved
-     if (page === "tour" && !currentTour?.id) {
+    // check whether tour details have been saved
+    if (page === "tour" && !currentTour?.id) {
       alert("Tour details must be saved");
       return;
     } else if (page === "package" && !currentPackage?.id) {
@@ -78,22 +83,49 @@ export const usePhotoManagement = (origin: "new" | "edit/view", page: "tour" | "
     photos.forEach((photo) => {
       formData.append("file", photo.file);
     });
-    formData.append("id", (page === "tour" ? currentTour?.id : currentPackage?.id) as string); // Add the tour ID to the form data
+    formData.append(
+      "id",
+      (page === "tour" ? currentTour?.id : currentPackage?.id) as string,
+    ); // Add the tour ID to the form data
 
     // upload images
     uploadImages(formData, page);
+
+    // after successful upload, clear local queue; the store has the updated list
+    // (we’ll also rehydrate from store below)
+    clearPhotos();
   };
 
   // update photos from current tour
+  // useEffect(() => {
+  //   if (origin === "edit/view" && currentTour?.images) {
+  //     const photos = new Map<number, { file: File; dataString: string }>();
+  //     currentTour.images.forEach((photo, index) => {
+  //       photos.set(index, { file: new File([], photo), dataString: photo });
+  //     });
+  //     setPhotos(photos);
+  //   }
+  // }, []);
+
+  // 🔁 Rehydrate from store on edit for BOTH tour and package, and whenever store updates
   useEffect(() => {
-    if (origin === "edit/view" && currentTour?.images) {
-      const photos = new Map<number, { file: File; dataString: string }>();
-      currentTour.images.forEach((photo, index) => {
-        photos.set(index, { file: new File([], photo), dataString: photo });
-      });
-      setPhotos(photos);
+    if (origin !== "edit/view") return;
+
+    const imgs = page === "tour" ? currentTour?.images : currentPackage?.images;
+
+    if (Array.isArray(imgs)) {
+      const m = new Map<number, { file: File; dataString: string }>();
+      imgs.forEach((url, i) =>
+        m.set(i, { file: new File([], url), dataString: url }),
+      );
+      setPhotos(m);
     }
-  }, []);
+  }, [
+    origin,
+    page,
+    currentTour?.images, // watch tour images
+    currentPackage?.images, // watch package images
+  ]);
 
   return {
     photos,
@@ -101,6 +133,8 @@ export const usePhotoManagement = (origin: "new" | "edit/view", page: "tour" | "
     removePhoto,
     clearPhotos,
     uploadImagesHandler,
-    loading, error, status
+    loading,
+    error,
+    status,
   };
 };

@@ -15,7 +15,7 @@ export async function PATCH(
   // let body: any = await req.json();
   // console.log(body);
   return await handlePATCH(
-    `${process.env.NEXT_PUBLIC_BACKEND_URL}/packages/${params.id}/tours`,
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/packages/${params.id}`,
     req,
   );
 }
