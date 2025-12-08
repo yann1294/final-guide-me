@@ -1,10 +1,15 @@
-import { handleGET } from "@/lib/utils/apiHandler";
-import { NextRequest } from "next/server";
+import { handleGET, handlePATCHProfile } from "@/lib/utils/apiHandler";
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: Promise<{ id: string }> },
-) {
-  const { id } = await params;
-  return await handleGET(`${process.env.NEXT_PUBLIC_BACKEND_URL}/admin/${id}`);
+// GET current admin profile
+export async function GET() {
+  return handleGET(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/me`);
+}
+
+// PATCH current admin profile
+export async function PATCH(req: Request) {
+  console.log("Proxying PROFILE-PATCH for admin me");
+  return handlePATCHProfile(
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/me`,
+    req,
+  );
 }
