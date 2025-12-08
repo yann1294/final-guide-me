@@ -20,22 +20,30 @@ const BookingSummary = ({
     loading: paymentLoading,
     error: paymentError,
   } = useCreateStripeOrder();
+  const tourist: Record<string, TouristBooking> = {
+    primary: {
+      bookedOn: new Date().toISOString(),
+      bookingStatus: "pending",
+      paymentStatus: "pending",
+    },
+  };
+
+  const bookingPayload: BookingDTO = {
+    status: "pending",
+    bookedOn: new Date().toISOString(),
+    tourist,
+
+    // ✅ use correct property name from BookingDTO
+    ...(context === ContextType.tour
+      ? { tour: tour.id }
+      : { package: tour.id }),
+  };
+
   const {
     createBooking,
     loading: bookingLoading,
     error: bookingError,
-  } = useCreateBooking({
-    status: "pending", // Required: Set a valid status
-    bookedOn: new Date().toISOString(), // Required: ISO date string
-    tourist: new Map<string, TouristBooking>([
-      // Required: Provide a Map of tourists (adjust keys/values as needed)
-      ["primary", { name: user?.name || "User", age: 30 }], // Placeholder; use real data
-      // Add more for numberOfPeople if needed, e.g., loop to generate
-    ]),
-    ...(context === ContextType.tour
-      ? { tour: tour.id }
-      : { tourPackage: tour.id }), // Optional: Set based on context (exclusive)
-  } as BookingDTO);
+  } = useCreateBooking(bookingPayload);
 
   const loading = paymentLoading || bookingLoading;
   return (
