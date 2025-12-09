@@ -10,5 +10,5 @@ export type BookingDTO = {
   bookedOn: string;
   tourist: Record<string, TouristBooking>;
   tour?: string;
-  package?: string;
+  tourPackage?: string;
 };

@@ -9,21 +9,40 @@ export async function POST(req: Request) {
     const bookingData = await req.json();
 
     // Send a POST request to the backend API to create a new booking
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(bookingData),
       },
-      body: JSON.stringify(bookingData),
-    });
-
-    // If the response from the backend is not OK, throw an error
-    if (!response.ok) {
-      throw new Error("Failed to create booking");
-    }
+    );
 
     // Parse the response data from the backend
-    const data = await response.json();
+    // const data = await response.json();
+
+    // // If the response from the backend is not OK, throw an error
+    // if (!response.ok) {
+    //   return NextResponse.json(data, { status: response.status });
+    // }
+    const text = await response.text();
+    let data: any;
+
+    try {
+      data = text ? JSON.parse(text) : null;
+    } catch {
+      data = { status: "error", message: text || "Bad Request" };
+    }
+
+    // ✅ Forward backend error as-is
+    if (!response.ok) {
+      return NextResponse.json(
+        data ?? { status: "error", message: "Booking validation failed" },
+        { status: response.status },
+      );
+    }
 
     // Return the parsed data in the Next.js response
     return NextResponse.json(data as ResponseDTO);
@@ -32,21 +51,25 @@ export async function POST(req: Request) {
     console.error(error);
 
     // Return an error response with status 500
-    return NextResponse.json({
-      status: 'error',
-      code: 500,
-      message: error,
-      data: null,
-    } as ResponseDTO, { status: 500 });
+    return NextResponse.json(
+      {
+        status: "error",
+        code: 500,
+        message: error,
+        data: null,
+      } as ResponseDTO,
+      { status: 500 },
+    );
   }
 }
 
 // get all bookings
 export async function GET(req: Request) {
-  
   try {
     // Send a GET request to the backend API to get all bookings
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings`);
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings`,
+    );
 
     // If the response from the backend is not OK, throw an error
     if (!response.ok) {
@@ -63,12 +86,14 @@ export async function GET(req: Request) {
     console.error(error);
 
     // Return an error response with status 500
-    return NextResponse.json({
-      status: 'error',
-      code: 500,
-      message: error,
-      data: null,
-    } as ResponseDTO, { status: 500 });
+    return NextResponse.json(
+      {
+        status: "error",
+        code: 500,
+        message: error,
+        data: null,
+      } as ResponseDTO,
+      { status: 500 },
+    );
   }
 }
-

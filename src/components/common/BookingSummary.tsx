@@ -36,7 +36,7 @@ const BookingSummary = ({
     // ✅ use correct property name from BookingDTO
     ...(context === ContextType.tour
       ? { tour: tour.id }
-      : { package: tour.id }),
+      : { tourPackage: tour.id }),
   };
 
   const {
