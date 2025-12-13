@@ -6,13 +6,7 @@ export type PaymentDTO = {
   resourceId: string;
   amount: number;
   currency: string;
-  status?:
-    | "pending"
-    | "completed"
-    | "canceled"
-    | "refunded"
-    | "refund-in-progress"
-    | "in-progress";
+  status?: "pending" | "canceled" | "in-progress";
   bookingId?: string;
   userId: string;
   receipt?: string;

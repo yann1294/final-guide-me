@@ -30,7 +30,7 @@ export const useCreateStripeOrder = () => {
       if (response.data.data) {
         window.location.assign((response.data.data as { url: string }).url);
       }
-      console.log;
+
       setPayment(payment);
     } catch (err) {
       console.error("Error: ", err);
