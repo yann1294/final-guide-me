@@ -15,11 +15,11 @@ const BookingSummary = ({
   user,
   context,
 }: any) => {
-  const {
-    createStripeOrder,
-    loading: paymentLoading,
-    error: paymentError,
-  } = useCreateStripeOrder();
+  // const {
+  //   createStripeOrder,
+  //   loading: paymentLoading,
+  //   error: paymentError,
+  // } = useCreateStripeOrder();
   const tourist: Record<string, TouristBooking> = {
     primary: {
       bookedOn: new Date().toISOString(),
@@ -45,7 +45,7 @@ const BookingSummary = ({
     error: bookingError,
   } = useCreateBooking(bookingPayload);
 
-  const loading = paymentLoading || bookingLoading;
+  const loading = /*paymentLoading | */ bookingLoading;
   return (
     <div className="col-lg-12 col-md-6">
       <div className="p-sidebar-form">
@@ -110,9 +110,9 @@ const BookingSummary = ({
             {bookingError && (
               <p className="error">Booking Error: {bookingError}</p>
             )}
-            {paymentError && (
+            {/*{paymentError && (
               <p className="error">Payment Error: {paymentError}</p>
-            )}
+            )}*/}
             <input
               onClick={async () => {
                 if (!user?.uid) {
@@ -158,7 +158,8 @@ const BookingSummary = ({
                     return;
                   }
 
-                  await createStripeOrder(payment);
+                  return;
+                  // await createStripeOrder(payment);
                 } catch (err) {
                   console.error("Payment failed:", err);
                   alert("Failed to initiate payment. Please try again.");

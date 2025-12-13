@@ -117,6 +117,7 @@ export const useCreateBooking = (booking: BookingDTO) => {
     setError(null);
     try {
       // Replace with the actual endpoint for fetching bookings
+      console.log("DATA SENT TO THE BACK END", booking);
       const response = await axios.post<ResponseDTO>(`/api/bookings`, booking);
 
       console.log("response boooking", response.data);
