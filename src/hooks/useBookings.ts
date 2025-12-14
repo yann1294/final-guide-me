@@ -128,11 +128,19 @@ export const useCreateBooking = (booking: BookingDTO) => {
         throw new Error(response.data.message);
       }
 
+      // 🔹 Extract the actual booking document
+      const bookingDoc = (response.data.data as any)?.booking as
+        | BookingDTO
+        | undefined;
+      if (!bookingDoc || !bookingDoc.id) {
+        throw new Error("Booking created but no booking document returned");
+      }
+
       // Persist the fetched booking in Zustand store
-      setCurrentBooking(booking);
+      setCurrentBooking(bookingDoc);
 
       // add to booking
-      setBookings([...bookings, booking]);
+      setBookings([...bookings, bookingDoc]);
     } catch (err) {
       console.error(err);
       setError(err instanceof Error ? err.message : "Failed to fetch booking");
