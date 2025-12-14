@@ -8,9 +8,6 @@
     "start": "next start",
     "lint": "next lint"
   },
-  "engines": {
-    "node": "20.x"
-  },
   "dependencies": {
     "@babel/core": "^7.0.0-0",
     "@emotion/react": "^11.11.4",
