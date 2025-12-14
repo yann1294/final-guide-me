@@ -30,7 +30,7 @@ export const useCreateStripeOrder = () => {
       if (response.data.data) {
         window.location.assign((response.data.data as { url: string }).url);
       }
-      console.log;
+
       setPayment(payment);
     } catch (err) {
       console.error("Error: ", err);
@@ -117,6 +117,7 @@ export const useCreateBooking = (booking: BookingDTO) => {
     setError(null);
     try {
       // Replace with the actual endpoint for fetching bookings
+      console.log("DATA SENT TO THE BACK END", booking);
       const response = await axios.post<ResponseDTO>(`/api/bookings`, booking);
 
       console.log("response boooking", response.data);
@@ -127,11 +128,19 @@ export const useCreateBooking = (booking: BookingDTO) => {
         throw new Error(response.data.message);
       }
 
+      // 🔹 Extract the actual booking document
+      const bookingDoc = (response.data.data as any)?.booking as
+        | BookingDTO
+        | undefined;
+      if (!bookingDoc || !bookingDoc.id) {
+        throw new Error("Booking created but no booking document returned");
+      }
+
       // Persist the fetched booking in Zustand store
-      setCurrentBooking(booking);
+      setCurrentBooking(bookingDoc);
 
       // add to booking
-      setBookings([...bookings, booking]);
+      setBookings([...bookings, bookingDoc]);
     } catch (err) {
       console.error(err);
       setError(err instanceof Error ? err.message : "Failed to fetch booking");

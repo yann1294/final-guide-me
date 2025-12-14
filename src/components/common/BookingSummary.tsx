@@ -23,20 +23,20 @@ const BookingSummary = ({
   const tourist: Record<string, TouristBooking> = {
     primary: {
       bookedOn: new Date().toISOString(),
-      bookingStatus: "pending",
+      bookingStatus: "completed",
       paymentStatus: "pending",
     },
   };
 
   const bookingPayload: BookingDTO = {
-    status: "pending",
+    status: "in-process",
     bookedOn: new Date().toISOString(),
     tourist,
 
     // ✅ use correct property name from BookingDTO
     ...(context === ContextType.tour
       ? { tour: tour.id }
-      : { package: tour.id }),
+      : { tourPackage: tour.id }),
   };
 
   const {
