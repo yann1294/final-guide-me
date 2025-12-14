@@ -158,8 +158,7 @@ const BookingSummary = ({
                     return;
                   }
 
-                  return;
-                  // await createStripeOrder(payment);
+                  await createStripeOrder(payment);
                 } catch (err) {
                   console.error("Payment failed:", err);
                   alert("Failed to initiate payment. Please try again.");
