@@ -86,7 +86,10 @@ export default function Header() {
                   <Link href="/">
                     <div className="navbar-brand">
                       <img
-                        style={{ objectFit: "contain", height: "94px" }}
+                        style={{
+                          objectFit: "contain",
+                          height: "clamp(56px, 7vw, 94px)",
+                        }}
                         src="/assets/images/logo.png"
                         alt="logo"
                       />
@@ -94,12 +97,12 @@ export default function Header() {
                   </Link>
                 </div>
                 <div className="navbar-icons">
-                  <div
+                  {/*<div
                     className="searchbar-open"
                     onClick={handleSearchFullScreen}
                   >
                     <i className="flaticon-magnifier" />
-                  </div>
+                  </div>*/}
                   <div className="user-dropdown-icon">
                     <i className="flaticon-user" onClick={handleProfile} />
                     <div
@@ -140,13 +143,20 @@ export default function Header() {
                               <i className="bx bx-user-pin" />
                               <Link href="/login/guide">Sign in as guide</Link>
                             </li>
+                            <li className="account-el">
+                              <i className="bx bx-user-pin" />
+                              <Link href="/login/admin">Sign in an admin</Link>
+                            </li>
                           </>
                         )}
                       </ul>
                     </div>
                   </div>
                   <div className="mobile-menu d-flex ">
-                    <div className="top-search-bar m-0 d-block d-xl-none"></div>
+                    <i
+                      className="bx bx-menu"
+                      style={{ fontSize: 28, cursor: "pointer" }}
+                    />
                   </div>
                 </div>
               </div>
@@ -155,6 +165,24 @@ export default function Header() {
             {/* Main navigation */}
             <div className="col-lg-10 col-md-10 col-sm-10 col-xs-10">
               <nav className={sidebar === 1 ? "main-nav slidenav" : "main-nav"}>
+                <div className="d-lg-none" style={{ padding: "12px 16px" }}>
+                  <button
+                    type="button"
+                    onClick={handleSidebar}
+                    style={{
+                      background: "transparent",
+                      border: "none",
+                      padding: 0,
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 8,
+                      cursor: "pointer",
+                    }}
+                  >
+                    <i className="bx bx-x" style={{ fontSize: 30 }} />
+                    <span>Close</span>
+                  </button>
+                </div>
                 <ul>
                   <li>
                     <Link href="/">Home</Link>
@@ -173,12 +201,12 @@ export default function Header() {
                   </li>
                 </ul>
                 <div className="navbar-icons-2">
-                  <div
+                  {/*<div
                     className="searchbar-open"
                     onClick={handleSearchFullScreen}
                   >
                     <i className="flaticon-magnifier" />
-                  </div>
+                  </div>*/}
                   <div className="user-dropdown-icon" onClick={handleProfile}>
                     <i className="flaticon-user" />
                     <div
@@ -219,6 +247,10 @@ export default function Header() {
                               <i className="bx bx-user-pin" />
                               <Link href="/login/guide">Sign in as guide</Link>
                             </li>
+                            <li className="account-el">
+                              <i className="bx bx-user-pin" />
+                              <Link href="/login/admin">Sign in as admin</Link>
+                            </li>
                           </>
                         )}
                       </ul>
@@ -231,7 +263,7 @@ export default function Header() {
         </div>
 
         {/* Searchbar Overlay */}
-        <form>
+        {/*<form>
           <div
             className={
               active === 1 ? "main-searchbar activeSearch" : "main-searchbar"
@@ -245,7 +277,7 @@ export default function Header() {
               <i className="bx bx-search" />
             </div>
           </div>
-        </form>
+        </form>*/}
       </div>
     </header>
   );
